@@ -1,0 +1,25 @@
+#!/bin/bash
+# Post-remocion de Baryx
+# Se ejecuta despues de desinstalar el paquete .deb
+# Limpia archivos de datos y configuracion si el usuario lo desea
+
+set -e
+
+# Solo en purge (apt purge baryx)
+if [ "$1" = "purge" ]; then
+    # Limpiar directorio de instalacion si queda algo
+    rm -rf /opt/baryx 2>/dev/null || true
+
+    # Nota: No eliminamos ~/.baryx ni /etc/baryx automaticamente
+    # para preservar configuracion del usuario (contraseñas BD, .env)
+    echo ""
+    echo "  Para eliminar datos de configuracion manualmente:"
+    echo "    rm -rf ~/.baryx"
+    echo "    sudo rm -rf /etc/baryx"
+    echo ""
+fi
+
+# Actualizar cache de aplicaciones
+if command -v update-desktop-database &> /dev/null; then
+    update-desktop-database /usr/share/applications 2>/dev/null || true
+fi

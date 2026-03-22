@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Baryx Cliente
+Comment=Sistema POS para bares y locales nocturnos
+Comment[en]=POS system for bars and nightlife venues
+Exec=/opt/baryx/cliente/bin/Baryx
+Icon=baryx
+Terminal=false
+Type=Application
+Categories=Office;Finance;
+Keywords=pos;baryx;bar;ventas;pedidos;
+StartupWMClass=com-baryx-cliente-BaryxClienteLauncher

@@ -1,0 +1,155 @@
+# Archivos compilados y directorios de build
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Directorios de Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Directorios de IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+packaging/distribuibles/
+/.nb-gradle/
+
+# License keys — NEVER commit a populated license.properties
+# The empty template IS tracked; the CI populates it during packaging.
+# Add your local copy to this rule to avoid accidents.
+baryx-cliente/src/main/resources/license.properties
+
+# IntelliJ IDEA
+out/
+.idea_modules/
+*.iml
+*.ipr
+
+# Logs
+logs/
+*.log
+log/
+*.log.*
+
+# Sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archivos temporales
+*.tmp
+*.temp
+~$*
+
+# Base de datos local (si usas H2 para testing)
+*.db
+*.h2.db
+
+# Archivos de configuración con datos sensibles
+application-local.yml
+application-local.properties
+.env
+.env.local
+
+# Archivo de log de compilación (generado por scripts de build)
+build_log.txt
+
+# Configuración local del cliente (generada en runtime)
+baryx-cliente/baryx-cliente.properties
+
+# Archivos de respaldo
+*.backup
+*.bak
+backup/
+
+# Dependencias de Node (si usas herramientas frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Coverage reports
+coverage/
+*.gcov
+*.lcov
+
+# Spring Boot DevTools
+.spring-boot-devtools.properties
+
+# Archivos de compilación JavaFX
+*.fxgraph
+
+# Archivos de caché
+.cache/
+
+# Archivos de testing
+test-output/
+*.test
+
+# Certificados y claves privadas (NUNCA commitear)
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+*.keystore
+
+# Datos sensibles
+secrets/
+credentials/
+
+# Archivos grandes o binarios
+*.mp4
+*.mov
+*.avi
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+
+# Variables de entorno
+.envrc
+
+# Archivos de configuración de despliegue
+docker-compose.override.yml
+kubernetes-secrets.yml

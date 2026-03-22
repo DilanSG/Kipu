@@ -1,0 +1,172 @@
+================================================================================
+  LICENCIA DE USO DE SOFTWARE BARYX
+  Basada en la Elastic License 2.0
+================================================================================
+
+Titular de derechos: Dilan Acuña / Baryx
+Software: Baryx — Sistema POS para la gestion de comercios.
+Año de creación: 2026
+República de Colombia
+
+Protegido por la Ley 23 de 1982 (Derechos de Autor, Colombia),
+la Decisión Andina 351 de 1993 y el Convenio de Berna.
+
+--------------------------------------------------------------------------------
+AVISO IMPORTANTE
+--------------------------------------------------------------------------------
+
+Este software tiene el código fuente disponible públicamente ("source-available"),
+lo que NO equivale a software libre ni de código abierto ("open source").
+La visualización del código fuente no otorga ningún derecho de uso, copia,
+modificación o distribución más allá de los expresamente indicados en esta licencia.
+
+Para adquirir una licencia comercial de uso, contacte al titular del proyecto.
+
+================================================================================
+ARTÍCULO 1 — ACEPTACIÓN
+================================================================================
+
+Al usar, copiar, modificar o distribuir el software, usted acepta todos los
+términos y condiciones de esta licencia. Si no acepta estos términos, no está
+autorizado a usar el software.
+
+================================================================================
+ARTÍCULO 2 — LICENCIA DE USO (COPYRIGHT)
+================================================================================
+
+El titular le otorga una licencia no exclusiva, libre de regalías, mundial,
+no sublicenciable y no transferible para:
+
+  a) Usar el software.
+  b) Copiar el software para uso interno.
+  c) Distribuir copias del software.
+  d) Poner el software a disposición de terceros.
+  e) Preparar obras derivadas del software.
+
+Lo anterior, SIEMPRE dentro de las limitaciones y condiciones establecidas
+en esta licencia.
+
+================================================================================
+ARTÍCULO 3 — LIMITACIONES Y RESTRICCIONES
+================================================================================
+
+3.1  PROHIBICIÓN DE SERVICIO GESTIONADO
+     Queda PROHIBIDO ofrecer el software a terceros como servicio alojado
+     o gestionado (incluyendo SaaS, PaaS o cualquier modalidad en la nube),
+     donde dichos terceros accedan a funcionalidades sustanciales del software,
+     sin contar con una licencia comercial escrita por parte del titular.
+
+3.2  PROHIBICIÓN DE ELUDIR LICENCIAMIENTO
+     Queda PROHIBIDO modificar, desactivar, eliminar o eludir cualquier
+     mecanismo de control de licencias o activación presente en el software,
+     así como ocultar o eliminar funcionalidades que dependan de dicho control.
+
+3.3  PROHIBICIÓN DE SUPRIMIR AVISOS
+     Queda PROHIBIDO alterar, eliminar u ocultar cualquier aviso de licencia,
+     copyright, marca o atribución del titular presentes en el software.
+     El uso de marcas del titular está sujeto a la legislación aplicable.
+
+================================================================================
+ARTÍCULO 4 — PATENTES
+================================================================================
+
+El titular le otorga una licencia sobre cualquier reclamación de patente que
+el titular pueda licenciar, para fabricar, usar, vender, ofrecer en venta,
+importar y hacer importar el software, siempre dentro de las limitaciones de
+esta licencia.
+
+Esta licencia NO cubre reclamaciones de patente que usted provoque mediante
+modificaciones o adiciones al software. Si usted o su organización realizan
+una reclamación escrita alegando que el software infringe alguna patente,
+su licencia de patente sobre el software termina de inmediato.
+
+================================================================================
+ARTÍCULO 5 — OBLIGACIONES DEL USUARIO
+================================================================================
+
+5.1  Toda persona que reciba una copia del software de su parte debe recibir
+     también una copia de esta licencia.
+
+5.2  Si modifica el software, debe incluir en las copias modificadas avisos
+     prominentes que indiquen que el software ha sido modificado, especificando
+     la fecha y naturaleza de las modificaciones.
+
+================================================================================
+ARTÍCULO 6 — SIN DERECHOS ADICIONALES
+================================================================================
+
+Esta licencia no implica ni otorga ningún derecho adicional más allá de los
+expresamente establecidos en ella.
+
+================================================================================
+ARTÍCULO 7 — TERMINACIÓN DE LA LICENCIA
+================================================================================
+
+Si usted usa el software en violación de estos términos, dicho uso no está
+autorizado y sus licencias se extinguirán automáticamente.
+
+Si el titular le notifica una infracción y usted cesa todas las infracciones
+dentro de los treinta (30) días calendario siguientes a la notificación, sus
+licencias serán restablecidas retroactivamente. Sin embargo, cualquier nueva
+infracción posterior al restablecimiento extinguirá sus licencias de forma
+automática y permanente, sin posibilidad de restablecimiento.
+
+================================================================================
+ARTÍCULO 8 — EXCLUSIÓN DE GARANTÍAS Y RESPONSABILIDAD
+================================================================================
+
+En la medida que lo permita la ley aplicable, el software se proporciona "tal
+cual" ("as is"), sin garantías de ningún tipo, ya sean expresas o implícitas,
+incluidas, entre otras, las garantías de comerciabilidad, idoneidad para un
+propósito particular y no infracción.
+
+El titular no será responsable frente a usted por daños de ningún tipo,
+directos, indirectos, especiales, incidentales, consecuentes o punitivos,
+derivados del uso o la imposibilidad de uso del software, incluso si el
+titular ha sido informado de la posibilidad de tales daños.
+
+================================================================================
+ARTÍCULO 9 — LEY APLICABLE Y JURISDICCIÓN
+================================================================================
+
+Esta licencia se rige por las leyes de la República de Colombia, en particular:
+
+  - Ley 23 de 1982 — Sobre derechos de autor
+  - Ley 44 de 1993 — Modifica y adiciona la Ley 23 de 1982
+  - Decisión Andina 351 de 1993 — Régimen Común sobre Derechos de Autor
+  - Ley 1915 de 2018 — Modifica la Ley 23 de 1982
+  - Convenio de Berna para la Protección de las Obras Literarias y Artísticas
+
+Cualquier disputa derivada de esta licencia será sometida a la jurisdicción
+de los tribunales competentes de la República de Colombia.
+
+================================================================================
+ARTÍCULO 10 — DEFINICIONES
+================================================================================
+
+"El titular" es la persona o entidad que ofrece estos términos: Johanna / Baryx.
+
+"El software" es el programa informático que el titular pone a disposición
+bajo esta licencia, incluida cualquier parte del mismo. En este caso:
+Baryx — Sistema POS y gestión de pedidos para establecimientos nocturnos.
+
+"Usted" se refiere a la persona natural o jurídica que acepta estos términos.
+
+"Su organización" es cualquier persona jurídica, empresa unipersonal u otro
+tipo de organización para la que usted trabaje, más todas las organizaciones
+que tengan control sobre ella, estén bajo su control o bajo control común.
+
+"Sus licencias" son todas las licencias que le otorgamos bajo estos términos.
+
+"Uso" significa cualquier acción que realice con el software que requiera
+una de sus licencias.
+
+"Marca" significa marcas comerciales, marcas de servicio y derechos similares.
+
+================================================================================
+
+Copyright (c) 2026 Baryx. Todos los derechos reservados.
+
+Para licencias comerciales: info@baryx.org
+
+================================================================================

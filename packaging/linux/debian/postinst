@@ -1,0 +1,40 @@
+#!/bin/bash
+# Post-instalacion de Baryx
+# Se ejecuta automaticamente despues de instalar el paquete .deb
+
+set -e
+
+# Asegurar permisos de ejecucion
+chmod +x /opt/baryx/cliente/bin/Baryx 2>/dev/null || true
+chmod +x /opt/baryx/servidor/bin/BaryxServidor 2>/dev/null || true
+chmod +x /opt/baryx/servidor/setup-inicial.sh 2>/dev/null || true
+chmod +x /opt/baryx/iniciar-cliente.sh 2>/dev/null || true
+chmod +x /opt/baryx/iniciar-servidor.sh 2>/dev/null || true
+
+# Crear symlinks en /usr/local/bin para acceso por terminal
+ln -sf /opt/baryx/cliente/bin/Baryx /usr/local/bin/baryx 2>/dev/null || true
+ln -sf /opt/baryx/iniciar-cliente.sh /usr/local/bin/baryx-cliente 2>/dev/null || true
+ln -sf /opt/baryx/iniciar-servidor.sh /usr/local/bin/baryx-servidor 2>/dev/null || true
+
+# Actualizar cache de iconos y base de datos de aplicaciones
+if command -v update-desktop-database &> /dev/null; then
+    update-desktop-database /usr/share/applications 2>/dev/null || true
+fi
+if command -v gtk-update-icon-cache &> /dev/null; then
+    gtk-update-icon-cache -f -t /usr/share/icons/hicolor 2>/dev/null || true
+fi
+
+echo ""
+echo "  Baryx instalado correctamente."
+echo ""
+echo "  Para configurar la base de datos (primera vez):"
+echo "    sudo /opt/baryx/servidor/setup-inicial.sh"
+echo ""
+echo "  Para iniciar Baryx:"
+echo "    - Desde el menu de aplicaciones"
+echo "    - O ejecute: baryx"
+echo ""
+echo "  Para iniciar con logs en consola:"
+echo "    - Cliente:  baryx-cliente"
+echo "    - Servidor: baryx-servidor"
+echo ""

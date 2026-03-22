@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:id="contenedorRaiz"
+           fx:controller="com.baryx.cliente.controlador.ShellController"
+           style="-fx-background-color: #0a0a0a;">
+
+    <!-- Splash screen (visible hasta que se carga la primera vista) -->
+    <VBox fx:id="splash" alignment="CENTER" spacing="24"
+          style="-fx-background-color: #0a0a0a;">
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+        <ImageView fitWidth="260" fitHeight="130" preserveRatio="true">
+            <image>
+                <Image url="@../imagenes/LOGOPNG.png"/>
+            </image>
+        </ImageView>
+        <Label text="%shell.cargando" style="-fx-text-fill: #b0b0b0; -fx-font-size: 15px;"/>
+    </VBox>
+
+</StackPane>

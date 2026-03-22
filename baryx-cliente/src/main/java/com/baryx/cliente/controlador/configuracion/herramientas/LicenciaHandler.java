@@ -1,0 +1,251 @@
+/*
+ * Copyright (c) 2026 Baryx. Todos los derechos reservados.
+ * Licenciado bajo la Licencia de Uso de Software Baryx (basada en Elastic License 2.0).
+ * Consulte el archivo LICENSE en la raíz del proyecto para más información.
+ * Queda prohibido el uso, copia o distribución sin autorización expresa del titular.
+ */
+package com.baryx.cliente.controlador.configuracion.herramientas;
+
+import com.baryx.cliente.controlador.configuracion.GestorModales;
+import com.baryx.cliente.controlador.configuracion.ModalHerramienta;
+import com.baryx.cliente.servicio.LicenseServicio;
+import com.baryx.cliente.utilidad.IdiomaUtil;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+
+/**
+ * Handler del modal de Licencia del sistema.
+ *
+ * Muestra el estado de licencia real consultando LicenseServicio
+ * (tipo, plan, validez, equipo vinculado, días restantes)
+ * y el texto completo de la licencia de uso del software Baryx.
+ */
+public class LicenciaHandler implements ModalHerramienta {
+
+    private static final Logger logger = LoggerFactory.getLogger(LicenciaHandler.class);
+
+    private final GestorModales gestor;
+
+    public LicenciaHandler(GestorModales gestor) {
+        this.gestor = gestor;
+    }
+
+    @Override
+    public void abrir() {
+        logger.info("Abriendo información de Licencia");
+
+        // Obtener estado real de la licencia (desde caché, no bloquea)
+        var servicio = new LicenseServicio();
+        var resultado = servicio.leerCacheLocal();
+
+        VBox modal = new VBox(12);
+        modal.setMaxWidth(650);
+        modal.setMaxHeight(580);
+        modal.setPadding(new Insets(24));
+        modal.setStyle(GestorModales.ESTILO_MODAL_LUXURY);
+
+        // ─── Header ───
+        HBox header = gestor.crearHeaderModal(IdiomaUtil.obtener("ctrl.licencia.header"), "icono-cfg-licencia");
+
+        // ─── Card: Estado de Licencia (dinámico) ───
+        VBox cardLicencia = new VBox(6);
+        cardLicencia.setPadding(new Insets(12));
+        cardLicencia.setStyle("-fx-background-color: #1a1a1a; -fx-background-radius: 8; " +
+            "-fx-border-color: #2a2a2a; -fx-border-radius: 8;");
+
+        Label tEstado = new Label(IdiomaUtil.obtener("ctrl.licencia.estado"));
+        tEstado.setStyle("-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #d4af37;");
+
+        GridPane gridLic = new GridPane();
+        gridLic.setHgap(16);
+        gridLic.setVgap(4);
+
+        // Tipo/Plan dinámico
+        String tipoPlan = obtenerTipoPlan(resultado);
+        gridLic.addRow(0, gestor.crearInfoLabel(IdiomaUtil.obtener("ctrl.licencia.tipo")),
+            gestor.crearInfoValor(tipoPlan));
+
+        // Estado dinámico con color
+        String estadoTexto = obtenerEstadoTexto(resultado);
+        Label valEstado = gestor.crearInfoValor(estadoTexto);
+        valEstado.setStyle("-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: "
+            + obtenerColorEstado(resultado) + ";");
+        gridLic.addRow(1, gestor.crearInfoLabel(IdiomaUtil.obtener("ctrl.licencia.estado_label")), valEstado);
+
+        // Válida hasta
+        String validaHasta = obtenerValidaHasta(resultado);
+        gridLic.addRow(2, gestor.crearInfoLabel(IdiomaUtil.obtener("ctrl.licencia.valida")),
+            gestor.crearInfoValor(validaHasta));
+
+        // Días restantes
+        if (resultado.diasRestantes() >= 0) {
+            String diasTexto = MessageFormat.format(
+                    IdiomaUtil.obtener("ctrl.licencia.dias_restantes_valor"),
+                    resultado.diasRestantes());
+            Label valDias = gestor.crearInfoValor(diasTexto);
+            if (resultado.diasRestantes() <= LicenseServicio.DIAS_AVISO_RENOVACION) {
+                valDias.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 12px; -fx-font-weight: 600;");
+            }
+            gridLic.addRow(3, gestor.crearInfoLabel(IdiomaUtil.obtener("ctrl.licencia.dias_restantes")), valDias);
+        }
+
+        // Clave
+        String claveTexto = resultado.licenseKey() != null
+            ? enmascararKey(resultado.licenseKey())
+            : IdiomaUtil.obtener("ctrl.licencia.clave.sin_key");
+        gridLic.addRow(4, gestor.crearInfoLabel(IdiomaUtil.obtener("ctrl.licencia.clave")),
+            gestor.crearInfoValor(claveTexto));
+
+        // Equipo vinculado (device hash)
+        String deviceHash = servicio.obtenerDeviceHash();
+        String deviceCorto = deviceHash.length() > 12
+            ? deviceHash.substring(0, 12) + "..."
+            : deviceHash;
+        gridLic.addRow(5, gestor.crearInfoLabel(IdiomaUtil.obtener("ctrl.licencia.equipo")),
+            gestor.crearInfoValor(deviceCorto));
+
+        // Nota contextual
+        String nota = obtenerNotaContextual(resultado);
+        Label notaLic = new Label(nota);
+        notaLic.setStyle("-fx-text-fill: #666; -fx-font-size: 10px; -fx-padding: 4 0 0 0;");
+        notaLic.setWrapText(true);
+
+        cardLicencia.getChildren().addAll(tEstado, gridLic, notaLic);
+
+        // ─── Texto de la licencia ───
+        Label tTexto = new Label(IdiomaUtil.obtener("ctrl.licencia.texto"));
+        tTexto.setStyle("-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #999;");
+
+        TextArea areaLicencia = new TextArea(cargarTextoLicencia());
+        areaLicencia.setEditable(false);
+        areaLicencia.setWrapText(true);
+        areaLicencia.setStyle("-fx-control-inner-background: #0e0e0e; -fx-text-fill: #b0b0b0; " +
+            "-fx-font-size: 11px; -fx-font-family: 'Roboto Mono', 'Consolas', monospace;");
+        areaLicencia.setPrefHeight(200);
+        VBox.setVgrow(areaLicencia, Priority.ALWAYS);
+
+        modal.getChildren().addAll(
+            header, gestor.crearSeparador(), cardLicencia, tTexto, areaLicencia);
+        gestor.mostrarModal(modal);
+    }
+
+    // ==================== HELPERS PARA PRESENTACIÓN ====================
+
+    private String obtenerTipoPlan(LicenseServicio.ResultadoValidacion resultado) {
+        if (resultado.estado() == LicenseServicio.EstadoLicencia.TRIAL
+                || resultado.estado() == LicenseServicio.EstadoLicencia.TRIAL_EXPIRED) {
+            return IdiomaUtil.obtener("ctrl.licencia.tipo.trial");
+        }
+        if (resultado.plan() != null) {
+            return switch (resultado.plan().toLowerCase()) {
+                case "starter" -> "Starter";
+                case "pro" -> "Pro";
+                case "enterprise" -> "Enterprise";
+                default -> resultado.plan();
+            };
+        }
+        return IdiomaUtil.obtener("ctrl.licencia.tipo.desconocido");
+    }
+
+    private String obtenerEstadoTexto(LicenseServicio.ResultadoValidacion resultado) {
+        return switch (resultado.estado()) {
+            case VALID -> "\u25CF " + IdiomaUtil.obtener("ctrl.licencia.estado.activa");
+            case TRIAL -> "\u25CF " + IdiomaUtil.obtener("ctrl.licencia.estado.trial_activo");
+            case TRIAL_EXPIRED -> "\u25CF " + IdiomaUtil.obtener("ctrl.licencia.estado.trial_expirado");
+            case EXPIRED -> "\u25CF " + IdiomaUtil.obtener("ctrl.licencia.estado.expirada");
+            case REVOKED -> "\u25CF " + IdiomaUtil.obtener("ctrl.licencia.estado.revocada");
+            case OFFLINE -> "\u25CF " + IdiomaUtil.obtener("ctrl.licencia.estado.offline");
+            default -> "\u25CF " + IdiomaUtil.obtener("ctrl.licencia.estado.error");
+        };
+    }
+
+    private String obtenerColorEstado(LicenseServicio.ResultadoValidacion resultado) {
+        return switch (resultado.estado()) {
+            case VALID -> "#a8b991";
+            case TRIAL -> "#daa520";
+            case TRIAL_EXPIRED, EXPIRED, REVOKED -> "#ff6b6b";
+            case OFFLINE -> "#d4af37";
+            default -> "#ff9800";
+        };
+    }
+
+    private String obtenerValidaHasta(LicenseServicio.ResultadoValidacion resultado) {
+        if (resultado.expira() != null && !resultado.expira().isBlank()) {
+            try {
+                // Intentar formatear fecha ISO
+                var instant = java.time.Instant.parse(resultado.expira());
+                var fecha = instant.atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+                return fecha.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            } catch (Exception e) {
+                // Si es un LocalDate string (del trial)
+                try {
+                    var fecha = java.time.LocalDate.parse(resultado.expira());
+                    return fecha.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                } catch (Exception ignored) {
+                    return resultado.expira();
+                }
+            }
+        }
+        return IdiomaUtil.obtener("ctrl.licencia.valida.no_disponible");
+    }
+
+    private String obtenerNotaContextual(LicenseServicio.ResultadoValidacion resultado) {
+        return switch (resultado.estado()) {
+            case TRIAL -> IdiomaUtil.obtener("ctrl.licencia.nota.trial");
+            case TRIAL_EXPIRED -> IdiomaUtil.obtener("ctrl.licencia.nota.trial_expirado");
+            case EXPIRED -> IdiomaUtil.obtener("ctrl.licencia.nota.expirada");
+            case VALID -> IdiomaUtil.obtener("ctrl.licencia.nota.activa");
+            default -> IdiomaUtil.obtener("ctrl.licencia.nota");
+        };
+    }
+
+    private String enmascararKey(String key) {
+        if (key.length() <= 8) return key;
+        return key.substring(0, 8) + "****" + key.substring(key.length() - 4);
+    }
+
+    // ==================== UTILIDADES PRIVADAS ====================
+
+    private String cargarTextoLicencia() {
+        String[] rutas = {"LICENSE", "../LICENSE", "../../LICENSE"};
+        for (String ruta : rutas) {
+            try {
+                Path path = Paths.get(ruta);
+                if (Files.exists(path)) {
+                    return Files.readString(path, StandardCharsets.UTF_8);
+                }
+            } catch (Exception e) {
+                // Intentar siguiente ruta
+            }
+        }
+
+        try (var input = getClass().getResourceAsStream("/LICENSE")) {
+            if (input != null) {
+                return new String(input.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        } catch (Exception e) {
+            logger.debug("Licencia no encontrada en classpath: {}", e.getMessage());
+        }
+
+        return "LICENCIA DE USO DE SOFTWARE BARYX\n" +
+            "Basada en la Elastic License 2.0\n\n" +
+            "Titular de derechos: Dilan Acuña / Baryx\n" +
+            "Software: Baryx — Sistema POS para la gestión de comercios.\n" +
+            "Año de creación: 2026\n" +
+            "República de Colombia\n\n" +
+            "Este software tiene el código fuente disponible públicamente (\"source-available\"),\n" +
+            "lo que NO equivale a software libre ni de código abierto (\"open source\").\n\n" +
+            "Para más información, consulte el archivo LICENSE en la raíz del proyecto.";
+    }
+}

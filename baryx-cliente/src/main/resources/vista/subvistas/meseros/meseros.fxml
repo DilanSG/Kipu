@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.baryx.cliente.controlador.meseros.MeserosController"
+           styleClass="contenedor-centro">
+    
+    <VBox alignment="TOP_CENTER" spacing="32" styleClass="meseros-container">
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+        
+        <HBox alignment="CENTER" spacing="16">
+            <Label text="%meseros.titulo" styleClass="meseros-titulo"/>
+        </HBox>
+        
+        <HBox spacing="16" alignment="CENTER" maxWidth="600">
+            <TextField fx:id="campoBusqueda"
+                      promptText="%meseros.buscar.prompt"
+                      styleClass="campo-busqueda-meseros"
+                      prefHeight="48"
+                      onKeyReleased="#buscarMeseros"
+                      HBox.hgrow="ALWAYS"/>
+            
+            <Button onAction="#actualizarLista"
+                   styleClass="boton-actualizar-meseros"
+                   prefHeight="48"
+                   prefWidth="48">
+            <graphic>
+                <Region styleClass="icono-svg-pequeno, icono-actualizar"/>
+            </graphic>
+        </Button>
+        </HBox>
+        
+        <HBox alignment="CENTER" spacing="12">
+            <Label fx:id="labelContador" 
+                   text="%meseros.cargando" 
+                   styleClass="meseros-contador"/>
+        </HBox>
+        
+        <ScrollPane fitToWidth="true" 
+                   styleClass="scroll-meseros"
+                   VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER">
+                <padding>
+                    <Insets top="20" right="40" bottom="20" left="40"/>
+                </padding>
+                
+                <GridPane fx:id="gridMeseros"
+                         hgap="20"
+                         vgap="20"
+                         alignment="TOP_CENTER"
+                         styleClass="grid-meseros">
+                    
+                </GridPane>
+                
+                <VBox fx:id="placeholderVacio"
+                     alignment="CENTER"
+                     spacing="16"
+                     visible="false"
+                     managed="false"
+                     styleClass="placeholder-meseros">
+                    <padding>
+                        <Insets top="60" bottom="60"/>
+                    </padding>
+                    
+                    <Region styleClass="icono-svg-xl, icono-busqueda"/>
+                    <Label text="%meseros.vacio" 
+                           styleClass="placeholder-titulo"/>
+                    <Label text="%meseros.vacio.ayuda" 
+                           styleClass="placeholder-subtitulo"/>
+                </VBox>
+                
+            </HBox>
+        </ScrollPane>
+        
+    </VBox>
+    
+</StackPane>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.baryx.cliente.controlador.UsuariosController"
+           styleClass="contenedor-centro">
+    
+    <VBox fx:id="vistaLista" spacing="32">
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+        
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <Text text="%usuarios.titulo" styleClass="titulo-seccion"/>
+                <Label text="%usuarios.descripcion" 
+                       styleClass="subtitulo-seccion"/>
+            </VBox>
+            
+            <Button fx:id="botonNuevoUsuario"
+                    text="%usuarios.btn.nuevo"
+                    onAction="#mostrarFormularioNuevo"
+                    styleClass="boton-principal"
+                    prefHeight="48"
+                    prefWidth="200"/>
+        </HBox>
+        
+        <HBox spacing="32" alignment="CENTER_LEFT" styleClass="barra-busqueda">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+            
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="%usuarios.buscar" styleClass="label-campo"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <TextField fx:id="campoBusqueda"
+                              promptText="%usuarios.buscar.prompt"
+                              styleClass="campo-busqueda"
+                              prefHeight="40"
+                              HBox.hgrow="ALWAYS"/>
+                    <Button onAction="#buscarUsuarios"
+                           styleClass="boton-icono-buscar"
+                           prefHeight="40"
+                           prefWidth="40">
+                        <graphic>
+                            <Region styleClass="icono-buscar"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </VBox>
+            
+            <VBox spacing="4">
+                <Label text="%usuarios.filtro.rol" styleClass="label-campo"/>
+                <ComboBox fx:id="comboFiltroRol"
+                         promptText="%usuarios.filtro.prompt"
+                         styleClass="combo-filtro"
+                         prefWidth="200"
+                         prefHeight="40"/>
+            </VBox>
+        </HBox>
+        
+        <VBox VBox.vgrow="ALWAYS" styleClass="tabla-contenedor">
+            <TableView fx:id="tablaUsuarios" 
+                      styleClass="tabla-datos"
+                      VBox.vgrow="ALWAYS">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+                <columns>
+
+                    <TableColumn fx:id="columnaCodigo" 
+                               text="%usuarios.col.codigo"
+                               minWidth="80"
+                               maxWidth="100"
+                               styleClass="tabla-columna"/>
+                    <TableColumn fx:id="columnaNombreCompleto" 
+                               text="%usuarios.col.nombre"
+                               prefWidth="250"
+                               styleClass="tabla-columna"/>
+                    <TableColumn fx:id="columnaNombreUsuario" 
+                               text="%usuarios.col.usuario"
+                               prefWidth="180"
+                               styleClass="tabla-columna"/>
+                    <TableColumn fx:id="columnaRol" 
+                               text="%usuarios.col.rol"
+                               minWidth="120"
+                               maxWidth="150"
+                               styleClass="tabla-columna"/>
+                    <TableColumn fx:id="columnaActivo" 
+                               text="%usuarios.col.estado"
+                               minWidth="100"
+                               maxWidth="120"
+                               styleClass="tabla-columna"/>
+                    <TableColumn fx:id="columnaFechaCreacion" 
+                               text="%usuarios.col.fecha"
+                               minWidth="150"
+                               maxWidth="180"
+                               styleClass="tabla-columna"/>
+                    <TableColumn fx:id="columnaAcciones" 
+                               text="%usuarios.col.acciones"
+                               minWidth="180"
+                               maxWidth="220"
+                               styleClass="tabla-columna"/>
+                </columns>
+                
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="12">
+                        <Label text="%usuarios.vacio.titulo" 
+                              styleClass="texto-placeholder"/>
+                        <Label text="%usuarios.vacio.desc" 
+                              styleClass="texto-placeholder-secundario"/>
+                    </VBox>
+                </placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
+    
+    <VBox fx:id="vistaFormulario"
+          visible="false"
+          managed="false"
+          spacing="32"
+          styleClass="vista-formulario">
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+        
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <Text fx:id="tituloFormulario" 
+                     text="%usuarios.modal.titulo.nuevo"
+                     styleClass="titulo-seccion"/>
+                <Label text="%usuarios.modal.descripcion" 
+                       styleClass="subtitulo-seccion"/>
+            </VBox>
+        </HBox>
+        
+        <ScrollPane fitToWidth="true" 
+                   styleClass="scroll-formulario"
+                   VBox.vgrow="ALWAYS">
+            <VBox spacing="32" styleClass="contenedor-formulario">
+                <padding>
+                    <Insets right="8" bottom="24"/>
+                </padding>
+ 
+                <VBox spacing="16" styleClass="seccion-formulario">
+                    <Label text="%usuarios.modal.datos_personales" styleClass="label-seccion-form"/>
+                    
+                    <VBox spacing="8">
+                        <Label text="%usuarios.modal.nombre" styleClass="label-campo"/>
+                        <TextField fx:id="campoNombreCompleto"
+                                  promptText="%usuarios.modal.nombre.prompt"
+                                  styleClass="campo-texto"
+                                  prefHeight="48"/>
+                    </VBox>
+                    
+                    <VBox spacing="8">
+                        <Label text="%usuarios.modal.genero" styleClass="label-campo"/>
+                        <ComboBox fx:id="comboGenero"
+                                 promptText="%usuarios.modal.genero.prompt"
+                                 styleClass="combo-campo"
+                                 prefWidth="Infinity"
+                                 prefHeight="48"/>
+                        <Label text="%usuarios.modal.genero.info"
+                              styleClass="hint-campo"/>
+                    </VBox>
+                </VBox>
+                
+                <VBox spacing="16" styleClass="seccion-formulario">
+                    <Label text="%usuarios.modal.credenciales" styleClass="label-seccion-form"/>
+                    
+                    <VBox spacing="8">
+                        <Label text="%usuarios.modal.rol" styleClass="label-campo"/>
+                        <ComboBox fx:id="comboRol"
+                                 promptText="%usuarios.modal.rol.prompt"
+                                 styleClass="combo-campo"
+                                 prefWidth="Infinity"
+                                 prefHeight="48"
+                                 onAction="#cambioRol"/>
+                        <Label text="%usuarios.modal.rol.info"
+                              styleClass="hint-campo"/>
+                    </VBox>
+                    
+                    <VBox fx:id="contenedorCodigo" spacing="8" visible="false" managed="false">
+                        <Label text="%usuarios.modal.codigo" styleClass="label-campo"/>
+                        <TextField fx:id="campoCodigo"
+                                  promptText="%usuarios.modal.codigo.prompt"
+                                  styleClass="campo-texto-codigo"
+                                  prefHeight="72"
+                                  maxWidth="200"
+                                  alignment="CENTER"
+                                  style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                        <Label text="%usuarios.modal.codigo.info"
+                              styleClass="hint-campo"/>
+                    </VBox>
+                    
+                    <VBox fx:id="contenedorPin" spacing="8" visible="false" managed="false">
+                        <Label text="%usuarios.modal.pin" styleClass="label-campo"/>
+                        <PasswordField fx:id="campoPin"
+                                      promptText="%usuarios.modal.pin.prompt"
+                                      styleClass="campo-texto-pin"
+                                      prefHeight="72"
+                                      maxWidth="250"
+                                      alignment="CENTER"
+                                      style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                        <Label text="%usuarios.modal.pin.info"
+                              styleClass="hint-campo"/>
+                    </VBox>
+                    
+                    <VBox fx:id="contenedorNombreUsuario" spacing="8" visible="false" managed="false">
+                        <Label text="%usuarios.modal.usuario" styleClass="label-campo"/>
+                        <TextField fx:id="campoNombreUsuario"
+                                  promptText="%usuarios.modal.usuario.prompt"
+                                  styleClass="campo-texto"
+                                  prefHeight="48"/>
+                        <Label text="%usuarios.modal.usuario.info"
+                              styleClass="hint-campo"/>
+                    </VBox>
+                    
+                    <VBox fx:id="contenedorContrasena" spacing="8" visible="false" managed="false">
+                        <Label text="%usuarios.modal.contrasena" styleClass="label-campo"/>
+                        <PasswordField fx:id="campoContrasena"
+                                      promptText="%usuarios.modal.contrasena.prompt"
+                                      styleClass="campo-texto"
+                                      prefHeight="48"/>
+                        <Label text="%usuarios.modal.contrasena.info"
+                              styleClass="hint-campo"/>
+                    </VBox>
+                </VBox>
+                
+                <VBox spacing="16" styleClass="seccion-formulario">
+                    <Label text="%usuarios.modal.estado" styleClass="label-seccion-form"/>
+                    
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="checkActivo"
+                                 text="%usuarios.modal.activo"
+                                 selected="true"
+                                 styleClass="checkbox-campo"/>
+                        <Label text="%usuarios.modal.activo.info"
+                              styleClass="hint-campo"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+        
+        <VBox fx:id="contenedorErrorForm"
+             visible="false"
+             managed="false"
+             styleClass="contenedor-error"
+             spacing="8">
+            <padding>
+                <Insets top="12" right="16" bottom="12" left="16"/>
+            </padding>
+            <Label fx:id="labelErrorForm"
+                  text="%usuarios.modal.error"
+                  styleClass="texto-error"
+                  wrapText="true"/>
+        </VBox>
+        
+        <HBox spacing="16" alignment="CENTER_RIGHT">
+            <Button text="%usuarios.modal.btn.cancelar"
+                   onAction="#cerrarFormulario"
+                   styleClass="boton-cancelar"
+                   prefHeight="52"
+                   prefWidth="160"/>
+            
+            <Button fx:id="botonGuardar"
+                   text="%usuarios.modal.btn.guardar"
+                   onAction="#guardarUsuario"
+                   styleClass="boton-principal"
+                   prefHeight="52"
+                   prefWidth="200"/>
+                   
+            <HBox fx:id="contenedorCargaForm"
+                 visible="false"
+                 managed="false"
+                 spacing="12"
+                 alignment="CENTER">
+                <ProgressIndicator styleClass="indicador-carga-pequeño"
+                                  prefWidth="32"
+                                  prefHeight="32"/>
+                <Label fx:id="labelCargaForm"
+                      text="%usuarios.modal.btn.guardando"
+                      styleClass="texto-carga"/>
+            </HBox>
+        </HBox>
+    </VBox>
+    
+    <StackPane fx:id="contenedorModal" 
+               visible="false" 
+               managed="false"
+               style="-fx-background-color: rgba(0,0,0,0.7);"
+               alignment="CENTER">
+        <StackPane fx:id="contenidoModalInterno" 
+                   maxWidth="600" 
+                   maxHeight="500"/>
+    </StackPane>
+    
+</StackPane>

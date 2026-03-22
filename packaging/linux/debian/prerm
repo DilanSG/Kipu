@@ -1,0 +1,22 @@
+#!/bin/bash
+# Pre-remocion de Baryx
+# Se ejecuta automaticamente antes de desinstalar el paquete .deb
+
+set -e
+
+# Remover symlinks
+rm -f /usr/local/bin/baryx 2>/dev/null || true
+rm -f /usr/local/bin/baryx-cliente 2>/dev/null || true
+rm -f /usr/local/bin/baryx-servidor 2>/dev/null || true
+
+# Detener servidor si esta corriendo
+if command -v systemctl &> /dev/null; then
+    systemctl stop baryx-servidor 2>/dev/null || true
+    systemctl disable baryx-servidor 2>/dev/null || true
+fi
+
+# Intentar matar procesos de Baryx que sigan corriendo
+pkill -f "BaryxServidor" 2>/dev/null || true
+pkill -f "baryx-servidor" 2>/dev/null || true
+
+echo "Baryx desinstalado."

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.baryx.cliente.controlador.productos.InventarioControlController"
+           styleClass="contenedor-centro">
+
+    <VBox alignment="TOP_CENTER" spacing="16">
+        <padding>
+            <Insets top="24" right="32" bottom="24" left="32"/>
+        </padding>
+
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="barra-busqueda">
+            <padding>
+                <Insets top="8" right="16" bottom="8" left="16"/>
+            </padding>
+
+            <Label text="%inventario.titulo" styleClass="productos-titulo"
+                   style="-fx-font-size: 18px;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <HBox alignment="CENTER_LEFT" spacing="0" styleClass="inv-search-wrapper">
+                <TextField fx:id="campoBusqueda"
+                          promptText="%inventario.buscar.prompt"
+                          styleClass="inv-search-input"
+                          prefHeight="32"
+                          prefWidth="200"/>
+                <Button styleClass="inv-btn-buscar">
+                    <graphic>
+                        <Region styleClass="icono-buscar"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <ComboBox fx:id="comboFiltroCategoria"
+                     promptText="%inventario.filtro.prompt"
+                     styleClass="combo-filtro, inv-combo-filtro"
+                     prefWidth="160"/>
+
+            <Label text="⟳"
+                   onMouseClicked="#actualizarInventario"
+                   styleClass="inv-icono-refrescar"/>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" 
+                    style="-fx-background-color: transparent; -fx-background: transparent;"
+                    VBox.vgrow="ALWAYS" 
+                    vbarPolicy="AS_NEEDED" 
+                    hbarPolicy="NEVER" 
+                    styleClass="edge-to-edge">
+            <content>
+                <VBox fx:id="contenedorInventario" spacing="20" alignment="TOP_CENTER" style="-fx-padding: 8;">
+                </VBox>
+            </content>
+        </ScrollPane>
+    </VBox>
+
+    <HBox alignment="BOTTOM_LEFT" pickOnBounds="false" mouseTransparent="true">
+        <padding>
+            <Insets bottom="16" left="30"/>
+        </padding>
+        <VBox alignment="BOTTOM_LEFT" spacing="2">
+            <Label text="%productos.info" style="-fx-text-fill: #ffefbb7b; -fx-font-weight: bold; -fx-font-size: 11px;"/>
+            <Label text="%inventario.info"
+                   style="-fx-text-fill: #ffefbb; -fx-font-size: 13px; -fx-font-style: italic;"/>
+        </VBox>
+    </HBox>
+
+    <StackPane fx:id="contenedorModal" visible="false" managed="false" 
+               style="-fx-background-color: rgba(0,0,0,0.7);">
+        <StackPane fx:id="contenidoModalInterno" maxWidth="-Infinity" maxHeight="-Infinity"/>
+    </StackPane>
+</StackPane>
