@@ -90,6 +90,9 @@ jobs:
             printf 'license.key=\nlicense.type=trial\n' > "$PROPS"
           fi
 
+      - name: Sync POM version with tag
+        run: mvn versions:set -DnewVersion="${{ steps.get_version.outputs.version }}" -DgenerateBackupPoms=false -q
+
       - name: Build JARs
         env:
           BARYX_ATLAS_URI: ${{ secrets.BARYX_ATLAS_URI }}
