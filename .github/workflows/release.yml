@@ -200,6 +200,11 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup --yes
 
+      - name: Download JavaFX native dependencies
+        shell: pwsh
+        run: |
+          mvn dependency:get -Dartifact=org.openjfx:javafx-graphics:21.0.5:jar:win -q
+
       - name: Package Windows (.exe)
         shell: pwsh
         env:

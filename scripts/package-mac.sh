@@ -43,6 +43,13 @@ else
     APP_VERSION=$(echo "$APP_VERSION" | tail -1 | tr -d '[:space:]')
 fi
 
+# macOS jpackage requiere que el primer número de versión sea >= 1.
+# Si la versión empieza con 0 (ej: 0.0.1), se usa 1.0.1 solo para jpackage.
+JPACKAGE_VERSION="$APP_VERSION"
+if [[ "$APP_VERSION" =~ ^0\. ]]; then
+    JPACKAGE_VERSION="1${APP_VERSION#0}"
+fi
+
 APP_VENDOR="Baryx"
 APP_COPYRIGHT="Copyright (c) 2026 Baryx"
 APP_DESCRIPTION_SERVIDOR="Servidor REST API para Software POS Baryx"
@@ -132,7 +139,7 @@ empaquetar_servidor_portable() {
     jpackage \
         --type app-image \
         --name "${NOMBRE_EJECUTABLE_SERVIDOR}" \
-        --app-version "$APP_VERSION" \
+        --app-version "$JPACKAGE_VERSION" \
         --vendor "$APP_VENDOR" \
         --copyright "$APP_COPYRIGHT" \
         --description "$APP_DESCRIPTION_SERVIDOR" \
@@ -169,7 +176,7 @@ empaquetar_cliente_instalador() {
     jpackage \
         --type "${TIPO}" \
         --name "Baryx" \
-        --app-version "$APP_VERSION" \
+        --app-version "$JPACKAGE_VERSION" \
         --vendor "$APP_VENDOR" \
         --copyright "$APP_COPYRIGHT" \
         --description "$APP_DESCRIPTION_CLIENTE" \
@@ -188,7 +195,7 @@ empaquetar_cliente_instalador() {
         2>&1 | while read -r line; do echo "    $line"; done
 
     local OUTPUT
-    OUTPUT=$(ls "$DIST_DIR/Baryx-${APP_VERSION}"*.${TIPO} 2>/dev/null | head -1)
+    OUTPUT=$(ls "$DIST_DIR/Baryx-${JPACKAGE_VERSION}"*.${TIPO} 2>/dev/null | head -1)
     if [ -f "$OUTPUT" ]; then
         local TAMANO
         TAMANO=$(du -sh "$OUTPUT" | cut -f1)
