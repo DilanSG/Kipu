@@ -203,7 +203,11 @@ jobs:
       - name: Download JavaFX native dependencies
         shell: pwsh
         run: |
-          mvn dependency:get -Dartifact=org.openjfx:javafx-graphics:21.0.5:jar:win -q
+          $destDir = "$env:USERPROFILE\.m2\repository\org\openjfx\javafx-graphics\21.0.5"
+          New-Item -ItemType Directory -Force -Path $destDir | Out-Null
+          $uri = "https://repo.maven.apache.org/maven2/org/openjfx/javafx-graphics/21.0.5/javafx-graphics-21.0.5-win.jar"
+          Invoke-WebRequest -Uri $uri -OutFile "$destDir\javafx-graphics-21.0.5-win.jar"
+          Write-Host "JavaFX graphics JAR descargado en $destDir"
 
       - name: Package Windows (.exe)
         shell: pwsh
