@@ -507,37 +507,50 @@ function Build-ClienteConInnoSetup {
     Write-Ok "App-image del cliente generada"
 
     # ── Copiar DLLs nativos de JavaFX al runtime ──
-    Write-Step "  Copiando DLLs nativos de JavaFX al runtime..."
-
-    $javafxGraphicsWinJar = Join-Path $env:USERPROFILE ".m2\repository\org\openjfx\javafx-graphics\$JAVAFX_VERSION\javafx-graphics-$JAVAFX_VERSION-win.jar"
-
-    if (-not (Test-Path $javafxGraphicsWinJar)) {
-        Write-Err "No se encontro javafx-graphics-$JAVAFX_VERSION-win.jar en el repositorio Maven local"
-        Write-Err "  Ruta esperada: $javafxGraphicsWinJar"
-        Write-Err "  Ejecute '.\scripts\build.ps1 package' primero para descargar las dependencias"
-        exit 1
-    }
-
-    $dllTempDir = Join-Path $TEMP_DIR "javafx-dlls"
-    New-Item -ItemType Directory -Force -Path $dllTempDir | Out-Null
-
-    Push-Location $dllTempDir
-    & jar xf $javafxGraphicsWinJar
-    Pop-Location
+    # El fat JAR ya incluye las DLLs nativas de Windows gracias al perfil
+    # Maven "multiplataforma" (javafx-graphics:win, javafx-base:win, etc.).
+    # Las extraemos al runtime\bin\ para que java.library.path las encuentre
+    # directamente sin necesidad de extraccion temporal en tiempo de ejecucion.
+    Write-Step "  Extrayendo DLLs nativos de JavaFX del fat JAR al runtime..."
 
     $runtimeBinDir = Join-Path $appImagePath "runtime\bin"
-    $dllFiles = Get-ChildItem $dllTempDir -Filter "*.dll"
+    $fatJar = Join-Path $TEMP_DIR "cliente\baryx-cliente-$APP_VERSION.jar"
 
-    if ($dllFiles.Count -eq 0) {
-        Write-Err "No se extrajeron DLLs nativos de javafx-graphics-$JAVAFX_VERSION-win.jar"
+    if (-not (Test-Path $fatJar)) {
+        Write-Err "No se encontro el fat JAR: $fatJar"
         exit 1
     }
 
-    foreach ($dll in $dllFiles) {
-        Copy-Item $dll.FullName -Destination $runtimeBinDir -Force
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($fatJar)
+    $dllCount = 0
+    try {
+        foreach ($entry in $zip.Entries) {
+            # Solo DLLs en la raiz del JAR (nativos de JavaFX, no subdirectorios)
+            if ($entry.Name -like "*.dll" -and $entry.FullName -eq $entry.Name) {
+                $destPath = Join-Path $runtimeBinDir $entry.Name
+                $stream = $entry.Open()
+                $fileStream = [System.IO.File]::Create($destPath)
+                try {
+                    $stream.CopyTo($fileStream)
+                } finally {
+                    $fileStream.Dispose()
+                    $stream.Dispose()
+                }
+                $dllCount++
+            }
+        }
+    } finally {
+        $zip.Dispose()
     }
 
-    Write-Ok "$($dllFiles.Count) DLLs nativos de JavaFX copiados a runtime\bin\"
+    if ($dllCount -eq 0) {
+        Write-Err "No se encontraron DLLs nativos de JavaFX en el fat JAR"
+        Write-Err "  Verifique que la compilacion use el perfil Maven '-Pmultiplataforma'"
+        exit 1
+    }
+
+    Write-Ok "$dllCount DLLs nativos de JavaFX extraidos del fat JAR a runtime\bin\"
 
     # ── Copiar script de consola para diagnostico ──
     Write-Step "  Copiando script de consola para diagnostico..."

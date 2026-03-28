@@ -1,9 +1,7 @@
-/*
- * Copyright (c) 2026 Baryx. Todos los derechos reservados.
+/*Copyright (c) 2026 Baryx. Todos los derechos reservados.
  * Licenciado bajo la Licencia de Uso de Software Baryx (basada en Elastic License 2.0).
  * Consulte el archivo LICENSE en la raíz del proyecto para más información.
- * Queda prohibido el uso, copia o distribución sin autorización expresa del titular.
- */
+ * Queda prohibido el uso, copia o distribución sin autorización expresa del titular.*/
 package com.baryx.cliente.controlador;
 
 import com.baryx.common.dto.UsuarioDto;
@@ -28,11 +26,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import com.baryx.cliente.componente.BordeInteractivoModal;
 import com.baryx.cliente.componente.MotorAnimaciones;
 import com.baryx.cliente.utilidad.NotificacionUtil;
@@ -44,30 +40,23 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.util.Duration;
 
-/**
- * Controlador de la vista de gestión de usuarios.
- * 
- * OPTIMIZADO: Usa ValidacionUtil para validaciones, FechaUtil para formato de fechas,
- * Constantes para valores fijos, y excepciones del dominio.
- * 
- * Proporciona CRUD completo de usuarios con soporte para:
+/*Controlador que proporciona CRUD completo de usuarios con soporte para:
  * - Usuarios ADMIN con usuario/contraseña
  * - Usuarios CAJERO/MESERO con código de empleado y PIN
  * - Búsqueda y filtrado de usuarios
  * - Activación/desactivación de usuarios
- * 
- * Solo accesible por usuarios con rol ADMIN.
- */
-public class UsuariosController {
+ * Solo accesible por usuarios con rol ADMIN. */
+public class UsuariosController implements SubvistaController {
     
     private static final Logger logger = LoggerFactory.getLogger(UsuariosController.class);
-    
-    // Servicio
+    private MenuPrincipalController menuPrincipal;
     private final UsuarioServicio usuarioServicio;
-    
-    // Componentes de la tabla
+    private StackPane currentModalRoot;
+    private BordeInteractivoModal bordeModal;
+    private ObservableList<UsuarioDto> listaUsuarios;
+    private UsuarioDto usuarioEnEdicion;
+        
     @FXML private TableView<UsuarioDto> tablaUsuarios;
-    // Removed columnaId
     @FXML private TableColumn<UsuarioDto, String> columnaCodigo;
     @FXML private TableColumn<UsuarioDto, String> columnaNombreCompleto;
     @FXML private TableColumn<UsuarioDto, String> columnaNombreUsuario;
@@ -75,25 +64,13 @@ public class UsuariosController {
     @FXML private TableColumn<UsuarioDto, String> columnaActivo;
     @FXML private TableColumn<UsuarioDto, String> columnaFechaCreacion;
     @FXML private TableColumn<UsuarioDto, Void> columnaAcciones;
-    
-    // Componentes de búsqueda y filtros
     @FXML private TextField campoBusqueda;
     @FXML private ComboBox<String> comboFiltroRol;
     @FXML private Button botonNuevoUsuario;
-    
-    // Subvistas
     @FXML private VBox vistaLista;
     @FXML private VBox vistaFormulario;
-    
-    // Modal Overlay
     @FXML private StackPane contenedorModal;
     @FXML private StackPane contenidoModalInterno;
-    
-    // Variable para referencia al modal actual
-    private StackPane currentModalRoot;
-    private BordeInteractivoModal bordeModal;
-    
-    // Componentes del formulario
     @FXML private Text tituloFormulario;
     @FXML private TextField campoNombreCompleto;
     @FXML private ComboBox<String> comboGenero;
@@ -113,23 +90,17 @@ public class UsuariosController {
     @FXML private HBox contenedorCargaForm;
     @FXML private Label labelCargaForm;
     
-    // Lista de datos
-    private ObservableList<UsuarioDto> listaUsuarios;
-    private UsuarioDto usuarioEnEdicion;
-    
-    /**
-     * Constructor del controlador.
-     * Inicializa el servicio de usuarios.
-     */
+    // Constructor que inicializa el servicio de usuarios y la lista observable para la tabla.
     public UsuariosController() {
         this.usuarioServicio = new UsuarioServicio();
         this.listaUsuarios = FXCollections.observableArrayList();
     }
     
-    /**
-     * Inicialización del controlador.
-     * Configura la tabla, filtros y carga los datos iniciales.
-     */
+    @Override
+    public void setMenuPrincipal(MenuPrincipalController menuPrincipal) {
+        this.menuPrincipal = menuPrincipal;
+    }
+    
     @FXML
     public void initialize() {
         logger.info("Inicializando vista de usuarios");

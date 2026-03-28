@@ -1,9 +1,7 @@
-/*
- * Copyright (c) 2026 Baryx. Todos los derechos reservados.
+/*Copyright (c) 2026 Baryx. Todos los derechos reservados.
  * Licenciado bajo la Licencia de Uso de Software Baryx (basada en Elastic License 2.0).
  * Consulte el archivo LICENSE en la raíz del proyecto para más información.
- * Queda prohibido el uso, copia o distribución sin autorización expresa del titular.
- */
+ * Queda prohibido el uso, copia o distribución sin autorización expresa del titular. */
 package com.baryx.cliente.controlador;
 
 import com.baryx.cliente.utilidad.IdiomaUtil;
@@ -18,15 +16,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 
-/**
- * Controlador raíz (shell) de la aplicación.
- * Mantiene una única Scene durante toda la vida de la aplicación y
- * carga las vistas principales (login, menú) como hijos dentro del contenedor.
- * Esto elimina los cambios de Scene que causan parpadeos visuales.
- */
+// Controlador raíz (shell) de la aplicación. Mantiene una única Scene durante toda la vida de la aplicación y carga las vistas principales como hijos dentro del contenedor.
 public class ShellController {
 
     private static final Logger logger = LoggerFactory.getLogger(ShellController.class);
@@ -35,6 +27,10 @@ public class ShellController {
 
     @FXML private StackPane contenedorRaiz;
     @FXML private VBox splash;
+
+    // Referencias a banners activos para evitar duplicados
+    private javafx.scene.Node bannerActualizacionActual;
+    private javafx.scene.Node bannerRenovacionActual;
 
     @FXML
     public void initialize() {
@@ -100,6 +96,11 @@ public class ShellController {
      */
     public void mostrarBannerActualizacion(UpdateCheckServicio.UpdateInfo info, HostServices hostServices) {
         try {
+            // Remover banner anterior si existe (evitar duplicados)
+            if (bannerActualizacionActual != null) {
+                contenedorRaiz.getChildren().remove(bannerActualizacionActual);
+            }
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/update-banner.fxml"));
             javafx.scene.layout.HBox banner = loader.load();
 
@@ -109,6 +110,7 @@ public class ShellController {
             // Anclar al top del StackPane raíz, encima de todo el contenido
             StackPane.setAlignment(banner, javafx.geometry.Pos.TOP_CENTER);
             contenedorRaiz.getChildren().add(banner);
+            bannerActualizacionActual = banner;
 
             logger.info("[Update] Banner mostrado — version remota: {}", info.versionRemota());
         } catch (IOException e) {
@@ -159,41 +161,26 @@ public class ShellController {
      * No bloquea la app, solo informa al usuario.
      */
     public void mostrarBannerRenovacion(int diasRestantes, HostServices hostServices) {
-        javafx.scene.layout.HBox banner = new javafx.scene.layout.HBox(12);
-        banner.setAlignment(javafx.geometry.Pos.CENTER);
-        banner.setStyle("-fx-background-color: linear-gradient(to right, #8b6914, #d4af37); "
-                + "-fx-padding: 10 20; -fx-background-radius: 0 0 8 8;");
-        banner.setMaxHeight(44);
-
-        javafx.scene.control.Label icono = new javafx.scene.control.Label("\u26A0");
-        icono.setStyle("-fx-text-fill: #000; -fx-font-size: 16px;");
-
-        String textoAviso = java.text.MessageFormat.format(
-                com.baryx.cliente.utilidad.IdiomaUtil.obtener("ctrl.licencia.aviso_renovacion"),
-                diasRestantes);
-        javafx.scene.control.Label texto = new javafx.scene.control.Label(textoAviso);
-        texto.setStyle("-fx-text-fill: #000; -fx-font-size: 13px; -fx-font-weight: 600;");
-
-        javafx.scene.control.Button btnRenovar = new javafx.scene.control.Button(
-                com.baryx.cliente.utilidad.IdiomaUtil.obtener("ctrl.licencia.dialog.renovar"));
-        btnRenovar.setStyle("-fx-background-color: #000; -fx-text-fill: #d4af37; "
-                + "-fx-font-size: 12px; -fx-font-weight: 700; -fx-background-radius: 4; -fx-cursor: hand;");
-        btnRenovar.setOnAction(e -> {
-            if (hostServices != null) {
-                try { hostServices.showDocument(LicenseServicio.getUrlTienda()); }
-                catch (Exception ex) { logger.warn("[License] No se pudo abrir navegador"); }
+        try {
+            // Remover banner anterior si existe (evitar duplicados)
+            if (bannerRenovacionActual != null) {
+                contenedorRaiz.getChildren().remove(bannerRenovacionActual);
             }
-        });
 
-        javafx.scene.control.Button btnCerrar = new javafx.scene.control.Button("\u2715");
-        btnCerrar.setStyle("-fx-background-color: transparent; -fx-text-fill: #000; "
-                + "-fx-font-size: 14px; -fx-cursor: hand;");
-        btnCerrar.setOnAction(e -> contenedorRaiz.getChildren().remove(banner));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/renewal-banner.fxml"));
+            javafx.scene.layout.HBox banner = loader.load();
 
-        banner.getChildren().addAll(icono, texto, btnRenovar, btnCerrar);
-        StackPane.setAlignment(banner, javafx.geometry.Pos.TOP_CENTER);
-        contenedorRaiz.getChildren().add(banner);
-        logger.info("[License] Banner de renovación mostrado — {} días restantes", diasRestantes);
+            RenewalBannerController ctrl = loader.getController();
+            ctrl.inicializar(diasRestantes, hostServices);
+
+            StackPane.setAlignment(banner, javafx.geometry.Pos.TOP_CENTER);
+            contenedorRaiz.getChildren().add(banner);
+            bannerRenovacionActual = banner;
+
+            logger.info("[License] Banner de renovación mostrado — {} días restantes", diasRestantes);
+        } catch (IOException e) {
+            logger.warn("[License] No se pudo cargar renewal-banner.fxml: {}", e.getMessage());
+        }
     }
 
     // ------------------------------------------------------------------

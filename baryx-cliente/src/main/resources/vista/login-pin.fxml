@@ -13,8 +13,7 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:id="contenedorPrincipal"
            fx:controller="com.baryx.cliente.controlador.LoginPinController"
-           style="-fx-background-color: #0a0a0a;"
-           prefHeight="800" prefWidth="1200">
+           style="-fx-background-color: #0a0a0a;">
 
     <FondoAnimado fx:id="fondoAnimado"/>
 

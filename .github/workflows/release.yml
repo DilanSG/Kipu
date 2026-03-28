@@ -97,7 +97,7 @@ jobs:
       - name: Build JARs
         env:
           BARYX_ATLAS_URI: ${{ secrets.BARYX_ATLAS_URI }}
-        run: mvn clean package -DskipTests -q
+        run: mvn clean package -DskipTests -q -Pmultiplataforma
 
       - name: Upload JARs for other jobs
         uses: actions/upload-artifact@v4
@@ -178,15 +178,6 @@ jobs:
 
       - name: Install Inno Setup
         run: choco install innosetup --yes
-
-      - name: Download JavaFX native dependencies
-        shell: pwsh
-        run: |
-          $destDir = "$env:USERPROFILE\.m2\repository\org\openjfx\javafx-graphics\21.0.5"
-          New-Item -ItemType Directory -Force -Path $destDir | Out-Null
-          $uri = "https://repo.maven.apache.org/maven2/org/openjfx/javafx-graphics/21.0.5/javafx-graphics-21.0.5-win.jar"
-          Invoke-WebRequest -Uri $uri -OutFile "$destDir\javafx-graphics-21.0.5-win.jar"
-          Write-Host "JavaFX graphics JAR descargado en $destDir"
 
       - name: Package Windows (.exe)
         shell: pwsh

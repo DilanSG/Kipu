@@ -261,8 +261,8 @@ public class BaryxClienteApplication extends Application {
         javafx.scene.Group grupo = new javafx.scene.Group(raiz);
         javafx.scene.layout.StackPane contenedorEscalado = new javafx.scene.layout.StackPane(grupo);
         contenedorEscalado.setStyle("-fx-background-color: #0a0a0a;");
-        // Alinear al origen (0,0) para que el escalado llene sin desplazamiento
-        javafx.scene.layout.StackPane.setAlignment(grupo, javafx.geometry.Pos.TOP_LEFT);
+        // Centrar el contenido para distribuir barras simétricamente en ratios no-16:9
+        javafx.scene.layout.StackPane.setAlignment(grupo, javafx.geometry.Pos.CENTER);
 
         Scene escena = new Scene(contenedorEscalado);
         escena.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
@@ -287,18 +287,25 @@ public class BaryxClienteApplication extends Application {
         
         escenarioPrincipal.show();
 
-        // 3. Escalado completo: la UI llena toda la pantalla sin dejar espacios vacíos
+        // 3. Escalado uniforme: la UI mantiene proporciones y se adapta a cualquier resolución
         aplicarEscalado(raiz, escena);
+
+        // 4. Clases CSS de resolución: permiten overrides por breakpoint sin tocar estilos base
+        aplicarClaseResolucion(contenedorEscalado, escena);
 
         // Cargar login dentro del shell (reemplaza el splash)
         com.baryx.cliente.controlador.ShellController.getInstancia()
                 .cargarVista("/vista/login-pin.fxml");
     }
 
+    // Tolerancia máxima de estiramiento por eje (8% = imperceptible, evita barras negras grandes)
+    private static final double TOLERANCIA_ESCALADO = 0.08;
+
     /**
-     * Escala la UI diseñada en 1920x1080 para llenar completamente la pantalla real.
-     * Cada eje se escala de forma independiente: scaleX = anchoReal/1920, scaleY = altoReal/1080.
-     * Esto garantiza que no queden barras negras y que el contenido aproveche toda la resolución.
+     * Escala la UI diseñada en 1920x1080 para adaptarse a la pantalla real.
+     * Usa escalado uniforme (mismo factor para ambos ejes) con tolerancia del 8%
+     * para reducir barras negras sin distorsionar elementos visiblemente.
+     * En ratios 16:9 el resultado es idéntico al escalado independiente.
      */
     private void aplicarEscalado(Parent raiz, Scene escena) {
         javafx.scene.transform.Scale escala = new javafx.scene.transform.Scale(1, 1);
@@ -309,8 +316,13 @@ public class BaryxClienteApplication extends Application {
             double altoReal = escena.getHeight();
             if (anchoReal <= 0 || altoReal <= 0) return;
 
-            escala.setX(anchoReal / ANCHO_DISENO);
-            escala.setY(altoReal / ALTO_DISENO);
+            double factorX = anchoReal / ANCHO_DISENO;
+            double factorY = altoReal / ALTO_DISENO;
+            double factorBase = Math.min(factorX, factorY);
+
+            // Permitir leve stretch (hasta TOLERANCIA_ESCALADO) para reducir barras negras
+            escala.setX(Math.min(factorX, factorBase * (1 + TOLERANCIA_ESCALADO)));
+            escala.setY(Math.min(factorY, factorBase * (1 + TOLERANCIA_ESCALADO)));
         };
 
         escena.widthProperty().addListener((obs, old, nuevo) -> recalcularEscala.run());
@@ -318,6 +330,40 @@ public class BaryxClienteApplication extends Application {
 
         // Aplicar escalado inicial
         Platform.runLater(recalcularEscala);
+    }
+
+    /**
+     * Agrega clases CSS al contenedor según la resolución real de la pantalla.
+     * Permite overrides CSS por breakpoint sin modificar los estilos base.
+     * Clases de ancho: res-4k, res-qhd, res-fhd, res-hd, res-tablet, res-small.
+     * Clases de ratio: ratio-wide (16:9+), ratio-standard (16:10), ratio-classic (4:3, 5:4).
+     */
+    private void aplicarClaseResolucion(javafx.scene.layout.StackPane contenedor, Scene escena) {
+        Runnable actualizar = () -> {
+            double ancho = escena.getWidth();
+            double alto = escena.getHeight();
+            if (ancho <= 0 || alto <= 0) return;
+
+            contenedor.getStyleClass().removeIf(c -> c.startsWith("res-") || c.startsWith("ratio-"));
+
+            // Clase por ancho de pantalla
+            if (ancho >= 3840)      contenedor.getStyleClass().add("res-4k");
+            else if (ancho >= 2560) contenedor.getStyleClass().add("res-qhd");
+            else if (ancho >= 1920) contenedor.getStyleClass().add("res-fhd");
+            else if (ancho >= 1366) contenedor.getStyleClass().add("res-hd");
+            else if (ancho >= 1024) contenedor.getStyleClass().add("res-tablet");
+            else                    contenedor.getStyleClass().add("res-small");
+
+            // Clase por ratio de aspecto
+            double ratio = ancho / alto;
+            if (ratio >= 1.7)       contenedor.getStyleClass().add("ratio-wide");
+            else if (ratio >= 1.5)  contenedor.getStyleClass().add("ratio-standard");
+            else                    contenedor.getStyleClass().add("ratio-classic");
+        };
+
+        escena.widthProperty().addListener((obs, old, nuevo) -> actualizar.run());
+        escena.heightProperty().addListener((obs, old, nuevo) -> actualizar.run());
+        Platform.runLater(actualizar);
     }
 
     @Override

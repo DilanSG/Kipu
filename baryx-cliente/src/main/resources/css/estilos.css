@@ -4236,8 +4236,6 @@
     -fx-border-color: #d4af37;
     -fx-border-width: 0 0 2px 0;
     -fx-effect: dropshadow(gaussian, rgba(212, 175, 55, 0.4), 12, 0.3, 0, 4);
-    -fx-pref-width: 1920px;
-    -fx-max-width: 1920px;
     -fx-pref-height: 48px;
     -fx-max-height: 48px;
 }
@@ -4359,4 +4357,297 @@
     -fx-text-alignment: center;
     -fx-alignment: center;
     -fx-wrap-text: true;
+}
+
+/* ===========================================
+   RENEWAL BANNER — Banner de renovación próxima
+   =========================================== */
+
+.renewal-banner {
+    -fx-background-color: linear-gradient(to right, #8b6914, #d4af37);
+    -fx-padding: 10 20;
+    -fx-background-radius: 0 0 8 8;
+    -fx-max-height: 44px;
+}
+
+.renewal-banner-icon {
+    -fx-text-fill: #000000;
+    -fx-font-size: 16px;
+}
+
+.renewal-banner-text {
+    -fx-text-fill: #000000;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.renewal-banner-btn {
+    -fx-background-color: #000000;
+    -fx-text-fill: #d4af37;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.renewal-banner-btn:hover {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: #f5e89a;
+}
+
+.renewal-banner-close {
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.renewal-banner-close:hover {
+    -fx-text-fill: #333333;
+}
+
+/* ===========================================================================
+   OVERRIDES RESPONSIVOS (res-*)
+   Las clases res-* y ratio-* se agregan dinámicamente al contenedor raíz
+   según la resolución real de la pantalla.
+   REGLA: los estilos base NO se modifican. Solo se añaden overrides aquí.
+   =========================================================================== */
+
+/* -------------------------------------------
+   res-tablet (1024 – 1365px) — Laptops viejos
+   ------------------------------------------- */
+
+.res-tablet .login-card {
+    -fx-min-width: 440px;
+    -fx-max-width: 440px;
+}
+
+.res-tablet .menu-titulo {
+    -fx-font-size: 26px;
+}
+
+.res-tablet .menu-subtitulo {
+    -fx-font-size: 15px;
+}
+
+.res-tablet .menu-opcion-card {
+    -fx-min-width: 220px;
+    -fx-pref-width: 240px;
+    -fx-max-width: 240px;
+    -fx-min-height: 150px;
+    -fx-pref-height: 170px;
+    -fx-max-height: 170px;
+}
+
+.res-tablet .menu-opcion-titulo {
+    -fx-font-size: 22px;
+    -fx-padding: 0 0 12 0;
+}
+
+.res-tablet .menu-opcion-descripcion {
+    -fx-font-size: 12px;
+    -fx-padding: 12 0 0 0;
+}
+
+.res-tablet .menu-usuario-nombre {
+    -fx-font-size: 14px;
+}
+
+.res-tablet .productos-titulo {
+    -fx-font-size: 24px;
+}
+
+.res-tablet .boton-opcion-producto {
+    -fx-padding: 0 16 0 16;
+}
+
+/* -------------------------------------------
+   res-small (<1024px) — Pantallas pequeñas
+   ------------------------------------------- */
+
+.res-small .login-card {
+    -fx-min-width: 380px;
+    -fx-max-width: 380px;
+}
+
+.res-small .login-title {
+    -fx-font-size: 22px;
+}
+
+.res-small .menu-titulo {
+    -fx-font-size: 22px;
+}
+
+.res-small .menu-subtitulo {
+    -fx-font-size: 14px;
+}
+
+.res-small .menu-opcion-card {
+    -fx-min-width: 180px;
+    -fx-pref-width: 200px;
+    -fx-max-width: 200px;
+    -fx-min-height: 130px;
+    -fx-pref-height: 145px;
+    -fx-max-height: 145px;
+}
+
+.res-small .menu-opcion-titulo {
+    -fx-font-size: 18px;
+    -fx-padding: 0 0 8 0;
+}
+
+.res-small .menu-opcion-descripcion {
+    -fx-font-size: 11px;
+    -fx-padding: 8 0 0 0;
+}
+
+.res-small .menu-usuario-nombre {
+    -fx-font-size: 13px;
+}
+
+.res-small .menu-usuario-rol {
+    -fx-font-size: 11px;
+}
+
+.res-small .productos-titulo {
+    -fx-font-size: 20px;
+}
+
+.res-small .boton-opcion-producto {
+    -fx-padding: 0 12 0 12;
+}
+
+.res-small .menu-footer-text {
+    -fx-font-size: 10px;
+}
+
+/* -------------------------------------------
+   res-qhd (≥2560px) — Pantallas QHD / 2K
+   ------------------------------------------- */
+
+.res-qhd .login-card {
+    -fx-min-width: 600px;
+    -fx-max-width: 600px;
+}
+
+.res-qhd .login-title {
+    -fx-font-size: 34px;
+}
+
+.res-qhd .menu-titulo {
+    -fx-font-size: 42px;
+}
+
+.res-qhd .menu-subtitulo {
+    -fx-font-size: 22px;
+}
+
+.res-qhd .menu-opcion-card {
+    -fx-min-width: 300px;
+    -fx-pref-width: 340px;
+    -fx-max-width: 340px;
+    -fx-min-height: 210px;
+    -fx-pref-height: 240px;
+    -fx-max-height: 240px;
+}
+
+.res-qhd .menu-opcion-titulo {
+    -fx-font-size: 30px;
+    -fx-padding: 0 0 20 0;
+}
+
+.res-qhd .menu-opcion-descripcion {
+    -fx-font-size: 16px;
+    -fx-padding: 20 0 0 0;
+}
+
+.res-qhd .menu-usuario-nombre {
+    -fx-font-size: 18px;
+}
+
+.res-qhd .menu-usuario-rol {
+    -fx-font-size: 14px;
+}
+
+.res-qhd .productos-titulo {
+    -fx-font-size: 38px;
+}
+
+.res-qhd .menu-footer-text {
+    -fx-font-size: 14px;
+}
+
+/* -------------------------------------------
+   res-4k (≥3840px) — Pantallas 4K / UHD
+   ------------------------------------------- */
+
+.res-4k .login-card {
+    -fx-min-width: 700px;
+    -fx-max-width: 700px;
+}
+
+.res-4k .login-title {
+    -fx-font-size: 38px;
+}
+
+.res-4k .menu-titulo {
+    -fx-font-size: 48px;
+}
+
+.res-4k .menu-subtitulo {
+    -fx-font-size: 24px;
+}
+
+.res-4k .menu-opcion-card {
+    -fx-min-width: 360px;
+    -fx-pref-width: 400px;
+    -fx-max-width: 400px;
+    -fx-min-height: 250px;
+    -fx-pref-height: 280px;
+    -fx-max-height: 280px;
+}
+
+.res-4k .menu-opcion-titulo {
+    -fx-font-size: 34px;
+    -fx-padding: 0 0 24 0;
+}
+
+.res-4k .menu-opcion-descripcion {
+    -fx-font-size: 18px;
+    -fx-padding: 24 0 0 0;
+}
+
+.res-4k .menu-usuario-nombre {
+    -fx-font-size: 20px;
+}
+
+.res-4k .menu-usuario-rol {
+    -fx-font-size: 16px;
+}
+
+.res-4k .productos-titulo {
+    -fx-font-size: 44px;
+}
+
+.res-4k .menu-footer-text {
+    -fx-font-size: 16px;
+}
+
+/* -------------------------------------------
+   ratio-classic (<1.5 — 4:3, 5:4)
+   Monitores antiguos: contenido más compacto
+   ------------------------------------------- */
+
+.ratio-classic .menu-opcion-card {
+    -fx-min-width: 230px;
+    -fx-pref-width: 250px;
+    -fx-max-width: 250px;
+}
+
+.ratio-classic .boton-opcion-producto {
+    -fx-padding: 0 14 0 14;
+}
+
+.ratio-classic .menu-opcion-titulo {
+    -fx-font-size: 22px;
 }

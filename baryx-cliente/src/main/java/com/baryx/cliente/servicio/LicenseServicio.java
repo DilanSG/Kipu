@@ -43,11 +43,8 @@ public class LicenseServicio {
     private static final String API_URL = System.getProperty("baryx.api.url", "https://api.baryx.app");
     private static final String WEB_URL = "https://www.baryx.org";
 
-    /** Días de prueba gratis sin key */
     private static final int DIAS_TRIAL = 14;
-    /** Días antes de expiración para mostrar aviso de renovación */
-    public static final int DIAS_AVISO_RENOVACION = 10;
-    /** Horas que la caché de validación es considerada válida (sin conexión) */
+    public static final int DIAS_AVISO_RENOVACION = 5;
     private static final int CACHE_TTL_HOURS = 72;
 
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()

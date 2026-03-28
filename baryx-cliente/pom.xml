@@ -79,6 +79,77 @@
             <version>42.7.2</version>
         </dependency>
     </dependencies>
+
+    <!-- ============================================================
+         Perfil "multiplataforma": incluye librerías nativas de JavaFX
+         para Windows (x64) y macOS (arm64) en el fat JAR.
+
+         Problema: maven-shade solo incluye las nativas de la plataforma
+         de compilación (ej: Linux .so en CI). Sin las .dll de Windows ni
+         las .dylib de macOS, JavaFX no puede cargar el Glass toolkit
+         en esos sistemas operativos.
+
+         Activar con: mvn package -Pmultiplataforma
+         (CI lo activa automáticamente en release.yml)
+         ============================================================ -->
+    <profiles>
+        <profile>
+            <id>multiplataforma</id>
+            <dependencies>
+                <!-- Windows x64: clases nativas + DLLs (Glass/Direct3D) -->
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>win</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>win</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>win</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>win</classifier>
+                </dependency>
+
+                <!-- macOS arm64 (Apple Silicon): clases nativas + dylibs -->
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>mac-aarch64</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>mac-aarch64</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>mac-aarch64</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>mac-aarch64</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
     
     <build>
         <!-- ============================================================
