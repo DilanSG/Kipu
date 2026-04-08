@@ -1,6 +1,6 @@
-﻿# Baryx - Script de compilacion centralizado (PowerShell)
+﻿# Kipu - Script de compilacion centralizado (PowerShell)
 # Usa el POM padre para compilar los 3 modulos de una vez
-# Genera JARs en baryx-servidor/target/ y baryx-cliente/target/.
+# Genera JARs en kipu-servidor/target/ y kipu-cliente/target/.
 
 # Forzar codificacion UTF-8 en la consola de Windows
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 $ProjectDir = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
 
 function Write-Banner {
-    Write-Host "BARYX - Compilacion JAR Windows" -ForegroundColor Yellow
+    Write-Host "KIPU - Compilacion JAR Windows" -ForegroundColor Yellow
 }
 
 function Write-Step($msg)    { Write-Host "  [STEP] $msg" -ForegroundColor Blue }
@@ -49,8 +49,8 @@ switch ($Mode) {
         Write-Ok "Empacado completado"
         Write-Host ""
         Write-Host "  JARs generados:" -ForegroundColor Cyan
-        Write-Host "    baryx-servidor\target\baryx-servidor-1.0.0.jar"
-        Write-Host "    baryx-cliente\target\baryx-cliente-1.0.0.jar"
+        Write-Host "    kipu-servidor\target\kipu-servidor-1.0.0.jar"
+        Write-Host "    kipu-cliente\target\kipu-cliente-1.0.0.jar"
     }
     "install" {
         Write-Step "Instalando todos los modulos en repositorio local..."
@@ -85,7 +85,7 @@ switch ($Mode) {
 
 Write-Host ""
 Write-Host "Para iniciar el sistema:" -ForegroundColor Cyan
-Write-Host "  1. Servidor: java -jar baryx-servidor\target\baryx-servidor-1.0.0.jar"
-Write-Host "  2. Cliente:  java -jar baryx-cliente\target\baryx-cliente-1.0.0.jar"
+Write-Host "  1. Servidor: java -jar kipu-servidor\target\kipu-servidor-1.0.0.jar"
+Write-Host "  2. Cliente:  java -jar kipu-cliente\target\kipu-cliente-1.0.0.jar"
 Write-Host ""
 Write-Ok "Listo!"

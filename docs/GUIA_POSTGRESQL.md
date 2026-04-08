@@ -1,6 +1,6 @@
-# Guía PostgreSQL - Baryx
+# Guía PostgreSQL - Kipu
 
-Referencia completa para instalar, configurar y administrar la base de datos PostgreSQL del sistema Baryx.
+Referencia completa para instalar, configurar y administrar la base de datos PostgreSQL del sistema Kipu.
 
 ---
 
@@ -62,25 +62,25 @@ sudo journalctl -u postgresql -f
 sudo -u postgres psql
 
 # O directamente
-sudo -u postgres psql -d baryx_db
+sudo -u postgres psql -d kipu_db
 ```
 
-### Como usuario baryx_admin (después del setup)
+### Como usuario kipu_admin (después del setup)
 
 ```bash
 # Conexión local
-psql -U baryx_admin -d baryx_db -h localhost
+psql -U kipu_admin -d kipu_db -h localhost
 
 # Con contraseña (se pedirá interactivamente)
-psql -U baryx_admin -d baryx_db -h localhost -W
+psql -U kipu_admin -d kipu_db -h localhost -W
 
 # Conexión con string completo
-psql "postgresql://baryx_admin:Dilan5236@localhost:5432/baryx_db"
+psql "postgresql://kipu_admin:Dilan5236@localhost:5432/kipu_db"
 ```
 
 ---
 
-## 4. Setup Inicial de Baryx
+## 4. Setup Inicial de Kipu
 
 ### Paso 1: Crear la base de datos y usuario
 
@@ -91,7 +91,7 @@ sudo -u postgres psql
 
 ```sql
 -- Crear la base de datos
-CREATE DATABASE baryx_db
+CREATE DATABASE kipu_db
     WITH 
     OWNER = postgres
     ENCODING = 'UTF8'
@@ -99,37 +99,37 @@ CREATE DATABASE baryx_db
     LC_CTYPE = 'es_ES.UTF-8'
     CONNECTION LIMIT = -1;
 --Tambien con:   
-CREATE DATABASE baryx_db WITH OWNER = postgres ENCODING = 'UTF8' LC_COLLATE = 'Spanish_Colombia.1252' LC_CTYPE = 'Spanish_Colombia.1252' CONNECTION LIMIT = -1;
+CREATE DATABASE kipu_db WITH OWNER = postgres ENCODING = 'UTF8' LC_COLLATE = 'Spanish_Colombia.1252' LC_CTYPE = 'Spanish_Colombia.1252' CONNECTION LIMIT = -1;
 
 -- Crear usuario de la aplicación
-CREATE USER baryx_admin WITH ENCRYPTED PASSWORD 'Dilan5236';
+CREATE USER kipu_admin WITH ENCRYPTED PASSWORD 'Dilan5236';
 
 -- Otorgar privilegios
-GRANT ALL PRIVILEGES ON DATABASE baryx_db TO baryx_admin;
+GRANT ALL PRIVILEGES ON DATABASE kipu_db TO kipu_admin;
 
 -- Conectar a la BD creada
-\c baryx_db;
+\c kipu_db;
 
 -- Permisos en schema public
-GRANT ALL ON SCHEMA public TO baryx_admin;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO baryx_admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO baryx_admin;
-GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO baryx_admin;
+GRANT ALL ON SCHEMA public TO kipu_admin;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO kipu_admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO kipu_admin;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO kipu_admin;
 
 -- Permisos por defecto para objetos futuros (IMPORTANTE para Flyway)
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO baryx_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO baryx_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO baryx_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO kipu_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO kipu_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO kipu_admin;
 ```
 
 ### Paso 2: Verificar
 
 ```sql
 -- Verificar BD creada
-SELECT datname FROM pg_database WHERE datname = 'baryx_db';
+SELECT datname FROM pg_database WHERE datname = 'kipu_db';
 
 -- Verificar usuario creado
-SELECT usename, usecreatedb, usesuper FROM pg_user WHERE usename = 'baryx_admin';
+SELECT usename, usecreatedb, usesuper FROM pg_user WHERE usename = 'kipu_admin';
 
 -- Salir
 \q
@@ -140,7 +140,7 @@ SELECT usename, usecreatedb, usesuper FROM pg_user WHERE usename = 'baryx_admin'
 Las tablas se crean automáticamente via Flyway al iniciar el servidor:
 
 ```bash
-cd baryx-servidor
+cd kipu-servidor
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
@@ -152,7 +152,7 @@ Flyway ejecuta las migraciones en orden:
 ### Paso 4: Verificar que todo se creó
 
 ```bash
-psql -U baryx_admin -d baryx_db -h localhost
+psql -U kipu_admin -d kipu_db -h localhost
 ```
 
 ```sql
@@ -185,17 +185,17 @@ O manualmente:
 
 ```bash
 # 1. Crear BD y usuario
-sudo -u postgres psql -c "CREATE DATABASE baryx_db WITH ENCODING='UTF8';"
-sudo -u postgres psql -c "CREATE USER baryx_admin WITH ENCRYPTED PASSWORD 'Dilan5236';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE baryx_db TO baryx_admin;"
+sudo -u postgres psql -c "CREATE DATABASE kipu_db WITH ENCODING='UTF8';"
+sudo -u postgres psql -c "CREATE USER kipu_admin WITH ENCRYPTED PASSWORD 'Dilan5236';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE kipu_db TO kipu_admin;"
 
 # 2. Asignar permisos en schema
-sudo -u postgres psql -d baryx_db -c "GRANT ALL ON SCHEMA public TO baryx_admin;"
-sudo -u postgres psql -d baryx_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO baryx_admin;"
-sudo -u postgres psql -d baryx_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO baryx_admin;"
+sudo -u postgres psql -d kipu_db -c "GRANT ALL ON SCHEMA public TO kipu_admin;"
+sudo -u postgres psql -d kipu_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO kipu_admin;"
+sudo -u postgres psql -d kipu_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO kipu_admin;"
 
 # 3. Iniciar servidor (Flyway crea tablas automáticamente)
-cd baryx-servidor && mvn spring-boot:run -Dspring-boot.run.profiles=dev
+cd kipu-servidor && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 ---
@@ -207,7 +207,7 @@ cd baryx-servidor && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 | Comando | Descripción |
 |---------|-------------|
 | `\l` | Listar todas las bases de datos |
-| `\c baryx_db` | Conectar a una base de datos |
+| `\c kipu_db` | Conectar a una base de datos |
 | `\dt` | Listar tablas del schema actual |
 | `\dt+` | Listar tablas con tamaño e info extra |
 | `\d nombre_tabla` | Ver estructura de una tabla (columnas, tipos, constraints) |
@@ -241,13 +241,13 @@ cd baryx-servidor && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 ---
 
-## 7. Consultas Útiles para Baryx
+## 7. Consultas Útiles para Kipu
 
 ### Estado general de la BD
 
 ```sql
 -- Tamaño de la BD
-SELECT pg_size_pretty(pg_database_size('baryx_db')) AS tamano_bd;
+SELECT pg_size_pretty(pg_database_size('kipu_db')) AS tamano_bd;
 
 -- Tamaño por tabla
 SELECT 
@@ -266,7 +266,7 @@ FROM pg_stat_user_tables
 ORDER BY n_live_tup DESC;
 ```
 
-### Verificar datos de Baryx
+### Verificar datos de Kipu
 
 ```sql
 -- Usuarios del sistema
@@ -295,12 +295,12 @@ SELECT numero_mesa, estado, id_mesero FROM mesas ORDER BY numero_mesa;
 -- Conexiones activas
 SELECT pid, usename, datname, client_addr, state, query_start, query
 FROM pg_stat_activity
-WHERE datname = 'baryx_db';
+WHERE datname = 'kipu_db';
 
 -- Contar conexiones por estado
 SELECT state, COUNT(*) 
 FROM pg_stat_activity 
-WHERE datname = 'baryx_db'
+WHERE datname = 'kipu_db'
 GROUP BY state;
 
 -- Matar una conexión específica
@@ -327,47 +327,47 @@ ORDER BY installed_rank;
 # === BACKUP ===
 
 # Backup completo (formato custom, comprimido)
-pg_dump -U baryx_admin -h localhost -Fc baryx_db > backup_baryx_$(date +%Y%m%d_%H%M%S).dump
+pg_dump -U kipu_admin -h localhost -Fc kipu_db > backup_kipu_$(date +%Y%m%d_%H%M%S).dump
 
 # Backup en SQL plano (legible)
-pg_dump -U baryx_admin -h localhost baryx_db > backup_baryx_$(date +%Y%m%d_%H%M%S).sql
+pg_dump -U kipu_admin -h localhost kipu_db > backup_kipu_$(date +%Y%m%d_%H%M%S).sql
 
 # Backup solo datos (sin estructura)
-pg_dump -U baryx_admin -h localhost --data-only baryx_db > datos_baryx.sql
+pg_dump -U kipu_admin -h localhost --data-only kipu_db > datos_kipu.sql
 
 # Backup solo estructura (sin datos)
-pg_dump -U baryx_admin -h localhost --schema-only baryx_db > esquema_baryx.sql
+pg_dump -U kipu_admin -h localhost --schema-only kipu_db > esquema_kipu.sql
 
 # Backup de una tabla específica
-pg_dump -U baryx_admin -h localhost -t productos baryx_db > productos_backup.sql
+pg_dump -U kipu_admin -h localhost -t productos kipu_db > productos_backup.sql
 
 
 # === RESTORE ===
 
 # Restaurar desde formato custom
-pg_restore -U baryx_admin -h localhost -d baryx_db --clean backup_baryx.dump
+pg_restore -U kipu_admin -h localhost -d kipu_db --clean backup_kipu.dump
 
 # Restaurar desde SQL plano
-psql -U baryx_admin -h localhost -d baryx_db < backup_baryx.sql
+psql -U kipu_admin -h localhost -d kipu_db < backup_kipu.sql
 
 # Restaurar tabla específica
-pg_restore -U baryx_admin -h localhost -d baryx_db -t productos backup_baryx.dump
+pg_restore -U kipu_admin -h localhost -d kipu_db -t productos backup_kipu.dump
 ```
 
 ### Reset Completo (Solo Desarrollo)
 
 ```bash
 # Opción 1: Usar script del proyecto
-sudo -u postgres psql -d baryx_db -f database/reset-database.sql
+sudo -u postgres psql -d kipu_db -f database/reset-database.sql
 # Luego reiniciar el servidor para que Flyway recree todo
 
 # Opción 2: Eliminar y recrear la BD completa
-sudo -u postgres psql -c "DROP DATABASE IF EXISTS baryx_db;"
+sudo -u postgres psql -c "DROP DATABASE IF EXISTS kipu_db;"
 sudo -u postgres psql -f database/setup-database.sql
 # Reiniciar servidor: Flyway ejecuta V1, V2, V3 automáticamente
 
 # Opción 3: Solo limpiar datos (mantener estructura)
-psql -U baryx_admin -h localhost -d baryx_db
+psql -U kipu_admin -h localhost -d kipu_db
 ```
 
 ```sql
@@ -408,13 +408,13 @@ DROP TABLE IF EXISTS flyway_schema_history;
 CREATE USER nuevo_usuario WITH ENCRYPTED PASSWORD 'password123';
 
 -- Otorgar permisos sobre la BD
-GRANT ALL PRIVILEGES ON DATABASE baryx_db TO nuevo_usuario;
+GRANT ALL PRIVILEGES ON DATABASE kipu_db TO nuevo_usuario;
 
 -- Cambiar contraseña
-ALTER USER baryx_admin WITH PASSWORD 'nueva_contraseña';
+ALTER USER kipu_admin WITH PASSWORD 'nueva_contraseña';
 
 -- Revocar permisos
-REVOKE ALL PRIVILEGES ON DATABASE baryx_db FROM usuario;
+REVOKE ALL PRIVILEGES ON DATABASE kipu_db FROM usuario;
 
 -- Eliminar usuario
 DROP USER IF EXISTS usuario;
@@ -422,7 +422,7 @@ DROP USER IF EXISTS usuario;
 -- Ver permisos de un usuario
 SELECT grantee, privilege_type, table_name
 FROM information_schema.role_table_grants
-WHERE grantee = 'baryx_admin';
+WHERE grantee = 'kipu_admin';
 
 -- Listar todos los usuarios
 \du
@@ -453,7 +453,7 @@ host    all         all           127.0.0.1/32    md5
 host    all         all           ::1/128         md5
 
 # Para acceso desde LAN (ajustar rango según tu red)
-host    baryx_db    baryx_admin   192.168.1.0/24  md5
+host    kipu_db    kipu_admin   192.168.1.0/24  md5
 ```
 
 ```bash
@@ -477,7 +477,7 @@ sudo systemctl restart postgresql
 
 ---
 
-## 11. Esquema de Tablas de Baryx
+## 11. Esquema de Tablas de Kipu
 
 Referencia rápida de las tablas creadas por Flyway:
 
@@ -591,15 +591,15 @@ Datos que Flyway inserta automáticamente (V2):
 sudo cat /etc/postgresql/16/main/pg_hba.conf | grep -v "^#" | grep -v "^$"
 
 # Si dice 'peer' para conexiones locales, cambiar a 'md5'
-# O usar: psql -U baryx_admin -h localhost -d baryx_db
+# O usar: psql -U kipu_admin -h localhost -d kipu_db
 # (localhost fuerza conexión TCP en vez de socket Unix)
 ```
 
-### Error: "database baryx_db does not exist"
+### Error: "database kipu_db does not exist"
 
 ```bash
 # Verificar que existe
-sudo -u postgres psql -c "\l" | grep baryx
+sudo -u postgres psql -c "\l" | grep kipu
 
 # Crear si no existe
 sudo -u postgres psql -f database/setup-database.sql
@@ -608,13 +608,13 @@ sudo -u postgres psql -f database/setup-database.sql
 ### Error: "permission denied for schema public"
 
 ```sql
--- Conectar como postgres a baryx_db
-sudo -u postgres psql -d baryx_db
+-- Conectar como postgres a kipu_db
+sudo -u postgres psql -d kipu_db
 
 -- Re-otorgar permisos
-GRANT ALL ON SCHEMA public TO baryx_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO baryx_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO baryx_admin;
+GRANT ALL ON SCHEMA public TO kipu_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO kipu_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO kipu_admin;
 ```
 
 ### Error: "Flyway migration failed" / "relation already exists"
@@ -622,7 +622,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO baryx_admin;
 ```sql
 -- Opción A: Marcar la migración como exitosa manualmente
 INSERT INTO flyway_schema_history (installed_rank, version, description, type, script, checksum, installed_by, execution_time, success)
-VALUES (nextval('flyway_schema_history_s'), '1', 'crear tablas base', 'SQL', 'V1__crear_tablas_base.sql', NULL, 'baryx_admin', 0, TRUE);
+VALUES (nextval('flyway_schema_history_s'), '1', 'crear tablas base', 'SQL', 'V1__crear_tablas_base.sql', NULL, 'kipu_admin', 0, TRUE);
 
 -- Opción B: Reset completo de Flyway
 DROP TABLE flyway_schema_history;
@@ -680,17 +680,17 @@ EXPLAIN ANALYZE SELECT * FROM productos WHERE id_categoria = 1;
 ```bash
 # ---- ACCESO ----
 sudo -u postgres psql                          # Entrar como superusuario
-psql -U baryx_admin -d baryx_db -h localhost   # Entrar como app user
+psql -U kipu_admin -d kipu_db -h localhost   # Entrar como app user
 
 # ---- SETUP ----
 sudo -u postgres psql -f database/setup-database.sql   # Setup inicial
 
 # ---- BACKUP ----
-pg_dump -U baryx_admin -h localhost -Fc baryx_db > backup.dump    # Backup
-pg_restore -U baryx_admin -h localhost -d baryx_db --clean backup.dump  # Restore
+pg_dump -U kipu_admin -h localhost -Fc kipu_db > backup.dump    # Backup
+pg_restore -U kipu_admin -h localhost -d kipu_db --clean backup.dump  # Restore
 
 # ---- RESET (SOLO DEV) ----
-sudo -u postgres psql -c "DROP DATABASE IF EXISTS baryx_db;"
+sudo -u postgres psql -c "DROP DATABASE IF EXISTS kipu_db;"
 sudo -u postgres psql -f database/setup-database.sql
 # Reiniciar servidor Spring Boot para que Flyway recree las tablas
 
@@ -701,6 +701,6 @@ sudo systemctl restart postgresql
 sudo systemctl status postgresql
 
 # ---- MONITOREO ----
-psql -U baryx_admin -d baryx_db -h localhost -c "\dt"    # Ver tablas
-psql -U baryx_admin -d baryx_db -h localhost -c "SELECT count(*) FROM usuarios;"
+psql -U kipu_admin -d kipu_db -h localhost -c "\dt"    # Ver tablas
+psql -U kipu_admin -d kipu_db -h localhost -c "SELECT count(*) FROM usuarios;"
 ```

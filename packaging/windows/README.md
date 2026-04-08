@@ -1,4 +1,4 @@
-# Baryx - Instalacion Windows
+# Kipu - Instalacion Windows
 
 Sistema POS para bares y locales nocturnos. Funciona 100% en red local (LAN), sin internet.
 
@@ -8,10 +8,10 @@ Sistema POS para bares y locales nocturnos. Funciona 100% en red local (LAN), si
 
 ## Que incluye el instalador
 
-El archivo `Baryx-1.0.0.exe` instala:
+El archivo `Kipu-1.0.0.exe` instala:
 
-- **Cliente Baryx** — interfaz grafica para cajeros, meseros y administradores
-- **Servidor Baryx** — API REST que gestiona la base de datos
+- **Cliente Kipu** — interfaz grafica para cajeros, meseros y administradores
+- **Servidor Kipu** — API REST que gestiona la base de datos
 
 Ambos con JRE embebido. Solo necesita tener **PostgreSQL** instalado.
 
@@ -28,23 +28,23 @@ Guardar la contrasena del usuario `postgres`.
 
 ### 2. Ejecutar el instalador
 
-Doble clic en `Baryx-1.0.0.exe` y seguir el asistente.
+Doble clic en `Kipu-1.0.0.exe` y seguir el asistente.
 
-Se instala en `C:\Program Files\Baryx\` con:
+Se instala en `C:\Program Files\Kipu\` con:
 - `Cliente\` — aplicacion grafica
 - `servidor\` — servidor REST
 
 ### 3. Configurar la base de datos (primera vez)
 
-Desde el menu Inicio: **Baryx > Configuracion de base de datos**  
-O ejecutar directamente: `C:\Program Files\Baryx\servidor\setup-inicial.bat`
+Desde el menu Inicio: **Kipu > Configuracion de base de datos**  
+O ejecutar directamente: `C:\Program Files\Kipu\servidor\setup-inicial.bat`
 
-El asistente crea la base de datos, el usuario y genera la configuracion (`~\.baryx\.env`).  
+El asistente crea la base de datos, el usuario y genera la configuracion (`~\.kipu\.env`).  
 Al terminar, ofrece iniciar el servidor.
 
-### 4. Abrir Baryx
+### 4. Abrir Kipu
 
-Desde el menu Inicio o el escritorio: **Baryx Cliente**
+Desde el menu Inicio o el escritorio: **Kipu Cliente**
 
 El cliente inicia el servidor automaticamente (Host Mode).
 
@@ -57,7 +57,7 @@ Cambiar la contrasena despues del primer inicio.
 
 ### Equipo servidor (PC principal)
 
-1. Instalar Baryx completo (pasos 1-4)
+1. Instalar Kipu completo (pasos 1-4)
 2. Anotar la IP local (`ipconfig` → Direccion IPv4, ej: `192.168.1.100`)
 3. Abrir el puerto 8080 en el firewall de Windows
 
@@ -76,7 +76,7 @@ Cambiar la contrasena despues del primer inicio.
 ## Iniciar el servidor manualmente
 
 Si no usa Host Mode, inicie el servidor con:  
-Menu Inicio > **Baryx > Configuracion de base de datos**  
+Menu Inicio > **Kipu > Configuracion de base de datos**  
 El script detecta si ya esta configurado y ofrece arrancar directamente.
 
 ---
@@ -85,15 +85,15 @@ El script detecta si ya esta configurado y ofrece arrancar directamente.
 
 1. Detener el servidor (cerrar el cliente o Ctrl+C)
 2. Ejecutar el nuevo instalador — desinstala la version anterior automaticamente
-3. Abrir Baryx normalmente (las migraciones de BD se aplican solas)
+3. Abrir Kipu normalmente (las migraciones de BD se aplican solas)
 
 ---
 
 ## Desinstalar
 
-Panel de Control > Programas > **Baryx** > Desinstalar
+Panel de Control > Programas > **Kipu** > Desinstalar
 
-La carpeta del servidor y los datos de configuracion (`~\.baryx\`) se eliminan.  
+La carpeta del servidor y los datos de configuracion (`~\.kipu\`) se eliminan.  
 PostgreSQL y su base de datos **no** se tocan.
 
 ---
@@ -112,7 +112,7 @@ PostgreSQL y su base de datos **no** se tocan.
 
 ## Licencia
 
-Software source-available bajo Licencia de Uso de Software Baryx (basada en Elastic License 2.0).  
+Software source-available bajo Licencia de Uso de Software Kipu (basada en Elastic License 2.0).  
 Consulte el archivo LICENSE para los terminos completos.
 
-(c) 2026 Dilan Acuna / Baryx. Todos los derechos reservados.
+(c) 2026 Dilan Acuna / Kipu. Todos los derechos reservados.

@@ -53,7 +53,7 @@ packaging/distribuibles/
 # License keys — NEVER commit a populated license.properties
 # The empty template IS tracked; the CI populates it during packaging.
 # Add your local copy to this rule to avoid accidents.
-baryx-cliente/src/main/resources/license.properties
+kipu-cliente/src/main/resources/license.properties
 
 # IntelliJ IDEA
 out/
@@ -95,7 +95,7 @@ application-local.properties
 build_log.txt
 
 # Configuración local del cliente (generada en runtime)
-baryx-cliente/baryx-cliente.properties
+kipu-cliente/kipu-cliente.properties
 
 # Archivos de respaldo
 *.backup

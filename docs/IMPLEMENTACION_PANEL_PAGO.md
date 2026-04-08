@@ -1,4 +1,4 @@
-# Implementación del Panel de Pago - Baryx POS
+# Implementación del Panel de Pago - Kipu POS
 
 ## Fecha: 7 de enero de 2026
 
@@ -9,7 +9,7 @@
 Se ha completado exitosamente la **implementación del Panel de Pago** en la vista de detalle de mesa (`mesa-detalle.fxml`), incluyendo:
 
 1. ✅ Estructura UI completa en FXML con diseño luxury/premium
-2. ✅ Estilos CSS con paleta dorado/negro oficial de Baryx
+2. ✅ Estilos CSS con paleta dorado/negro oficial de Kipu
 3. ✅ Lógica del controlador con cálculos automáticos
 4. ✅ Atajo de teclado `-` (guion/menos) para abrir el panel de pago
 5. ✅ Gestión de propinas (preset y personalizada)
@@ -20,7 +20,7 @@ Se ha completado exitosamente la **implementación del Panel de Pago** en la vis
 
 ## Archivos Modificados
 
-### 1. `/baryx-cliente/src/main/resources/vista/subvistas/facturacion/mesa-detalle.fxml`
+### 1. `/kipu-cliente/src/main/resources/vista/subvistas/facturacion/mesa-detalle.fxml`
 
 **Cambios realizados:**
 
@@ -79,7 +79,7 @@ StackPane panelPago (contenedor principal)
 
 ---
 
-### 2. `/baryx-cliente/src/main/resources/css/estilos.css`
+### 2. `/kipu-cliente/src/main/resources/css/estilos.css`
 
 **Cambios realizados:**
 
@@ -126,7 +126,7 @@ Se agregaron los siguientes estilos CSS al final del archivo (después de correg
 
 ---
 
-### 3. `/baryx-cliente/src/main/java/com/baryx/cliente/controlador/facturacion/MesaDetalleController.java`
+### 3. `/kipu-cliente/src/main/java/com/kipu/cliente/controlador/facturacion/MesaDetalleController.java`
 
 **Cambios realizados:**
 
@@ -374,7 +374,7 @@ El panel de pago está 100% funcional en el frontend, pero requiere integración
 ### Backend - Módulo de Facturación
 
 3. **Generación de tickets/facturas**:
-   - Formato PDF con logo Baryx, datos de la venta, líneas de productos
+   - Formato PDF con logo Kipu, datos de la venta, líneas de productos
    - Impresión en impresora térmica (opcional)
    - Almacenamiento en BD como BLOB o archivo
    - Reimpresión de tickets (consulta por idVenta)
@@ -568,7 +568,7 @@ btnMetodoEfectivo.getStyleClass().add("selected");
 
 ✅ **JavaFX 17+**: Todas las características utilizadas son estándar de JavaFX 17.  
 ✅ **Java 17+**: BigDecimal, LocalDateTime, Streams, Lambdas.  
-✅ **Spring Boot**: El controlador es independiente del backend (DTO compartidos via baryx-common).  
+✅ **Spring Boot**: El controlador es independiente del backend (DTO compartidos via kipu-common).  
 ✅ **Hardware de bajos recursos**: Uso de StackPane para alternancia de vistas (sin cargar FXML adicional), optimización CSS con selectores simples.
 
 ---
@@ -613,7 +613,7 @@ btnMetodoEfectivo.getStyleClass().add("selected");
 
 7. **Generación de tickets PDF**:
    - Librería iText o similar
-   - Logo Baryx, datos de la venta, productos, total
+   - Logo Kipu, datos de la venta, productos, total
    - Botón "IMPRIMIR" después de confirmar pago
 
 8. **Historial de ventas**:
@@ -629,7 +629,7 @@ btnMetodoEfectivo.getStyleClass().add("selected");
 
 ## Conclusión
 
-La **implementación del Panel de Pago** está completa y funcional en el frontend. El código sigue estrictamente las guías de diseño luxury/premium de Baryx con paleta dorado/negro, botones táctiles grandes, validaciones exhaustivas y feedback visual claro.
+La **implementación del Panel de Pago** está completa y funcional en el frontend. El código sigue estrictamente las guías de diseño luxury/premium de Kipu con paleta dorado/negro, botones táctiles grandes, validaciones exhaustivas y feedback visual claro.
 
 El siguiente paso crítico es **integrar con el backend** para persistir las ventas en la base de datos y cerrar el ciclo completo de facturación.
 
@@ -641,4 +641,4 @@ El siguiente paso crítico es **integrar con el backend** para persistir las ven
 
 **Documentado por:** GitHub Copilot  
 **Fecha de implementación:** 7 de enero de 2026  
-**Versión de Baryx:** 1.0.0
+**Versión de Kipu:** 1.0.0

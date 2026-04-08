@@ -1,20 +1,20 @@
 #!/bin/bash
-# Post-instalacion de Baryx
+# Post-instalacion de Kipu
 # Se ejecuta automaticamente despues de instalar el paquete .deb
 
 set -e
 
 # Asegurar permisos de ejecucion
-chmod +x /opt/baryx/cliente/bin/Baryx 2>/dev/null || true
-chmod +x /opt/baryx/servidor/bin/BaryxServidor 2>/dev/null || true
-chmod +x /opt/baryx/servidor/setup-inicial.sh 2>/dev/null || true
-chmod +x /opt/baryx/iniciar-cliente.sh 2>/dev/null || true
-chmod +x /opt/baryx/iniciar-servidor.sh 2>/dev/null || true
+chmod +x /opt/kipu/cliente/bin/Kipu 2>/dev/null || true
+chmod +x /opt/kipu/servidor/bin/KipuServidor 2>/dev/null || true
+chmod +x /opt/kipu/servidor/setup-inicial.sh 2>/dev/null || true
+chmod +x /opt/kipu/iniciar-cliente.sh 2>/dev/null || true
+chmod +x /opt/kipu/iniciar-servidor.sh 2>/dev/null || true
 
 # Crear symlinks en /usr/local/bin para acceso por terminal
-ln -sf /opt/baryx/cliente/bin/Baryx /usr/local/bin/baryx 2>/dev/null || true
-ln -sf /opt/baryx/iniciar-cliente.sh /usr/local/bin/baryx-cliente 2>/dev/null || true
-ln -sf /opt/baryx/iniciar-servidor.sh /usr/local/bin/baryx-servidor 2>/dev/null || true
+ln -sf /opt/kipu/cliente/bin/Kipu /usr/local/bin/kipu 2>/dev/null || true
+ln -sf /opt/kipu/iniciar-cliente.sh /usr/local/bin/kipu-cliente 2>/dev/null || true
+ln -sf /opt/kipu/iniciar-servidor.sh /usr/local/bin/kipu-servidor 2>/dev/null || true
 
 # Actualizar cache de iconos y base de datos de aplicaciones
 if command -v update-desktop-database &> /dev/null; then
@@ -25,16 +25,16 @@ if command -v gtk-update-icon-cache &> /dev/null; then
 fi
 
 echo ""
-echo "  Baryx instalado correctamente."
+echo "  Kipu instalado correctamente."
 echo ""
 echo "  Para configurar la base de datos (primera vez):"
-echo "    sudo /opt/baryx/servidor/setup-inicial.sh"
+echo "    sudo /opt/kipu/servidor/setup-inicial.sh"
 echo ""
-echo "  Para iniciar Baryx:"
+echo "  Para iniciar Kipu:"
 echo "    - Desde el menu de aplicaciones"
-echo "    - O ejecute: baryx"
+echo "    - O ejecute: kipu"
 echo ""
 echo "  Para iniciar con logs en consola:"
-echo "    - Cliente:  baryx-cliente"
-echo "    - Servidor: baryx-servidor"
+echo "    - Cliente:  kipu-cliente"
+echo "    - Servidor: kipu-servidor"
 echo ""

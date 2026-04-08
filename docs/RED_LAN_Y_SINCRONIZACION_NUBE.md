@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Este documento describe la arquitectura de red para que Baryx opere **100% independiente de internet** en una red local (LAN), con una estrategia opcional de sincronización hacia una base de datos en la nube (MongoDB Atlas o similar) para respaldo y análisis centralizado multi-bar.
+Este documento describe la arquitectura de red para que Kipu opere **100% independiente de internet** en una red local (LAN), con una estrategia opcional de sincronización hacia una base de datos en la nube (MongoDB Atlas o similar) para respaldo y análisis centralizado multi-bar.
 
 Incluye la funcionalidad de **Host Mode**, que permite que un cliente JavaFX arranque el servidor Spring Boot automáticamente como subproceso, eliminando la necesidad de iniciar el servidor manualmente cada jornada.
 
@@ -49,7 +49,7 @@ El servidor **debe** tener una IP fija dentro de la LAN. Los clientes pueden usa
 **Configuración del servidor (Linux)**:
 
 ```bash
-# /etc/netplan/01-baryx.yaml (Ubuntu/Debian con netplan)
+# /etc/netplan/01-kipu.yaml (Ubuntu/Debian con netplan)
 network:
   version: 2
   ethernets:
@@ -73,7 +73,7 @@ Panel de Control → Red → Adaptador → Propiedades → IPv4
   DNS: (vacío)
 ```
 
-#### Configuración del Cliente Baryx
+#### Configuración del Cliente Kipu
 
 El cliente se conecta al servidor usando `ConfiguracionCliente.setUrlServidor()`:
 
@@ -116,8 +116,8 @@ El servidor se anuncia en la red con un nombre `.local`:
 # Instalar en el servidor (Linux)
 sudo apt install avahi-daemon
 
-# El servidor se anuncia como baryx-server.local
-# Los clientes se conectan a http://baryx-server.local:8080
+# El servidor se anuncia como kipu-server.local
+# Los clientes se conectan a http://kipu-server.local:8080
 ```
 
 #### Opción B: Broadcast UDP (Implementación propia)
@@ -128,7 +128,7 @@ El servidor emite un paquete UDP broadcast cada 5 segundos en el puerto 9999. Lo
 // Servidor - Beacon UDP
 DatagramSocket socket = new DatagramSocket();
 socket.setBroadcast(true);
-byte[] datos = "BARYX_SERVER:8080".getBytes();
+byte[] datos = "KIPU_SERVER:8080".getBytes();
 DatagramPacket paquete = new DatagramPacket(
     datos, datos.length,
     InetAddress.getByName("255.255.255.255"), 9999
@@ -149,7 +149,7 @@ ConfiguracionCliente.setUrlServidor("http://" + ipServidor + ":8080");
 #### Opción C: Archivo de configuración local (Más simple)
 
 ```properties
-# baryx-cliente.properties (junto al JAR del cliente)
+# kipu-cliente.properties (junto al JAR del cliente)
 servidor.ip=192.168.1.100
 servidor.puerto=8080
 ```
@@ -225,10 +225,10 @@ sudo ufw status
 
 ```powershell
 # Regla de entrada para Spring Boot
-New-NetFirewallRule -DisplayName "Baryx Server" -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow
+New-NetFirewallRule -DisplayName "Kipu Server" -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow
 
 # Regla para PostgreSQL (solo LAN)
-New-NetFirewallRule -DisplayName "Baryx PostgreSQL" -Direction Inbound -Protocol TCP -LocalPort 5432 -RemoteAddress 192.168.1.0/24 -Action Allow
+New-NetFirewallRule -DisplayName "Kipu PostgreSQL" -Direction Inbound -Protocol TCP -LocalPort 5432 -RemoteAddress 192.168.1.0/24 -Action Allow
 ```
 
 ---
@@ -255,13 +255,13 @@ El Host Mode resuelve el problema operativo de tener que iniciar el servidor Spr
 ### 2.2 Flujo de Operación
 
 1. El personal enciende el PC → PostgreSQL arranca automáticamente (servicio del SO)
-2. Hace doble clic en "Baryx" → La aplicación JavaFX se abre
+2. Hace doble clic en "Kipu" → La aplicación JavaFX se abre
 3. Si tiene Host Mode activado:
    - Muestra splash screen: "Iniciando servidor..."
-   - Lanza `java -jar baryx-servidor.jar` como subproceso
+   - Lanza `java -jar kipu-servidor.jar` como subproceso
    - Espera hasta 60 segundos a que el health check responda
    - Transiciona automáticamente a la pantalla de login
-4. Los demás terminales abren Baryx normalmente (sin Host Mode) → se conectan a la IP del host
+4. Los demás terminales abren Kipu normalmente (sin Host Mode) → se conectan a la IP del host
 5. Al cerrar la aplicación del host → el servidor se destruye automáticamente
 
 **El personal solo ve: abrir la app y esperar unos segundos. No toca consolas ni servidores.**
@@ -277,7 +277,7 @@ El Host Mode se configura desde la pantalla de login con un checkbox:
     Reinicie la aplicación para aplicar.
 ```
 
-La configuración se guarda en `baryx-cliente.properties` junto al JAR:
+La configuración se guarda en `kipu-cliente.properties` junto al JAR:
 
 ```properties
 # Generado automáticamente
@@ -292,7 +292,7 @@ servidor.jar.ruta=
 |-------|-----------|---------|
 | `ServidorEmbebido` | `cliente/utilidad/` | Gestiona el subproceso: inicio, health check, logs, shutdown |
 | `ConfiguracionCliente` | `cliente/configuracion/` | Persiste la config de host mode en disco |
-| `BaryxClienteApplication` | `cliente/` | Muestra splash y orquesta el arranque |
+| `KipuClienteApplication` | `cliente/` | Muestra splash y orquesta el arranque |
 | `LoginPinController` | `cliente/controlador/` | Checkbox de activación en la UI |
 
 ### 2.5 ¿Por qué Subproceso y No In-Process?
@@ -308,7 +308,7 @@ servidor.jar.ruta=
 ### 2.6 Requisitos
 
 - **PostgreSQL como servicio del SO**: DEBE seguir instalándose como servicio (systemd / Windows Service) para que arranque al encender el PC
-- **JAR del servidor disponible**: en la misma carpeta que el cliente, o en `../baryx-servidor/target/`
+- **JAR del servidor disponible**: en la misma carpeta que el cliente, o en `../kipu-servidor/target/`
 - **Mismo JRE**: el servidor usa el mismo runtime Java que el cliente (JDK 21+)
 
 ### 2.7 Configuración Recomendada por Rol de Terminal
@@ -572,7 +572,7 @@ public class SincronizacionNubeServicio {
         try {
             if (mongoClient == null) {
                 mongoClient = MongoClients.create(mongoUri);
-                database = mongoClient.getDatabase("baryx_central");
+                database = mongoClient.getDatabase("kipu_central");
             }
             database.runCommand(new Document("ping", 1));
             return true;
@@ -650,7 +650,7 @@ Escenario: El servidor local muere (disco corrupto, fallo hardware)
    ' > restauracion_bar1.sql
 
 4. Importar en PostgreSQL:
-   psql baryx_db < restauracion_bar1.sql
+   psql kipu_db < restauracion_bar1.sql
 
 5. Reiniciar Spring Boot — el sistema está operativo
 ```
@@ -663,7 +663,7 @@ Escenario: El servidor local muere (disco corrupto, fallo hardware)
 
 | Medida | Implementación |
 |--------|---------------|
-| Aislamiento de red | VLAN dedicada para Baryx (si el switch lo soporta) |
+| Aislamiento de red | VLAN dedicada para Kipu (si el switch lo soporta) |
 | Sin acceso a internet | No configurar gateway en el servidor |
 | Firewall local | Solo puertos 8080 (API) y 5432 (PostgreSQL) abiertos |
 | JWT con expiración | Tokens de 24 horas, refresh tokens de 7 días |
@@ -676,14 +676,14 @@ Escenario: El servidor local muere (disco corrupto, fallo hardware)
 | TLS/SSL | MongoDB Atlas fuerza conexiones TLS por defecto |
 | Credenciales | URI con usuario/password específico para cada bar |
 | IP Whitelist | Configurar en Atlas solo la IP pública del bar |
-| Roles mínimos | Usuario Atlas con permisos solo de `readWrite` en la base `baryx_central` |
+| Roles mínimos | Usuario Atlas con permisos solo de `readWrite` en la base `kipu_central` |
 | Datos sensibles | No sincronizar contraseñas ni tokens JWT a la nube |
 
 ### 4.3 Variables de Entorno Sensibles
 
 ```bash
 # Nunca hardcodear en application.yml
-export MONGODB_URI="mongodb+srv://baryx_sync:PASSWORD@cluster0.xxxxx.mongodb.net/baryx_central"
+export MONGODB_URI="mongodb+srv://kipu_sync:PASSWORD@cluster0.xxxxx.mongodb.net/kipu_central"
 export BAR_ID="bar_nombre_unico"
 ```
 
@@ -711,8 +711,8 @@ export BAR_ID="bar_nombre_unico"
 ### Terminal Principal (Host Mode)
 
 - [ ] Instalar PostgreSQL como servicio del SO (arranca al encender el PC)
-- [ ] Crear base de datos `baryx_db` y ejecutar migrations
-- [ ] Copiar `baryx-cliente.jar` y `baryx-servidor-1.0.0.jar` en la misma carpeta
+- [ ] Crear base de datos `kipu_db` y ejecutar migrations
+- [ ] Copiar `kipu-cliente.jar` y `kipu-servidor-1.0.0.jar` en la misma carpeta
 - [ ] Abrir la app y activar "Terminal Principal (Host Mode)" en el checkbox del login
 - [ ] Reiniciar la app → debe mostrar splash de arranque del servidor
 - [ ] Abrir puerto 8080 en el firewall
@@ -721,9 +721,9 @@ export BAR_ID="bar_nombre_unico"
 ### Instalación del Servidor (Alternativa sin Host Mode)
 
 - [ ] Asignar IP estática al servidor (`192.168.1.100`)
-- [ ] Instalar PostgreSQL y crear base de datos `baryx_db`
+- [ ] Instalar PostgreSQL y crear base de datos `kipu_db`
 - [ ] Abrir puerto 8080 en el firewall
-- [ ] Copiar JAR del servidor y ejecutar con `java -jar baryx-servidor.jar`
+- [ ] Copiar JAR del servidor y ejecutar con `java -jar kipu-servidor.jar`
 - [ ] Verificar que el health check responde: `curl http://192.168.1.100:8080/api/usuarios/health`
 
 ### Instalación de Clientes
@@ -736,7 +736,7 @@ export BAR_ID="bar_nombre_unico"
 ### Sincronización con Nube (Opcional)
 
 - [ ] Crear cuenta en MongoDB Atlas (plan gratuito M0)
-- [ ] Crear cluster, base de datos `baryx_central`, usuario de sincronización
+- [ ] Crear cluster, base de datos `kipu_central`, usuario de sincronización
 - [ ] Configurar IP whitelist con la IP pública del local
 - [ ] Definir variable de entorno `MONGODB_URI`
 - [ ] Activar `sync.nube.habilitado=true` en `application.yml`
@@ -744,4 +744,4 @@ export BAR_ID="bar_nombre_unico"
 
 ---
 
-*Documento técnico del sistema Baryx v1.0.0 — Red LAN y Sincronización con Nube.*
+*Documento técnico del sistema Kipu v1.0.0 — Red LAN y Sincronización con Nube.*

@@ -1,4 +1,4 @@
-# ROADMAP DE MEJORAS - SISTEMA BARYX
+# ROADMAP DE MEJORAS - SISTEMA KIPU
 
 **Versión:** 1.0  
 **Fecha:** 02 de febrero de 2026  
@@ -8,7 +8,7 @@
 
 ## RESUMEN EJECUTIVO
 
-Este documento define la ruta de desarrollo necesaria para transformar Baryx de un prototipo funcional a un sistema de producción listo para operar en bares y restaurantes, cumpliendo con:
+Este documento define la ruta de desarrollo necesaria para transformar Kipu de un prototipo funcional a un sistema de producción listo para operar en bares y restaurantes, cumpliendo con:
 
 - Requisitos técnicos de seguridad y auditoría  
 - Normativa DIAN (Colombia) para sistemas POS  
@@ -691,7 +691,7 @@ No hay sistema de numeración consecutiva obligatoria por DIAN. Las ventas deben
 
 ## CONCLUSIÓN
 
-Este roadmap define una ruta clara y priorizada para transformar Baryx en un sistema de producción completo, seguro y conforme con los requisitos legales de Colombia (DIAN).
+Este roadmap define una ruta clara y priorizada para transformar Kipu en un sistema de producción completo, seguro y conforme con los requisitos legales de Colombia (DIAN).
 
 **Prioridad inmediata:** Implementar los 4 módulos críticos de la Fase 1:
 1. Sistema de Ventas y PLU
@@ -1995,23 +1995,23 @@ public KardexDto generarKardex(Long idProducto, LocalDate fechaInicio, LocalDate
 # backup-automatico.sh
 
 FECHA=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/var/baryx/backups"
-DB_NAME="baryx_bar1"
-DB_USER="baryx_user"
+BACKUP_DIR="/var/kipu/backups"
+DB_NAME="kipu_bar1"
+DB_USER="kipu_user"
 
 # Crear directorio de backups si no existe
 mkdir -p $BACKUP_DIR
 
 # Ejecutar backup con pg_dump
-pg_dump -U $DB_USER -d $DB_NAME -F c -f "$BACKUP_DIR/baryx_backup_$FECHA.dump"
+pg_dump -U $DB_USER -d $DB_NAME -F c -f "$BACKUP_DIR/kipu_backup_$FECHA.dump"
 
 # Comprimir backup
-gzip "$BACKUP_DIR/baryx_backup_$FECHA.dump"
+gzip "$BACKUP_DIR/kipu_backup_$FECHA.dump"
 
 # Eliminar backups antiguos (mantener últimos 30 días)
-find $BACKUP_DIR -name "baryx_backup_*.dump.gz" -mtime +30 -delete
+find $BACKUP_DIR -name "kipu_backup_*.dump.gz" -mtime +30 -delete
 
-echo "Backup completado: baryx_backup_$FECHA.dump.gz"
+echo "Backup completado: kipu_backup_$FECHA.dump.gz"
 ```
 
 Configurar en crontab:
@@ -2327,7 +2327,7 @@ Requiere:
 
 ## 📖 CONCLUSIÓN
 
-Este documento define una ruta clara y priorizada para transformar Baryx en un sistema de producción completo, seguro y conforme con los requisitos legales de Colombia (DIAN).
+Este documento define una ruta clara y priorizada para transformar Kipu en un sistema de producción completo, seguro y conforme con los requisitos legales de Colombia (DIAN).
 
 **Prioridad inmediata:** Implementar los **4 módulos críticos de la Fase 1**:
 1. ✅ Sistema de Ventas y PLU

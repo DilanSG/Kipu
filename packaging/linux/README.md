@@ -1,4 +1,4 @@
-# Baryx - Instalacion Linux
+# Kipu - Instalacion Linux
 
 Sistema POS para bares y locales nocturnos. Funciona 100% en red local (LAN), sin internet.
 
@@ -8,10 +8,10 @@ Sistema POS para bares y locales nocturnos. Funciona 100% en red local (LAN), si
 
 ## Que incluye el instalador
 
-El archivo `baryx_1.0.0_amd64.deb` instala:
+El archivo `kipu_1.0.0_amd64.deb` instala:
 
-- **Cliente Baryx** en `/opt/baryx/cliente/` — interfaz grafica (POS, comanderas, admin)
-- **Servidor Baryx** en `/opt/baryx/servidor/` — API REST que gestiona la base de datos
+- **Cliente Kipu** en `/opt/kipu/cliente/` — interfaz grafica (POS, comanderas, admin)
+- **Servidor Kipu** en `/opt/kipu/servidor/` — API REST que gestiona la base de datos
 
 Ambos con JRE embebido. Solo necesita tener **PostgreSQL** instalado.
 
@@ -33,36 +33,36 @@ sudo systemctl enable postgresql
 sudo systemctl start postgresql
 ```
 
-### 2. Instalar Baryx
+### 2. Instalar Kipu
 
 ```bash
 # Debian / Ubuntu
-sudo dpkg -i baryx_1.0.0_amd64.deb
+sudo dpkg -i kipu_1.0.0_amd64.deb
 
 # Si falla por dependencias:
 sudo apt --fix-broken install
 
 # Fedora / RHEL (si tiene .rpm)
-sudo rpm -i baryx-1.0.0.x86_64.rpm
+sudo rpm -i kipu-1.0.0.x86_64.rpm
 ```
 
-Se instala en `/opt/baryx/` y crea:
+Se instala en `/opt/kipu/` y crea:
 - Acceso directo en el menu de aplicaciones
-- Comando `baryx` disponible en terminal
+- Comando `kipu` disponible en terminal
 
 ### 3. Configurar la base de datos (primera vez)
 
 ```bash
-sudo /opt/baryx/servidor/setup-inicial.sh
+sudo /opt/kipu/servidor/setup-inicial.sh
 ```
 
-El asistente crea la base de datos, el usuario y genera la configuracion (`~/.baryx/.env`).  
+El asistente crea la base de datos, el usuario y genera la configuracion (`~/.kipu/.env`).  
 Al terminar, ofrece iniciar el servidor.
 
-### 4. Abrir Baryx
+### 4. Abrir Kipu
 
-Desde el menu de aplicaciones: **Baryx Cliente**  
-O desde terminal: `baryx`
+Desde el menu de aplicaciones: **Kipu Cliente**  
+O desde terminal: `kipu`
 
 El cliente inicia el servidor automaticamente (Host Mode).
 
@@ -75,7 +75,7 @@ Cambiar la contrasena despues del primer inicio.
 
 ### Equipo servidor (PC principal)
 
-1. Instalar Baryx completo (pasos 1-4)
+1. Instalar Kipu completo (pasos 1-4)
 2. Anotar la IP local (`hostname -I` o `ip addr`, ej: `192.168.1.100`)
 3. Abrir el puerto 8080:
    ```bash
@@ -102,7 +102,7 @@ Cambiar la contrasena despues del primer inicio.
 Si no usa Host Mode:
 
 ```bash
-/opt/baryx/servidor/setup-inicial.sh
+/opt/kipu/servidor/setup-inicial.sh
 ```
 
 El script detecta si ya esta configurado y ofrece arrancar directamente.  
@@ -115,21 +115,21 @@ El servidor usa el puerto 8080. Detener con `Ctrl+C`.
 1. Detener el servidor
 2. Instalar la nueva version:
    ```bash
-   sudo dpkg -i baryx_X.Y.Z_amd64.deb
+   sudo dpkg -i kipu_X.Y.Z_amd64.deb
    ```
-3. Abrir Baryx normalmente (las migraciones de BD se aplican solas)
+3. Abrir Kipu normalmente (las migraciones de BD se aplican solas)
 
 ---
 
 ## Desinstalar
 
 ```bash
-sudo apt remove baryx       # Desinstalar
-sudo apt purge baryx        # Desinstalar + limpiar /opt/baryx
+sudo apt remove kipu       # Desinstalar
+sudo apt purge kipu        # Desinstalar + limpiar /opt/kipu
 ```
 
 PostgreSQL y su base de datos **no** se tocan.  
-Los archivos de configuracion (`~/.baryx/`) se conservan salvo con `purge`.
+Los archivos de configuracion (`~/.kipu/`) se conservan salvo con `purge`.
 
 ---
 
@@ -141,13 +141,13 @@ Los archivos de configuracion (`~/.baryx/`) se conservan salvo con `purge`.
 | Servidor no inicia | `sudo systemctl status postgresql` — verificar que este corriendo |
 | Puerto 8080 en uso | `sudo lsof -i :8080` → `sudo kill <PID>` |
 | Cliente no conecta | Verificar IP, puerto 8080 y firewall del equipo servidor |
-| "No se encontro el servidor" | Verificar que existe `/opt/baryx/servidor/bin/BaryxServidor` |
+| "No se encontro el servidor" | Verificar que existe `/opt/kipu/servidor/bin/KipuServidor` |
 
 ---
 
 ## Licencia
 
-Software source-available bajo Licencia de Uso de Software Baryx (basada en Elastic License 2.0).  
+Software source-available bajo Licencia de Uso de Software Kipu (basada en Elastic License 2.0).  
 Consulte el archivo LICENSE para los terminos completos.
 
-(c) 2026 Dilan Acuna / Baryx. Todos los derechos reservados.
+(c) 2026 Dilan Acuna / Kipu. Todos los derechos reservados.

@@ -1,4 +1,4 @@
-# Baryx - Empaquetado Windows
+# Kipu - Empaquetado Windows
 # Genera distribuibles en packaging/distribuibles/windows/
 #
 # El instalador .exe (Inno Setup) incluye cliente + servidor.
@@ -37,9 +37,9 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 
 # ==================== CONSTANTES ====================
 
-# Version: use BARYX_VERSION env (set by CI) or read from pom.xml
-if ($env:BARYX_VERSION) {
-    $APP_VERSION = $env:BARYX_VERSION
+# Version: use KIPU_VERSION env (set by CI) or read from pom.xml
+if ($env:KIPU_VERSION) {
+    $APP_VERSION = $env:KIPU_VERSION
 } else {
     try {
         $APP_VERSION = (& mvn help:evaluate -Dexpression=project.version -q -DforceStdout `
@@ -50,10 +50,10 @@ if ($env:BARYX_VERSION) {
     }
     if (-not $APP_VERSION) { $APP_VERSION = "1.0.0" }
 }
-$APP_VENDOR = "Baryx"
+$APP_VENDOR = "Kipu"
 $APP_COPYRIGHT = "Copyright(c) 2026 Dilan Acuña"
-$APP_DESCRIPTION_SERVIDOR = "Servidor REST API para sistema POS Baryx"
-$APP_DESCRIPTION_CLIENTE = "Software POS Baryx"
+$APP_DESCRIPTION_SERVIDOR = "Servidor REST API para sistema POS Kipu"
+$APP_DESCRIPTION_CLIENTE = "Software POS Kipu"
 
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 $PROJECT_DIR = Split-Path -Parent $SCRIPT_DIR
@@ -63,13 +63,13 @@ $DIST_DIR = Join-Path $PROJECT_DIR "packaging\distribuibles\windows"
 # Carpeta temporal separada para evitar bloqueos con la salida
 $TEMP_DIR = Join-Path $PROJECT_DIR "packaging\distribuibles\temp-windows"
 
-$JAR_SERVIDOR = Join-Path $PROJECT_DIR "baryx-servidor\target\baryx-servidor-$APP_VERSION.jar"
-$JAR_CLIENTE = Join-Path $PROJECT_DIR "baryx-cliente\target\baryx-cliente-$APP_VERSION.jar"
+$JAR_SERVIDOR = Join-Path $PROJECT_DIR "kipu-servidor\target\kipu-servidor-$APP_VERSION.jar"
+$JAR_CLIENTE = Join-Path $PROJECT_DIR "kipu-cliente\target\kipu-cliente-$APP_VERSION.jar"
 
-$ICON_PNG = Join-Path $PROJECT_DIR "baryx-cliente\src\main\resources\imagenes\ICON.png"
-$ICON_ICO = Join-Path $PROJECT_DIR "packaging\baryx.ico"
+$ICON_PNG = Join-Path $PROJECT_DIR "kipu-cliente\src\main\resources\imagenes\ICON.png"
+$ICON_ICO = Join-Path $PROJECT_DIR "packaging\kipu.ico"
 
-$NOMBRE_EJECUTABLE_SERVIDOR = "BaryxServidor"
+$NOMBRE_EJECUTABLE_SERVIDOR = "KipuServidor"
 
 $JAVAFX_VERSION = "21.0.5"
 
@@ -78,7 +78,7 @@ $JAVAFX_VERSION = "21.0.5"
 function Write-Banner {
     Write-Host ""
     Write-Host "  +=============================================+" -ForegroundColor Yellow
-    Write-Host "  |  BARYX - Empaquetado de Distribucion Windows |" -ForegroundColor Yellow
+    Write-Host "  |  KIPU - Empaquetado de Distribucion Windows |" -ForegroundColor Yellow
     Write-Host "  +=============================================+" -ForegroundColor Yellow
     Write-Host ""
 }
@@ -249,7 +249,7 @@ function Initialize-Dirs {
     # Limpiar carpeta de salida si existe
     if (Test-Path $DIST_DIR) {
         Write-Note "Limpiando distribuibles anteriores..."
-        $jarName = "baryx-servidor-$APP_VERSION.jar"
+        $jarName = "kipu-servidor-$APP_VERSION.jar"
         $procesos = Get-WmiObject Win32_Process -ErrorAction SilentlyContinue |
             Where-Object { $_.CommandLine -like "*$jarName*" }
 
@@ -264,7 +264,7 @@ function Initialize-Dirs {
         try {
             Remove-Item -Recurse -Force $DIST_DIR
         } catch {
-            Write-Err "No se pudo limpiar $DIST_DIR. Asegurese de cerrar BaryxServidor si esta en ejecucion."
+            Write-Err "No se pudo limpiar $DIST_DIR. Asegurese de cerrar KipuServidor si esta en ejecucion."
             throw $_
         }
     }
@@ -353,7 +353,7 @@ function Build-ServidorPortable {
         "--copyright", $APP_COPYRIGHT,
         "--description", $APP_DESCRIPTION_SERVIDOR,
         "--input", "$TEMP_DIR\servidor",
-        "--main-jar", "baryx-servidor-$APP_VERSION.jar",
+        "--main-jar", "kipu-servidor-$APP_VERSION.jar",
         "--main-class", "org.springframework.boot.loader.launch.JarLauncher",
         "--dest", $TEMP_DIR,
         "--java-options", "-Xms256m",
@@ -424,23 +424,23 @@ function Build-ClienteConWix {
         "jdk.accessibility"
     ) -join ","
 
-    $baryxApiUrl = if ($env:BARYX_API_URL) { $env:BARYX_API_URL } else { "https://baryxweb.onrender.com" }
+    $kipuApiUrl = if ($env:KIPU_API_URL) { $env:KIPU_API_URL } else { "https://kipuweb.onrender.com" }
 
     $jpackageArgs = @(
         "--type", "msi",
-        "--name", "Baryx",
+        "--name", "Kipu",
         "--app-version", $APP_VERSION,
         "--vendor", $APP_VENDOR,
         "--copyright", $APP_COPYRIGHT,
         "--description", $APP_DESCRIPTION_CLIENTE,
         "--input", "$TEMP_DIR\cliente",
-        "--main-jar", "baryx-cliente-$APP_VERSION.jar",
-        "--main-class", "com.baryx.cliente.BaryxClienteLauncher",
+        "--main-jar", "kipu-cliente-$APP_VERSION.jar",
+        "--main-class", "com.kipu.cliente.KipuClienteLauncher",
         "--dest", $DIST_DIR,
-        "--install-dir", "Baryx\Cliente",
+        "--install-dir", "Kipu\Cliente",
         "--add-modules", $modulosCliente,
         "--win-menu",
-        "--win-menu-group", "Baryx",
+        "--win-menu-group", "Kipu",
         "--win-shortcut",
         "--win-shortcut-prompt",
         "--java-options", "-Xms512m",
@@ -450,7 +450,7 @@ function Build-ClienteConWix {
         "--java-options", "-Dfile.encoding=UTF-8",
         "--java-options", "-Dglass.win.uiScale=1.0",
         "--java-options", "-Dprism.allowHiDPIScaling=false",
-        "--java-options", "-Dbaryx.api.url=$baryxApiUrl"
+        "--java-options", "-Dkipu.api.url=$kipuApiUrl"
     ) + $iconParams
 
     & jpackage @jpackageArgs
@@ -469,18 +469,18 @@ function Build-ClienteConInnoSetup {
     $clienteAppImageDir = "$TEMP_DIR\cliente-appimage"
     New-Item -ItemType Directory -Force -Path $clienteAppImageDir | Out-Null
 
-    $baryxApiUrl = if ($env:BARYX_API_URL) { $env:BARYX_API_URL } else { "https://baryxweb.onrender.com" }
+    $kipuApiUrl = if ($env:KIPU_API_URL) { $env:KIPU_API_URL } else { "https://kipuweb.onrender.com" }
 
     $jpackageArgs = @(
         "--type", "app-image",
-        "--name", "Baryx",
+        "--name", "Kipu",
         "--app-version", $APP_VERSION,
         "--vendor", $APP_VENDOR,
         "--copyright", $APP_COPYRIGHT,
         "--description", $APP_DESCRIPTION_CLIENTE,
         "--input", "$TEMP_DIR\cliente",
-        "--main-jar", "baryx-cliente-$APP_VERSION.jar",
-        "--main-class", "com.baryx.cliente.BaryxClienteLauncher",
+        "--main-jar", "kipu-cliente-$APP_VERSION.jar",
+        "--main-class", "com.kipu.cliente.KipuClienteLauncher",
         "--dest", $clienteAppImageDir,
         "--add-modules", "ALL-MODULE-PATH",
         "--java-options", "-Xms512m",
@@ -490,7 +490,7 @@ function Build-ClienteConInnoSetup {
         "--java-options", "-Dfile.encoding=UTF-8",
         "--java-options", "-Dglass.win.uiScale=1.0",
         "--java-options", "-Dprism.allowHiDPIScaling=false",
-        "--java-options", "-Dbaryx.api.url=$baryxApiUrl"
+        "--java-options", "-Dkipu.api.url=$kipuApiUrl"
     ) + $iconParams
 
     & jpackage @jpackageArgs
@@ -499,7 +499,7 @@ function Build-ClienteConInnoSetup {
         exit 1
     }
 
-    $appImagePath = "$clienteAppImageDir\Baryx"
+    $appImagePath = "$clienteAppImageDir\Kipu"
     if (-not (Test-Path $appImagePath)) {
         Write-Err "jpackage no genero la carpeta esperada: $appImagePath"
         exit 1
@@ -514,7 +514,7 @@ function Build-ClienteConInnoSetup {
     Write-Step "  Extrayendo DLLs nativos de JavaFX del fat JAR al runtime..."
 
     $runtimeBinDir = Join-Path $appImagePath "runtime\bin"
-    $fatJar = Join-Path $TEMP_DIR "cliente\baryx-cliente-$APP_VERSION.jar"
+    $fatJar = Join-Path $TEMP_DIR "cliente\kipu-cliente-$APP_VERSION.jar"
 
     if (-not (Test-Path $fatJar)) {
         Write-Err "No se encontro el fat JAR: $fatJar"
@@ -581,7 +581,7 @@ function Build-ClienteConInnoSetup {
     # ── Compilar instalador con Inno Setup ──
     Write-Step "  Compilando instalador con Inno Setup..."
 
-    $issFile = Join-Path $PROJECT_DIR "packaging\windows\baryx-cliente.iss"
+    $issFile = Join-Path $PROJECT_DIR "packaging\windows\kipu-cliente.iss"
     if (-not (Test-Path $issFile)) {
         Write-Err "No se encontro $issFile"
         exit 1
@@ -623,9 +623,9 @@ function Build-ClienteConInnoSetup {
         exit 1
     }
 
-    $instaladorExe = "$DIST_DIR\Baryx-$APP_VERSION.exe"
+    $instaladorExe = "$DIST_DIR\Kipu-$APP_VERSION.exe"
     if (Test-Path $instaladorExe) {
-        Write-Ok "Instalador .exe generado: Baryx-$APP_VERSION.exe"
+        Write-Ok "Instalador .exe generado: Kipu-$APP_VERSION.exe"
     } else {
         Write-Err "No se encontro el instalador generado: $instaladorExe"
         exit 1

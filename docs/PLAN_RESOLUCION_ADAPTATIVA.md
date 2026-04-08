@@ -1,7 +1,7 @@
-# Plan: Sistema de Resolución Adaptativa — Baryx
+# Plan: Sistema de Resolución Adaptativa — Kipu
 
 > **Fecha**: 27 de marzo de 2026  
-> **Objetivo**: Que la UI de Baryx se vea nativa en cualquier pantalla, detectando automáticamente la resolución y proporción, con opción de override manual en Configuración.
+> **Objetivo**: Que la UI de Kipu se vea nativa en cualquier pantalla, detectando automáticamente la resolución y proporción, con opción de override manual en Configuración.
 
 ---
 
@@ -45,7 +45,7 @@
 ├──────────────────────────────────────────────────────┤
 │  CAPA 3: Override manual (Configuración del ADMIN)   │
 │  → ComboBox de perfiles + Slider de escala global    │
-│  → Persistido en baryx-cliente.properties            │
+│  → Persistido en kipu-cliente.properties            │
 └──────────────────────────────────────────────────────┘
 ```
 
@@ -134,7 +134,7 @@ Ubicación: Sección "Sistema" del panel de configuración existente (solo ADMIN
 └──────────────────────────────────────────┘
 ```
 
-Persistencia en `baryx-cliente.properties`:
+Persistencia en `kipu-cliente.properties`:
 ```properties
 pantalla.perfil=AUTO
 pantalla.escala.manual=1.0
@@ -204,8 +204,8 @@ pantalla.escala.manual=1.0
 | Paso | Qué | Archivos | Impacto | Esfuerzo |
 |:----:|-----|----------|---------|:--------:|
 | **1** | `DetectorPantalla` + `ResolucionPerfil` (motor base) | 2 archivos Java nuevos + props en ConfiguracionCliente | Infraestructura para todo lo demás | Medio |
-| **2** | Refactorizar `aplicarEscalado()` para usar perfiles dinámicos | `BaryxClienteApplication.java` | Elimina distorsión en todas las proporciones | Medio |
-| **3** | Font-size global dinámico en `.root` | `BaryxClienteApplication.java` + `estilos.css` | Toda la tipografía escala automáticamente | Bajo |
+| **2** | Refactorizar `aplicarEscalado()` para usar perfiles dinámicos | `KipuClienteApplication.java` | Elimina distorsión en todas las proporciones | Medio |
+| **3** | Font-size global dinámico en `.root` | `KipuClienteApplication.java` + `estilos.css` | Toda la tipografía escala automáticamente | Bajo |
 | **4** | Migrar teclado virtual a `em` | `estilos.css` (sección keyboard) | Fix más visible en resoluciones bajas | Bajo |
 | **5** | Migrar login card y menu cards a `em` | `estilos.css` + login-pin.fxml + menu-principal.fxml | Elimina overflow/underflow en extremos | Bajo |
 | **6** | CSS overrides para `ratio-classic` y `ratio-ultrawide` | `estilos.css` | Layout correcto en 4:3 y 21:9 | Medio |

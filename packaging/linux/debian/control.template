@@ -1,13 +1,13 @@
-Package: baryx
+Package: kipu
 Version: {{VERSION}}
 Section: misc
 Priority: optional
 Architecture: amd64
 Installed-Size: {{INSTALLED_SIZE}}
-Maintainer: Dilan Acuña <info@baryx.org>
-Description: Baryx - Software POS
+Maintainer: Dilan Acuña <info@kipu.org>
+Description: Kipu - Software POS
  Sistema completo de punto de venta y gestion de pedidos.
  Incluye cliente grafico (POS,comanderas, panel admin) y servidor con base de datos.
  Operacion 100% LAN, sin requerir internet.
  Optimizado para equipos de gama baja.
-Homepage: https://www.baryx.org
+Homepage: https://www.kipu.org

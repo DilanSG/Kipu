@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Kipu Cliente
+Comment=Sistema POS para bares y locales nocturnos
+Comment[en]=POS system for bars and nightlife venues
+Exec=/opt/kipu/cliente/bin/Kipu
+Icon=kipu
+Terminal=false
+Type=Application
+Categories=Office;Finance;
+Keywords=pos;kipu;bar;ventas;pedidos;
+StartupWMClass=com-kipu-cliente-KipuClienteLauncher

@@ -1,6 +1,6 @@
-# Guia de Empaquetado - Baryx
+# Guia de Empaquetado - Kipu
 
-Genera instaladores nativos del sistema Baryx (cliente + servidor) para Windows y Linux.
+Genera instaladores nativos del sistema Kipu (cliente + servidor) para Windows y Linux.
 
 Los instaladores son **autocontenidos**: incluyen tanto el cliente como el servidor con JRE embebido. El usuario final solo necesita el instalador (`.exe` / `.deb`) y PostgreSQL.
 
@@ -13,8 +13,8 @@ El empaquetado genera una carpeta `dist/` con:
 ```
 dist/
 +-- servidor/                   Servidor portable (tambien empaquetado dentro del instalador)
-+-- Baryx-1.0.0.exe             Instalador Windows (Inno Setup) con cliente + servidor
-+-- baryx_1.0.0_amd64.deb       Instalador Linux (dpkg-deb) con cliente + servidor
++-- Kipu-1.0.0.exe             Instalador Windows (Inno Setup) con cliente + servidor
++-- kipu_1.0.0_amd64.deb       Instalador Linux (dpkg-deb) con cliente + servidor
 +-- LICENSE
 +-- README.md
 ```
@@ -33,8 +33,8 @@ dist/
 
 | SO | Cliente | Servidor |
 |----|---------|----------|
-| Windows | `C:\Program Files\Baryx\Cliente\` | `C:\Program Files\Baryx\servidor\` |
-| Linux | `/opt/baryx/cliente/` | `/opt/baryx/servidor/` |
+| Windows | `C:\Program Files\Kipu\Cliente\` | `C:\Program Files\Kipu\servidor\` |
+| Linux | `/opt/kipu/cliente/` | `/opt/kipu/servidor/` |
 
 ---
 
@@ -100,7 +100,7 @@ dist/
 1. `jpackage --type app-image` genera el app-image del cliente
 2. Se copian DLLs nativos de JavaFX al runtime
 3. Se copia `iniciar-consola.bat` (diagnostico) y `java.exe`
-4. Inno Setup compila el `.exe` usando `packaging/windows/baryx-cliente.iss`
+4. Inno Setup compila el `.exe` usando `packaging/windows/kipu-cliente.iss`
 5. El `.iss` recibe por parametro (`/D`) las rutas del app-image y del servidor
 
 El `.iss` esta parametrizado: version, rutas, icono y licencia se pasan desde `package.ps1` sin modificar el archivo.
@@ -109,10 +109,10 @@ El `.iss` esta parametrizado: version, rutas, icono y licencia se pasan desde `p
 
 1. `jpackage --type app-image` genera el app-image del cliente
 2. Se construye manualmente la estructura del `.deb`:
-   - `/opt/baryx/cliente/` — app-image del cliente
-   - `/opt/baryx/servidor/` — servidor portable (copiado de `dist/servidor/`)
-   - `/usr/share/applications/baryx.desktop` — entrada en menu de apps
-   - `/usr/share/pixmaps/baryx.png` — icono
+   - `/opt/kipu/cliente/` — app-image del cliente
+   - `/opt/kipu/servidor/` — servidor portable (copiado de `dist/servidor/`)
+   - `/usr/share/applications/kipu.desktop` — entrada en menu de apps
+   - `/usr/share/pixmaps/kipu.png` — icono
    - `DEBIAN/control`, `postinst`, `prerm`, `postrm` — desde `packaging/linux/debian/`
 3. `dpkg-deb --build` genera el `.deb` final
 
@@ -124,16 +124,16 @@ El `.iss` esta parametrizado: version, rutas, icono y licencia se pasan desde `p
 
 ```
 packaging/
-+-- baryx.ico                          Icono Windows (.ico)
++-- kipu.ico                          Icono Windows (.ico)
 +-- generar-icono.sh                   Script para generar .ico desde PNG
 +-- README.md                          Descripcion del directorio
 +-- windows/
-|   +-- baryx-cliente.iss              Config de Inno Setup (parametrizada)
+|   +-- kipu-cliente.iss              Config de Inno Setup (parametrizada)
 |   +-- iniciar-consola.bat            Consola de diagnostico (template)
 |   +-- setup-inicial.bat              Setup de BD + arranque servidor
 |   +-- README.md                      README para distribucion Windows
 +-- linux/
-    +-- baryx.desktop                  Entrada freedesktop para menu de apps
+    +-- kipu.desktop                  Entrada freedesktop para menu de apps
     +-- setup-inicial.sh               Setup de BD + arranque servidor
     +-- README.md                      README para distribucion Linux
     +-- debian/
@@ -164,35 +164,35 @@ Para ambos: compilar en cada SO.
 
 | SO | Archivo | Tamano aprox. |
 |----|---------|--------------|
-| Windows | `Baryx-1.0.0.exe` | ~130 MB |
-| Linux | `baryx_1.0.0_amd64.deb` | ~200 MB |
+| Windows | `Kipu-1.0.0.exe` | ~130 MB |
+| Linux | `kipu_1.0.0_amd64.deb` | ~200 MB |
 
 Solo se necesita **un archivo** por SO. El instalador contiene todo (cliente, servidor, JRE).
 
 ### Instalar
 
 ```powershell
-# Windows: doble clic en Baryx-1.0.0.exe, o:
-Start-Process .\Baryx-1.0.0.exe
+# Windows: doble clic en Kipu-1.0.0.exe, o:
+Start-Process .\Kipu-1.0.0.exe
 ```
 
 ```bash
 # Linux (Debian/Ubuntu):
-sudo dpkg -i baryx_1.0.0_amd64.deb
+sudo dpkg -i kipu_1.0.0_amd64.deb
 
 # Linux (Fedora/RHEL):
-sudo rpm -i baryx-1.0.0.x86_64.rpm
+sudo rpm -i kipu-1.0.0.x86_64.rpm
 ```
 
 ### Desinstalar
 
 ```powershell
-# Windows: Panel de Control > Programas > Baryx > Desinstalar
+# Windows: Panel de Control > Programas > Kipu > Desinstalar
 ```
 
 ```bash
 # Linux:
-sudo apt remove baryx
+sudo apt remove kipu
 ```
 
 ---

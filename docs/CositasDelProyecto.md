@@ -1,16 +1,16 @@
 # Arquitectura - Diagrama Visual
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SISTEMA BARYX - ARQUITECTURA COMMON                      │
+│                    SISTEMA KIPU - ARQUITECTURA COMMON                      │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                            BARYX-COMMON (Compartido)                        │
+│                            KIPU-COMMON (Compartido)                        │
 │                    Dependencia de cliente Y servidor                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  dto/                     constantes/               excepcion/              │
-│  ├─ ProductoDto           ├─ Endpoints              ├─ BaryxException       │
+│  ├─ ProductoDto           ├─ Endpoints              ├─ KipuException       │
 │  ├─ UsuarioDto            ├─ Http                   ├─ RecursoNoEncontrado  │
 │  ├─ CategoriaDto          ├─ Jwt                    ├─ ValidacionException  │
 │  ├─ RespuestaApi          ├─ Formatos               ├─ AutenticacionEx.     │
@@ -30,7 +30,7 @@
                     ▼                                     ▼
 
 ┌────────────────────────────────┐    ┌────────────────────────────────┐
-│      BARYX-CLIENTE (JavaFX)    │    │   BARYX-SERVIDOR (Spring Boot) │
+│      KIPU-CLIENTE (JavaFX)    │    │   KIPU-SERVIDOR (Spring Boot) │
 │         Frontend Táctil        │    │        Backend REST API        │
 ├────────────────────────────────┤    ├────────────────────────────────┤
 │                                │    │                                │
@@ -156,7 +156,7 @@
 
 ##  Jerarquía de Excepciones
 
-BaryxException (abstracta)
+KipuException (abstracta)
 │
 ├─ RecursoNoEncontradoException (404)
 │  └─ Uso: Usuario/Producto/Pedido no encontrado

@@ -1,6 +1,6 @@
-# Baryx - Guía de Inicio Rápido
+# Kipu - Guía de Inicio Rápido
 
-Esta guía te permite instalar y ejecutar Baryx en tu máquina desde cero, en Windows o Linux/Mac. Sigue los pasos en orden. Se estima 15-20 minutos siguiendo esta guía.
+Esta guía te permite instalar y ejecutar Kipu en tu máquina desde cero, en Windows o Linux/Mac. Sigue los pasos en orden. Se estima 15-20 minutos siguiendo esta guía.
 
 ## Requisitos previos
 
@@ -20,17 +20,17 @@ Para Windows, asegúrate de agregar las herramientas al PATH del sistema.
 
 Si es la primera vez que configuras todo, se ejecuta el script de inicialización. Este script crea el usuario de conexión y la base de datos.
 
-En la terminal, navega a la carpeta de Baryx:
+En la terminal, navega a la carpeta de Kipu:
 
 **Windows (PowerShell):**
 ```powershell
-cd C:\Users\<u>\Desktop\Baryx
+cd C:\Users\<u>\Desktop\Kipu
 psql -U postgres -f database\setup-database.sql
 ```
 
 **Linux/Mac (Terminal):**
 ```bash
-cd ~/Desktop/Baryx
+cd ~/Desktop/Kipu
 cp database/setup-database.sql /tmp/
 sudo -u postgres psql -f /tmp/setup-database.sql
 rm /tmp/setup-database.sql
@@ -83,11 +83,11 @@ ALTER USER postgres WITH PASSWORD 'cambia_esta_clave';
 ```
 
 El script realiza lo siguiente:
-- Crea un usuario llamado `baryx_admin` con contraseña inicial `baryx2026`
-- Crea una base de datos llamada `baryx_db`, propiedad de `baryx_admin`
+- Crea un usuario llamado `kipu_admin` con contraseña inicial `kipu2026`
+- Crea una base de datos llamada `kipu_db`, propiedad de `kipu_admin`
 - Configura los permisos necesarios para que la aplicación funcione
 
-Importante: si cambias la contraseña de `baryx_admin`, recuerda actualizar también `DB_PASSWORD` en tu archivo `.env`.
+Importante: si cambias la contraseña de `kipu_admin`, recuerda actualizar también `DB_PASSWORD` en tu archivo `.env`.
 
 ### Si necesitas eliminar todo y empezar de cero
 
@@ -130,13 +130,13 @@ La aplicación necesita conocer dónde está la base de datos y otras configurac
 
 **Windows (PowerShell):**
 ```powershell
-cd C:\Users\<tu_usuario>\Desktop\Baryx
+cd C:\Users\<tu_usuario>\Desktop\Kipu
 Copy-Item ".env.example" ".env"
 ```
 
 **Linux/Mac (Terminal):**
 ```bash
-cd ~/Desktop/Baryx
+cd ~/Desktop/Kipu
 cp .env.example .env
 ```
 
@@ -148,19 +148,19 @@ Abre el archivo `.env` con cualquier editor de texto (Bloc de notas, VS Code, et
 # Base de datos
 DB_HOST=127.0.0.1
 DB_PORT=5432
-DB_NAME=baryx_db
-DB_USER=baryx_admin
-DB_PASSWORD=baryx2026
+DB_NAME=kipu_db
+DB_USER=kipu_admin
+DB_PASSWORD=kipu2026
 
 # JWT - Clave secreta para tokens (mínimo 32 caracteres)
-JWT_SECRET=BaryxSecretKey2026WithAtLeast32CharactersForJWTTokenGeneration
+JWT_SECRET=KipuSecretKey2026WithAtLeast32CharactersForJWTTokenGeneration
 
 # Servidor
 SERVER_PORT=8080
 SPRING_PROFILES_ACTIVE=prod
 ```
 
-Si cambiaste la contraseña de `baryx_admin`, actualiza el valor de `DB_PASSWORD`.
+Si cambiaste la contraseña de `kipu_admin`, actualiza el valor de `DB_PASSWORD`.
 
 Para generar una clave JWT más segura:
 
@@ -184,13 +184,13 @@ La compilación prepara el código fuente para ser ejecutado. Maven descargará 
 
 **Windows (PowerShell):**
 ```powershell
-cd C:\Users\<tu_usuario>\Desktop\Baryx
+cd C:\Users\<tu_usuario>\Desktop\Kipu
 .\scripts\build.ps1
 ```
 
 **Linux/Mac:**
 ```bash
-cd ~/Desktop/Baryx
+cd ~/Desktop/Kipu
 ./scripts/build.sh
 ```
 
@@ -210,23 +210,23 @@ Esto limpia cualquier compilación anterior, descarga dependencias y compila el 
 
 ## Paso 4: Iniciar el sistema
 
-Para ejecutar Baryx, necesitas abrir dos pantallas de terminal: una para el servidor y otra para el cliente.
+Para ejecutar Kipu, necesitas abrir dos pantallas de terminal: una para el servidor y otra para el cliente.
 
 ### Opción A: Usar los scripts (recomendado)
 
-Abre dos terminales/PowerShells en la carpeta de Baryx.
+Abre dos terminales/PowerShells en la carpeta de Kipu.
 
 **Terminal 1 - Iniciar el servidor:**
 
 **Windows (PowerShell):**
 ```powershell
-cd C:\Users\<tu_usuario>\Desktop\Baryx
+cd C:\Users\<tu_usuario>\Desktop\Kipu
 .\scripts\start-servidor.ps1
 ```
 
 **Linux/Mac (Terminal):**
 ```bash
-cd ~/Desktop/Baryx
+cd ~/Desktop/Kipu
 ./scripts/start-servidor.sh
 ```
 
@@ -236,17 +236,17 @@ Espera a ver un mensaje de confirmación como "Tomcat started on port 8080" o si
 
 **Windows (PowerShell):**
 ```powershell
-cd C:\Users\<tu_usuario>\Desktop\Baryx
+cd C:\Users\<tu_usuario>\Desktop\Kipu
 .\scripts\start-cliente.ps1
 ```
 
 **Linux/Mac (Terminal):**
 ```bash
-cd ~/Desktop/Baryx
+cd ~/Desktop/Kipu
 ./scripts/start-cliente.sh
 ```
 
-Debería abrirse una ventana gráfica con la interfaz de Baryx automáticamente.
+Debería abrirse una ventana gráfica con la interfaz de Kipu automáticamente.
 
 ### Opción B: Compilar y ejecutar con Maven (para desarrollo)
 
@@ -254,13 +254,13 @@ Si prefieres más control o quieres hacer cambios en el código con actualizacio
 
 **Terminal 1 - Servidor:**
 ```bash
-cd <ruta_a_baryx>/baryx-servidor
+cd <ruta_a_kipu>/kipu-servidor
 mvn spring-boot:run
 ```
 
 **Terminal 2 - Cliente:**
 ```bash
-cd <ruta_a_baryx>/baryx-cliente
+cd <ruta_a_kipu>/kipu-cliente
 mvn javafx:run
 ```
 
@@ -286,36 +286,36 @@ Puedes empaquetar la aplicación en ejecutables que no requieren Java instalado 
 
 **Windows (PowerShell):**
 ```powershell
-cd C:\Users\<tu_usuario>\Desktop\Baryx
+cd C:\Users\<tu_usuario>\Desktop\Kipu
 .\scripts\package.ps1
 ```
 
 **Linux/Mac:**
 ```bash
-cd ~/Desktop/Baryx
+cd ~/Desktop/Kipu
 ./scripts/package.sh
 ```
 
 El proceso toma 5-10 minutos. Los ejecutables se crearán en la carpeta `dist/`.
 
-Para distribuir en otras máquinas, copia las carpetas de `dist/portable/` a las computadoras donde necesites ejecutar Baryx.
+Para distribuir en otras máquinas, copia las carpetas de `dist/portable/` a las computadoras donde necesites ejecutar Kipu.
 
 ---
 
 ## Estructura del proyecto
 
-Para entender cómo está organizado Baryx:
+Para entender cómo está organizado Kipu:
 
 ```
-Baryx/
+Kipu/
 ├── .env                         <- Configuración local (no incluir en versionado)
 ├── pom.xml                      <- Configuración de Maven para compilación
-├── baryx-common/                <- Código compartido (modelos de datos)
-├── baryx-servidor/              <- API REST del servidor (Spring Boot)
+├── kipu-common/                <- Código compartido (modelos de datos)
+├── kipu-servidor/              <- API REST del servidor (Spring Boot)
 │   ├── src/
 │   ├── logs/
 │   └── pom.xml
-├── baryx-cliente/               <- Interfaz gráfica (JavaFX)
+├── kipu-cliente/               <- Interfaz gráfica (JavaFX)
 │   ├── src/
 │   ├── logs/
 │   └── pom.xml
@@ -458,8 +458,8 @@ mvn clean package -DskipTests
 ```
 
 Si el problema persiste, revisa los logs en:
-- Servidor: `baryx-servidor/logs/baryx-servidor.log`
-- Cliente: `baryx-cliente/logs/baryx-cliente.log`
+- Servidor: `kipu-servidor/logs/kipu-servidor.log`
+- Cliente: `kipu-cliente/logs/kipu-cliente.log`
 
 ---
 
@@ -476,10 +476,10 @@ Verifica que:
 
 ### Ejecutar el cliente en otra máquina de la red
 
-Si habéis instalado Baryx en una máquina principal y querés ejecutar clientes en otras máquinas:
+Si habéis instalado Kipu en una máquina principal y querés ejecutar clientes en otras máquinas:
 
 1. Ejecuta el servidor en la máquina principal (ej. IP `192.168.1.100`)
-2. En las otras máquinas, edita `.env` o `baryx-cliente.properties`:
+2. En las otras máquinas, edita `.env` o `kipu-cliente.properties`:
    ```properties
    SERVER_URL=http://192.168.1.100:8080
    ```
@@ -489,16 +489,16 @@ Si habéis instalado Baryx en una máquina principal y querés ejecutar clientes
 
 ### Cambiar contraseña de la base de datos
 
-Si necesitás cambiar la contraseña de `baryx_admin`:
+Si necesitás cambiar la contraseña de `kipu_admin`:
 
 **Windows:**
 ```powershell
-psql -U postgres -d postgres -c "ALTER USER baryx_admin WITH PASSWORD 'nueva_contrasena';"
+psql -U postgres -d postgres -c "ALTER USER kipu_admin WITH PASSWORD 'nueva_contrasena';"
 ```
 
 **Linux/Mac:**
 ```bash
-sudo -u postgres psql -d postgres -c "ALTER USER baryx_admin WITH PASSWORD 'nueva_contrasena';"
+sudo -u postgres psql -d postgres -c "ALTER USER kipu_admin WITH PASSWORD 'nueva_contrasena';"
 ```
 
 Luego actualiza el archivo `.env` con la nueva contraseña de `DB_PASSWORD`.
@@ -507,7 +507,7 @@ Luego actualiza el archivo `.env` con la nueva contraseña de `DB_PASSWORD`.
 
 ## Próximos pasos
 
-Después de que Baryx funcione correctamente:
+Después de que Kipu funcione correctamente:
 
 1. **Cambiar contraseñas:** Accede como admin y modifica las contraseñas de prueba
 2. **Crear usuarios reales:** Agrega los usuarios que trabajarán en el sistema
@@ -523,6 +523,6 @@ Para documentación técnica más detallada, revisar la carpeta `docs/`.
 
 - **Configuración:** `.env` (no incluir en versionado)
 - **Configuración ejemplo:** `.env.example`
-- **Logs del servidor:** `baryx-servidor/logs/baryx-servidor.log`
-- **Logs del cliente:** `baryx-cliente/logs/baryx-cliente.log`
+- **Logs del servidor:** `kipu-servidor/logs/kipu-servidor.log`
+- **Logs del cliente:** `kipu-cliente/logs/kipu-cliente.log`
 - **Scripts de base de datos:** `database/`

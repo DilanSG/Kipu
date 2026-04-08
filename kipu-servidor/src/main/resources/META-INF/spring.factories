@@ -1,0 +1,4 @@
+# Kipu - Cargador automático de archivo .env
+# Registra el EnvironmentPostProcessor que lee variables de $HOME/.kipu/.env
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  com.kipu.servidor.configuracion.CargadorArchivoEnv

@@ -1,11 +1,11 @@
 -- =========================================================
--- Baryx - Reset de datos (conserva la BD y el usuario)
+-- Kipu - Reset de datos (conserva la BD y el usuario)
 -- =========================================================
--- Elimina todas las tablas y datos dentro de baryx_db para
+-- Elimina todas las tablas y datos dentro de kipu_db para
 -- que Flyway las recree al próximo arranque del servidor.
 --
 -- Ejecutar:
---   sudo -u postgres psql -d baryx_db -f database/reset-database.sql
+--   sudo -u postgres psql -d kipu_db -f database/reset-database.sql
 --
 -- ADVERTENCIA: Se perderán TODOS los datos. Solo para desarrollo.
 -- =========================================================

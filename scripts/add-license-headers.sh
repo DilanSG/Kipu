@@ -1,9 +1,9 @@
 #!/bin/bash
 # Script para añadir encabezados de copyright a todos los archivos Java
-# Baryx - Sistema POS y gestión de pedidos
+# Kipu - Sistema POS y gestión de pedidos
 
-HEADER='/*Copyright (c) 2026 Baryx. Todos los derechos reservados.
- * Licenciado bajo la Licencia de Uso de Software Baryx (basada en Elastic License 2.0).
+HEADER='/*Copyright (c) 2026 Kipu. Todos los derechos reservados.
+ * Licenciado bajo la Licencia de Uso de Software Kipu (basada en Elastic License 2.0).
  * Consulte el archivo LICENSE en la raiz del proyecto para mas informacion.
  * Queda prohibido el uso, copia o distribucion sin autorizacion expresa del titular.*/'
 
@@ -11,7 +11,7 @@ RAIZ="$(cd "$(dirname "$0")/.." && pwd)"
 
 mapfile -t javaFiles < <(find "$RAIZ" -path "*/src/main/java/*" -name "*.java" -type f)
 
-echo "Baryx - Licenciador de Archivos Java"
+echo "Kipu - Licenciador de Archivos Java"
 echo "Archivos encontrados: ${#javaFiles[@]}"
 
 modificados=0

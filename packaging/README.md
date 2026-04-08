@@ -1,20 +1,20 @@
-# Packaging - Baryx
+# Packaging - Kipu
 
-Recursos para generar instaladores nativos de Baryx.
+Recursos para generar instaladores nativos de Kipu.
 
 ## Estructura
 
 ```
 packaging/
-+-- baryx.ico                  Icono Windows (.ico)
-+-- generar-icono.sh           Convierte LOGOPNG.png a baryx.ico (requiere ImageMagick)
++-- kipu.ico                  Icono Windows (.ico)
++-- generar-icono.sh           Convierte LOGOPNG.png a kipu.ico (requiere ImageMagick)
 +-- windows/
-|   +-- baryx-cliente.iss      Config de Inno Setup (parametrizada con /D)
+|   +-- kipu-cliente.iss      Config de Inno Setup (parametrizada con /D)
 |   +-- iniciar-consola.bat    Template consola de diagnostico
 |   +-- setup-inicial.bat      Setup BD + arranque servidor (Windows)
 |   +-- README.md              Guia de instalacion para usuarios finales (Windows)
 +-- linux/
-    +-- baryx.desktop          Entrada freedesktop para menu de aplicaciones
+    +-- kipu.desktop          Entrada freedesktop para menu de aplicaciones
     +-- setup-inicial.sh       Setup BD + arranque servidor (Linux)
     +-- README.md              Guia de instalacion para usuarios finales (Linux)
     +-- debian/

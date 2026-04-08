@@ -1,4 +1,4 @@
-name: Release Baryx
+name: Release Kipu
 
 on:
   push:
@@ -48,22 +48,22 @@ jobs:
       - name: Request trial license key from backend
         id: trial_key
         env:
-          BARYX_API_URL: ${{ secrets.BARYX_API_URL }}
-          BARYX_ADMIN_KEY: ${{ secrets.BARYX_ADMIN_KEY }}
+          KIPU_API_URL: ${{ secrets.KIPU_API_URL }}
+          KIPU_ADMIN_KEY: ${{ secrets.KIPU_ADMIN_KEY }}
         run: |
-          if [ -z "$BARYX_API_URL" ] || [ -z "$BARYX_ADMIN_KEY" ]; then
-            echo "::warning::BARYX_API_URL o BARYX_ADMIN_KEY no configurados. Se omite licencia trial."
+          if [ -z "$KIPU_API_URL" ] || [ -z "$KIPU_ADMIN_KEY" ]; then
+            echo "::warning::KIPU_API_URL o KIPU_ADMIN_KEY no configurados. Se omite licencia trial."
             echo "key=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           # Wake-up ping (Render free tier duerme tras 15 min de inactividad)
           echo "Despertando backend (cold-start puede tardar ~60s)..."
-          curl -so /dev/null --max-time 90 "${BARYX_API_URL}/v1/releases/latest" || true
+          curl -so /dev/null --max-time 90 "${KIPU_API_URL}/v1/releases/latest" || true
           # Intentar obtener licencia trial (2 intentos, 60s timeout cada uno)
           for i in 1 2; do
             RESPONSE=$(curl -sf --max-time 60 \
-              -X POST "${BARYX_API_URL}/v1/admin/licenses/trial" \
-              -H "Authorization: Bearer ${BARYX_ADMIN_KEY}" \
+              -X POST "${KIPU_API_URL}/v1/admin/licenses/trial" \
+              -H "Authorization: Bearer ${KIPU_ADMIN_KEY}" \
               -H "Content-Type: application/json" \
               -d '{"trialDays": 14}') && break
             echo "::notice::Intento $i fallido (curl exit $?), reintentando en 10s..."
@@ -81,7 +81,7 @@ jobs:
 
       - name: Inject trial key into license.properties
         run: |
-          PROPS="baryx-cliente/src/main/resources/license.properties"
+          PROPS="kipu-cliente/src/main/resources/license.properties"
           mkdir -p "$(dirname "$PROPS")"
           KEY="${{ steps.trial_key.outputs.key }}"
           if [ -n "$KEY" ]; then
@@ -96,16 +96,16 @@ jobs:
 
       - name: Build JARs
         env:
-          BARYX_ATLAS_URI: ${{ secrets.BARYX_ATLAS_URI }}
+          KIPU_ATLAS_URI: ${{ secrets.KIPU_ATLAS_URI }}
         run: mvn clean package -DskipTests -q -Pmultiplataforma
 
       - name: Upload JARs for other jobs
         uses: actions/upload-artifact@v4
         with:
-          name: baryx-jars
+          name: kipu-jars
           path: |
-            baryx-cliente/target/baryx-cliente-*.jar
-            baryx-servidor/target/baryx-servidor-*.jar
+            kipu-cliente/target/kipu-cliente-*.jar
+            kipu-servidor/target/kipu-servidor-*.jar
           retention-days: 1
 
       - name: Install packaging dependencies
@@ -113,14 +113,14 @@ jobs:
 
       - name: Package Linux (.deb)
         env:
-          BARYX_VERSION: ${{ steps.get_version.outputs.version }}
-          BARYX_API_URL: ${{ secrets.BARYX_API_URL }}
+          KIPU_VERSION: ${{ steps.get_version.outputs.version }}
+          KIPU_API_URL: ${{ secrets.KIPU_API_URL }}
         run: chmod +x scripts/package.sh && ./scripts/package.sh todo deb
 
       - name: Compute SHA-256 checksum
         id: checksum_linux
         run: |
-          FILE=$(ls packaging/distribuibles/linux/baryx_*.deb | head -1)
+          FILE=$(ls packaging/distribuibles/linux/kipu_*.deb | head -1)
           HASH=$(sha256sum "$FILE" | awk '{print $1}')
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
           echo "hash=$HASH" >> "$GITHUB_OUTPUT"
@@ -129,7 +129,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-linux
-          path: packaging/distribuibles/linux/baryx_*.deb
+          path: packaging/distribuibles/linux/kipu_*.deb
 
 
   # ==========================================================================
@@ -154,20 +154,20 @@ jobs:
       - name: Download JARs from Linux job
         uses: actions/download-artifact@v4
         with:
-          name: baryx-jars
+          name: kipu-jars
 
       - name: Restore JAR paths for packaging script
         shell: bash
         run: |
-          mkdir -p baryx-cliente/target baryx-servidor/target
-          mv baryx-cliente-*.jar baryx-cliente/target/ 2>/dev/null || true
-          mv baryx-servidor-*.jar baryx-servidor/target/ 2>/dev/null || true
+          mkdir -p kipu-cliente/target kipu-servidor/target
+          mv kipu-cliente-*.jar kipu-cliente/target/ 2>/dev/null || true
+          mv kipu-servidor-*.jar kipu-servidor/target/ 2>/dev/null || true
 
       - name: Inject trial key into license.properties
         shell: bash
         run: |
-          mkdir -p baryx-cliente/src/main/resources
-          PROPS="baryx-cliente/src/main/resources/license.properties"
+          mkdir -p kipu-cliente/src/main/resources
+          PROPS="kipu-cliente/src/main/resources/license.properties"
           KEY="${{ needs.build-linux.outputs.trial_key }}"
           if [ -n "$KEY" ]; then
             printf 'license.key=%s\nlicense.type=trial\n' "$KEY" > "$PROPS"
@@ -182,8 +182,8 @@ jobs:
       - name: Package Windows (.exe)
         shell: pwsh
         env:
-          BARYX_VERSION: ${{ needs.build-linux.outputs.app_version }}
-          BARYX_API_URL: ${{ secrets.BARYX_API_URL }}
+          KIPU_VERSION: ${{ needs.build-linux.outputs.app_version }}
+          KIPU_API_URL: ${{ secrets.KIPU_API_URL }}
         run: |
           .\scripts\package.ps1 todo exe
 
@@ -191,7 +191,7 @@ jobs:
         id: checksum_windows
         shell: bash
         run: |
-          FILE=$(ls packaging/distribuibles/windows/Baryx-*.exe | head -1)
+          FILE=$(ls packaging/distribuibles/windows/Kipu-*.exe | head -1)
           HASH=$(sha256sum "$FILE" | awk '{print $1}')
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
           echo "hash=$HASH" >> "$GITHUB_OUTPUT"
@@ -200,7 +200,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-windows
-          path: packaging/distribuibles/windows/Baryx-*.exe
+          path: packaging/distribuibles/windows/Kipu-*.exe
 
 
   # ==========================================================================
@@ -225,18 +225,18 @@ jobs:
       - name: Download JARs from Linux job
         uses: actions/download-artifact@v4
         with:
-          name: baryx-jars
+          name: kipu-jars
 
       - name: Restore JAR paths for packaging script
         run: |
-          mkdir -p baryx-cliente/target baryx-servidor/target
-          mv baryx-cliente-*.jar baryx-cliente/target/ 2>/dev/null || true
-          mv baryx-servidor-*.jar baryx-servidor/target/ 2>/dev/null || true
+          mkdir -p kipu-cliente/target kipu-servidor/target
+          mv kipu-cliente-*.jar kipu-cliente/target/ 2>/dev/null || true
+          mv kipu-servidor-*.jar kipu-servidor/target/ 2>/dev/null || true
 
       - name: Inject trial key into license.properties
         run: |
-          mkdir -p baryx-cliente/src/main/resources
-          PROPS="baryx-cliente/src/main/resources/license.properties"
+          mkdir -p kipu-cliente/src/main/resources
+          PROPS="kipu-cliente/src/main/resources/license.properties"
           KEY="${{ needs.build-linux.outputs.trial_key }}"
           if [ -n "$KEY" ]; then
             printf 'license.key=%s\nlicense.type=trial\n' "$KEY" > "$PROPS"
@@ -247,14 +247,14 @@ jobs:
 
       - name: Package macOS (.dmg)
         env:
-          BARYX_VERSION: ${{ needs.build-linux.outputs.app_version }}
-          BARYX_API_URL: ${{ secrets.BARYX_API_URL }}
+          KIPU_VERSION: ${{ needs.build-linux.outputs.app_version }}
+          KIPU_API_URL: ${{ secrets.KIPU_API_URL }}
         run: chmod +x scripts/package-mac.sh && ./scripts/package-mac.sh todo dmg
 
       - name: Compute SHA-256 checksum
         id: checksum_macos
         run: |
-          FILE=$(ls packaging/distribuibles/macos/Baryx-*.dmg | head -1)
+          FILE=$(ls packaging/distribuibles/macos/Kipu-*.dmg | head -1)
           HASH=$(shasum -a 256 "$FILE" | awk '{print $1}')
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
           echo "hash=$HASH" >> "$GITHUB_OUTPUT"
@@ -263,7 +263,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-macos
-          path: packaging/distribuibles/macos/Baryx-*.dmg
+          path: packaging/distribuibles/macos/Kipu-*.dmg
 
 
   # ==========================================================================
@@ -293,9 +293,9 @@ jobs:
       - name: Compute all checksums
         id: checksums
         run: |
-          LINUX_FILE=$(ls dist/baryx_*.deb 2>/dev/null | head -1)
-          WINDOWS_FILE=$(ls dist/Baryx-*.exe 2>/dev/null | head -1)
-          MACOS_FILE=$(ls dist/Baryx-*.dmg 2>/dev/null | head -1)
+          LINUX_FILE=$(ls dist/kipu_*.deb 2>/dev/null | head -1)
+          WINDOWS_FILE=$(ls dist/Kipu-*.exe 2>/dev/null | head -1)
+          MACOS_FILE=$(ls dist/Kipu-*.dmg 2>/dev/null | head -1)
 
           [ -f "$LINUX_FILE" ]   && echo "linux_hash=$(sha256sum "$LINUX_FILE" | awk '{print $1}')"     >> "$GITHUB_OUTPUT" || echo "linux_hash="   >> "$GITHUB_OUTPUT"
           [ -f "$WINDOWS_FILE" ] && echo "windows_hash=$(sha256sum "$WINDOWS_FILE" | awk '{print $1}')" >> "$GITHUB_OUTPUT" || echo "windows_hash=" >> "$GITHUB_OUTPUT"
@@ -317,7 +317,7 @@ jobs:
         id: gh_release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Baryx v${{ needs.build-linux.outputs.app_version }}"
+          name: "Kipu v${{ needs.build-linux.outputs.app_version }}"
           body: ${{ steps.tag_notes.outputs.notes }}
           draft: false
           prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
@@ -337,8 +337,8 @@ jobs:
 
       - name: Register release in backend database
         env:
-          BARYX_API_URL: ${{ secrets.BARYX_API_URL }}
-          BARYX_ADMIN_KEY: ${{ secrets.BARYX_ADMIN_KEY }}
+          KIPU_API_URL: ${{ secrets.KIPU_API_URL }}
+          KIPU_ADMIN_KEY: ${{ secrets.KIPU_ADMIN_KEY }}
           VERSION: ${{ needs.build-linux.outputs.app_version }}
           LINUX_HASH: ${{ steps.checksums.outputs.linux_hash }}
           WINDOWS_HASH: ${{ steps.checksums.outputs.windows_hash }}
@@ -392,8 +392,8 @@ jobs:
           ')
 
           curl -sf \
-            -X POST "${BARYX_API_URL}/v1/admin/releases" \
-            -H "Authorization: Bearer ${BARYX_ADMIN_KEY}" \
+            -X POST "${KIPU_API_URL}/v1/admin/releases" \
+            -H "Authorization: Bearer ${KIPU_ADMIN_KEY}" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD"
 

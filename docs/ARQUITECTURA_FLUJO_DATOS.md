@@ -1,4 +1,4 @@
-# Baryx - Documentacion de Arquitectura y Flujo de Datos
+# Kipu - Documentacion de Arquitectura y Flujo de Datos
 
 **Version**: 1.0.0  
 **Ultima actualizacion**: Enero 2026  
@@ -26,7 +26,7 @@
 
 ## 1. Vision General del Sistema
 
-Baryx es un sistema de gestion para bares y locales nocturnos que opera bajo una arquitectura cliente-servidor en red local (LAN). El sistema esta diseñado para funcionar sin conexion a internet y optimizado para hardware de gama baja.
+Kipu es un sistema de gestion para bares y locales nocturnos que opera bajo una arquitectura cliente-servidor en red local (LAN). El sistema esta diseñado para funcionar sin conexion a internet y optimizado para hardware de gama baja.
 
 ### Modelo de Operacion
 
@@ -47,7 +47,7 @@ Baryx es un sistema de gestion para bares y locales nocturnos que opera bajo una
                                       |
                               +-------+-------+
                               |  PostgreSQL   |
-                              |  (baryx_db)   |
+                              |  (kipu_db)   |
                               +---------------+
 ```
 
@@ -65,7 +65,7 @@ Cada bar opera con un unico servidor local. Multiples clientes (terminales POS, 
 
 ## 2. Stack Tecnologico
 
-### Servidor (baryx-servidor)
+### Servidor (kipu-servidor)
 
 | Tecnologia | Version | Proposito |
 |-----------|---------|-----------|
@@ -82,7 +82,7 @@ Cada bar opera con un unico servidor local. Multiples clientes (terminales POS, 
 | Lombok | 1.18.30 | Reduccion de codigo repetitivo (getters, setters, builders) |
 | Logback | (integrado) | Logging estructurado |
 
-### Cliente (baryx-cliente)
+### Cliente (kipu-cliente)
 
 | Tecnologia | Version | Proposito |
 |-----------|---------|-----------|
@@ -95,7 +95,7 @@ Cada bar opera con un unico servidor local. Multiples clientes (terminales POS, 
 | Logback | 1.4.14 | Logging |
 | Lombok | 1.18.30 | Reduccion de codigo repetitivo |
 
-### Modulo Compartido (baryx-common)
+### Modulo Compartido (kipu-common)
 
 | Tecnologia | Version | Proposito |
 |-----------|---------|-----------|
@@ -117,18 +117,18 @@ Cada bar opera con un unico servidor local. Multiples clientes (terminales POS, 
 
 ## 3. Estructura de Modulos
 
-El proyecto se compone de tres modulos Maven independientes (sin POM padre). El modulo `baryx-common` se instala en el repositorio Maven local y es consumido como dependencia por los otros dos modulos.
+El proyecto se compone de tres modulos Maven independientes (sin POM padre). El modulo `kipu-common` se instala en el repositorio Maven local y es consumido como dependencia por los otros dos modulos.
 
 ```
-Baryx/
+Kipu/
 |
-+-- baryx-common/          Modulo compartido: DTOs, constantes, excepciones, enums
++-- kipu-common/          Modulo compartido: DTOs, constantes, excepciones, enums
 |   +-- dto/               Objetos de transferencia de datos
 |   +-- constantes/        Constantes del sistema (endpoints, mensajes, validaciones)
 |   +-- excepcion/         Excepciones personalizadas con jerarquia
 |   +-- enums/             Enumeraciones (Rol, Genero)
 |
-+-- baryx-servidor/        Modulo servidor: API REST + acceso a datos
++-- kipu-servidor/        Modulo servidor: API REST + acceso a datos
 |   +-- controlador/       Endpoints REST (@RestController)
 |   +-- servicio/          Logica de negocio (interfaces + implementaciones)
 |   +-- repositorio/       Acceso a datos (Spring Data JPA)
@@ -142,7 +142,7 @@ Baryx/
 |       +-- db/migration/  Scripts SQL de Flyway (V1, V2, V3)
 |       +-- application.yml
 |
-+-- baryx-cliente/         Modulo cliente: Interfaz grafica JavaFX
++-- kipu-cliente/         Modulo cliente: Interfaz grafica JavaFX
 |   +-- controlador/       Controladores FXML (ligados a vistas)
 |   |   +-- facturacion/   Controladores del modulo de facturacion
 |   |   +-- productos/     Controladores del modulo de productos
@@ -164,13 +164,13 @@ Baryx/
 ### Dependencia entre Modulos
 
 ```
-baryx-common (v1.0.0)
+kipu-common (v1.0.0)
     ^               ^
     |               |
-baryx-servidor      baryx-cliente
+kipu-servidor      kipu-cliente
 ```
 
-Ambos modulos (servidor y cliente) dependen de `baryx-common`. No existe dependencia entre el servidor y el cliente. El modulo comun se instala con `mvn install` para que quede disponible en el repositorio Maven local antes de compilar los otros dos modulos.
+Ambos modulos (servidor y cliente) dependen de `kipu-common`. No existe dependencia entre el servidor y el cliente. El modulo comun se instala con `mvn install` para que quede disponible en el repositorio Maven local antes de compilar los otros dos modulos.
 
 ---
 
@@ -653,7 +653,7 @@ Estos valores estan dimensionados para operacion en LAN con hardware limitado.
 
 ### Punto de Entrada
 
-La clase `BaryxClienteApplication` extiende `javafx.application.Application`. Al iniciar:
+La clase `KipuClienteApplication` extiende `javafx.application.Application`. Al iniciar:
 1. Carga la vista `login-pin.fxml` como escena inicial.
 2. Aplica la hoja de estilos `estilos.css`.
 3. Configura la ventana en pantalla completa con la tecla ESC deshabilitada para salida (se reasigna a navegacion).
@@ -769,7 +769,7 @@ Cada controlador FXML implementa la logica de una vista. Se conecta al archivo F
 
 ## 10. Migraciones de Base de Datos
 
-Las migraciones se gestionan con Flyway y se ejecutan automaticamente al iniciar el servidor. Estan ubicadas en `baryx-servidor/src/main/resources/db/migration/`.
+Las migraciones se gestionan con Flyway y se ejecutan automaticamente al iniciar el servidor. Estan ubicadas en `kipu-servidor/src/main/resources/db/migration/`.
 
 ### V1__crear_tablas_base.sql
 
@@ -810,11 +810,11 @@ Crea la tabla `metodos_pago` e inserta 6 metodos iniciales:
 
 ### Jerarquia de Excepciones
 
-Definida en `baryx-common/excepcion/`:
+Definida en `kipu-common/excepcion/`:
 
 ```
 RuntimeException
-  +-- BaryxException (abstracta)
+  +-- KipuException (abstracta)
         +-- RecursoNoEncontradoException  (codigo: RECURSO_NO_ENCONTRADO)
         +-- ValidacionException           (codigo: VALIDACION_ERROR)
         +-- AutenticacionException        (codigo: personalizado)
@@ -852,10 +852,10 @@ Los controladores FXML utilizan `AlertaUtil` para mostrar dialogos modales de er
 
 | Patron | Ubicacion | Uso |
 |--------|----------|-----|
-| **Repository** | `baryx-servidor/repositorio/` | Abstraccion de acceso a datos mediante Spring Data JPA |
-| **Service Layer** | `baryx-servidor/servicio/` | Separacion de logica de negocio en interfaces e implementaciones |
-| **DTO** | `baryx-common/dto/` | Objetos de transferencia que desacoplan la capa de presentacion del modelo de datos |
-| **Mapper** | `baryx-servidor/mapeo/` | Conversion compilada entre entidades y DTOs via MapStruct |
+| **Repository** | `kipu-servidor/repositorio/` | Abstraccion de acceso a datos mediante Spring Data JPA |
+| **Service Layer** | `kipu-servidor/servicio/` | Separacion de logica de negocio en interfaces e implementaciones |
+| **DTO** | `kipu-common/dto/` | Objetos de transferencia que desacoplan la capa de presentacion del modelo de datos |
+| **Mapper** | `kipu-servidor/mapeo/` | Conversion compilada entre entidades y DTOs via MapStruct |
 | **Builder** | Todas las entidades y DTOs | Construccion fluida de objetos complejos via Lombok `@Builder`/`@SuperBuilder` |
 | **Filter Chain** | `seguridad/JwtFiltroAutenticacion` | Procesamiento de seguridad en cadena antes de alcanzar el controller |
 | **Template Method** | Servicios HTTP del cliente | Construccion uniforme de requests HTTP con `HttpClient` nativo |
@@ -883,13 +883,13 @@ La configuracion del servidor utiliza `application.yml` con soporte para variabl
 
 | Propiedad | Variable de Entorno | Default |
 |----------|--------------------|---------| 
-| Datasource URL | `DB_HOST`, `DB_PORT`, `DB_NAME` | `localhost:5432/baryx_db` |
-| Datasource User | `DB_USER` | `baryx_admin` |
+| Datasource URL | `DB_HOST`, `DB_PORT`, `DB_NAME` | `localhost:5432/kipu_db` |
+| Datasource User | `DB_USER` | `kipu_admin` |
 | Datasource Password | `DB_PASSWORD` | (configurado) |
 | Server Port | `SERVER_PORT` | `8080` |
 | JWT Secret | `JWT_SECRET` | (clave por defecto para desarrollo) |
 
-El perfil `application-dev.yml` habilita SQL visible, formato de queries, DevTools (restart + livereload) y logging a nivel DEBUG para los paquetes de Spring y Baryx.
+El perfil `application-dev.yml` habilita SQL visible, formato de queries, DevTools (restart + livereload) y logging a nivel DEBUG para los paquetes de Spring y Kipu.
 
 ---
 
@@ -919,4 +919,4 @@ Los siguientes modulos estan referenciados en la estructura pero no tienen imple
 
 ---
 
-*Documento generado como referencia tecnica del sistema Baryx v1.0.0.*
+*Documento generado como referencia tecnica del sistema Kipu v1.0.0.*

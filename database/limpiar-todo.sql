@@ -1,35 +1,35 @@
 -- =========================================================
--- Baryx - LIMPIEZA TOTAL de PostgreSQL
+-- Kipu - LIMPIEZA TOTAL de PostgreSQL
 -- =========================================================
 -- Este script ELIMINA todas las bases de datos y usuarios
--- relacionados con Baryx para empezar desde cero.
+-- relacionados con Kipu para empezar desde cero.
 --
 -- Ejecutar como superusuario (postgres):
 --   sudo -u postgres psql -f database/limpiar-todo.sql
 --
--- ADVERTENCIA: Se perderán TODOS los datos de todas las BD Baryx.
+-- ADVERTENCIA: Se perderán TODOS los datos de todas las BD Kipu.
 -- =========================================================
 
--- Paso 1: Desconectar a todos los clientes de las BDs Baryx
+-- Paso 1: Desconectar a todos los clientes de las BDs Kipu
 -- (necesario para poder eliminar las bases de datos)
 
 SELECT pg_terminate_backend(pid)
 FROM pg_stat_activity
-WHERE datname IN ('baryx_db', 'baryx_bar1', 'baryx_new', 'BaryxDB')
+WHERE datname IN ('kipu_db', 'kipu_bar1', 'kipu_new', 'KipuDB')
   AND pid <> pg_backend_pid();
 
--- Paso 2: Eliminar todas las bases de datos Baryx
+-- Paso 2: Eliminar todas las bases de datos Kipu
 
-DROP DATABASE IF EXISTS baryx_db;
-DROP DATABASE IF EXISTS baryx_bar1;
-DROP DATABASE IF EXISTS baryx_new;
-DROP DATABASE IF EXISTS "BaryxDB";
+DROP DATABASE IF EXISTS kipu_db;
+DROP DATABASE IF EXISTS kipu_bar1;
+DROP DATABASE IF EXISTS kipu_new;
+DROP DATABASE IF EXISTS "KipuDB";
 
--- Paso 3: Eliminar todos los usuarios/roles Baryx
+-- Paso 3: Eliminar todos los usuarios/roles Kipu
 
-DROP ROLE IF EXISTS baryx_admin;
-DROP ROLE IF EXISTS baryx_user;
-DROP ROLE IF EXISTS baryxadmin;
+DROP ROLE IF EXISTS kipu_admin;
+DROP ROLE IF EXISTS kipu_user;
+DROP ROLE IF EXISTS kipuadmin;
 
 -- Paso 4: Verificar que todo quedó limpio
 
@@ -40,11 +40,11 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO db_count
     FROM pg_database
-    WHERE datname LIKE 'baryx%' OR datname = 'BaryxDB';
+    WHERE datname LIKE 'kipu%' OR datname = 'KipuDB';
 
     SELECT COUNT(*) INTO user_count
     FROM pg_roles
-    WHERE rolname IN ('baryx_admin', 'baryx_user', 'baryxadmin');
+    WHERE rolname IN ('kipu_admin', 'kipu_user', 'kipuadmin');
 
     IF db_count = 0 AND user_count = 0 THEN
         RAISE NOTICE '';

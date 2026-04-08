@@ -1,4 +1,4 @@
-# Baryx — Guía de Instalación
+# Kipu — Guía de Instalación
 
 Sistema POS (punto de venta) + gestión de pedidos para bares, restaurantes y locales nocturnos.  
 Funciona **100% en red local (LAN)**, sin necesidad de internet.
@@ -9,7 +9,7 @@ Funciona **100% en red local (LAN)**, sin necesidad de internet.
 
 ## Tabla de Contenidos
 
-- [¿Qué es Baryx?](#qué-es-baryx)
+- [¿Qué es Kipu?](#qué-es-kipu)
 - [Contenido del Paquete](#contenido-del-paquete)
 - [Requisitos Previos](#requisitos-previos)
 - [Instalación en Windows](#instalación-en-windows)
@@ -23,9 +23,9 @@ Funciona **100% en red local (LAN)**, sin necesidad de internet.
 
 ---
 
-## ¿Qué es Baryx?
+## ¿Qué es Kipu?
 
-Baryx es un sistema de punto de venta diseñado para la operación nocturna de bares y locales de alimentos y bebidas. Permite gestionar mesas, pedidos, productos, facturación y pagos desde múltiples terminales conectadas a un servidor central dentro de la misma red local.
+Kipu es un sistema de punto de venta diseñado para la operación nocturna de bares y locales de alimentos y bebidas. Permite gestionar mesas, pedidos, productos, facturación y pagos desde múltiples terminales conectadas a un servidor central dentro de la misma red local.
 
 ### Características principales
 
@@ -46,13 +46,13 @@ Baryx es un sistema de punto de venta diseñado para la operación nocturna de b
 ### Windows
 
 ```
-Baryx/
+Kipu/
 ├── servidor/                    Servidor portable (con JRE incluido)
-│   ├── BaryxServidor.exe        Ejecutable nativo del servidor
+│   ├── KipuServidor.exe        Ejecutable nativo del servidor
 │   ├── runtime/                 Runtime Java embebido
 │   ├── app/                     Librerías de la aplicación
 │   └── setup-inicial.bat         Setup de BD + inicio del servidor (doble clic)
-├── Baryx-1.0.0.exe              Instalador del cliente (.exe)
+├── Kipu-1.0.0.exe              Instalador del cliente (.exe)
 ├── LICENSE                      Licencia del software
 └── README.md                    Este archivo
 ```
@@ -60,12 +60,12 @@ Baryx/
 ### Linux
 
 ```
-Baryx/
+Kipu/
 ├── servidor/                    Servidor portable (con JRE incluido)
-│   ├── bin/BaryxServidor        Ejecutable nativo del servidor
+│   ├── bin/KipuServidor        Ejecutable nativo del servidor
 │   ├── lib/                     Runtime Java embebido + librerías
 │   └── setup-inicial.sh          Setup de BD + inicio del servidor
-├── baryx_1.0.0_amd64.deb        Instalador del cliente (Debian/Ubuntu)
+├── kipu_1.0.0_amd64.deb        Instalador del cliente (Debian/Ubuntu)
 ├── LICENSE                      Licencia del software
 └── README.md                    Este archivo
 ```
@@ -101,7 +101,7 @@ Si aún no tiene PostgreSQL instalado:
 3. **Importante**: Guarde la contraseña del usuario `postgres` que configure durante la instalación
 4. Asegúrese de que la opción "Command Line Tools" esté seleccionada (incluye `psql`)
 
-> **Tip**: Si durante el setup de Baryx le indica que `psql` no se encuentra, agregue la ruta de PostgreSQL al PATH del sistema. Normalmente es `C:\Program Files\PostgreSQL\16\bin`.
+> **Tip**: Si durante el setup de Kipu le indica que `psql` no se encuentra, agregue la ruta de PostgreSQL al PATH del sistema. Normalmente es `C:\Program Files\PostgreSQL\16\bin`.
 
 ### Paso 2 — Configurar la base de datos
 
@@ -110,16 +110,16 @@ Si aún no tiene PostgreSQL instalado:
 3. El asistente le pedirá:
    - **Host y puerto de PostgreSQL** (por defecto: `localhost` y `5432`)
    - **Usuario administrador de PostgreSQL** (por defecto: `postgres`) y su contraseña
-   - **Nombre de la base de datos** de Baryx (por defecto: `baryx_db`)
-   - **Usuario y contraseña** para la aplicación (por defecto: `baryx_admin`)
+   - **Nombre de la base de datos** de Kipu (por defecto: `kipu_db`)
+   - **Usuario y contraseña** para la aplicación (por defecto: `kipu_admin`)
 4. El script creará automáticamente la base de datos, el usuario y los permisos necesarios
-5. Generará el archivo de configuración en `C:\Users\<su_usuario>\.baryx\.env`
+5. Generará el archivo de configuración en `C:\Users\<su_usuario>\.kipu\.env`
 
 > **Este paso solo se ejecuta una vez**, antes del primer uso. Si necesita reconfigurar, ejecute `setup-inicial.bat` nuevamente — el script detectará la configuración existente y le preguntará si desea reconfigurar.
 
 ### Paso 3 — Instalar el cliente
 
-1. **Doble clic** en `Baryx-1.0.0.exe` (o `Baryx-1.0.0.msi`)
+1. **Doble clic** en `Kipu-1.0.0.exe` (o `Kipu-1.0.0.msi`)
 2. Siga el asistente de instalación
 3. Se crearán accesos directos en el menú Inicio y (opcionalmente) en el escritorio
 
@@ -128,14 +128,14 @@ Si aún no tiene PostgreSQL instalado:
 Copie la carpeta `servidor\` a una ubicación permanente en el equipo:
 
 ```
-C:\Baryx\servidor\
+C:\Kipu\servidor\
 ```
 
 > El cliente buscará el servidor automáticamente en esta ruta cuando esté en Host Mode.
 
-### Paso 5 — Iniciar Baryx
+### Paso 5 — Iniciar Kipu
 
-Abra **Baryx** desde el menú Inicio o el acceso directo del escritorio.  
+Abra **Kipu** desde el menú Inicio o el acceso directo del escritorio.  
 Si el Host Mode está activado (valor por defecto), el servidor se iniciará automáticamente en segundo plano.
 
 **Credenciales iniciales del administrador:**
@@ -189,14 +189,14 @@ El asistente interactivo le pedirá los mismos datos que en Windows (host, puert
 
 - Se crea la base de datos y el usuario
 - Se generan los permisos
-- Se guarda la configuración en `~/.baryx/.env`
+- Se guarda la configuración en `~/.kipu/.env`
 
 ### Paso 3 — Instalar el cliente
 
 **Debian / Ubuntu (.deb):**
 
 ```bash
-sudo dpkg -i baryx_1.0.0_amd64.deb
+sudo dpkg -i kipu_1.0.0_amd64.deb
 ```
 
 Si hay dependencias faltantes:
@@ -208,21 +208,21 @@ sudo apt --fix-broken install
 **Fedora / RHEL (.rpm):**
 
 ```bash
-sudo rpm -i baryx-1.0.0.x86_64.rpm
+sudo rpm -i kipu-1.0.0.x86_64.rpm
 ```
 
 ### Paso 4 — Copiar la carpeta del servidor
 
 ```bash
-sudo mkdir -p /opt/baryx
-sudo cp -r servidor/ /opt/baryx/servidor/
-sudo chmod +x /opt/baryx/servidor/bin/BaryxServidor
-sudo chmod +x /opt/baryx/servidor/setup-inicial.sh
+sudo mkdir -p /opt/kipu
+sudo cp -r servidor/ /opt/kipu/servidor/
+sudo chmod +x /opt/kipu/servidor/bin/KipuServidor
+sudo chmod +x /opt/kipu/servidor/setup-inicial.sh
 ```
 
-### Paso 5 — Iniciar Baryx
+### Paso 5 — Iniciar Kipu
 
-Abra **Baryx** desde el menú de aplicaciones. El servidor se iniciará automáticamente si el Host Mode está activado.
+Abra **Kipu** desde el menú de aplicaciones. El servidor se iniciará automáticamente si el Host Mode está activado.
 
 **Credenciales iniciales del administrador:**
 
@@ -237,11 +237,11 @@ Abra **Baryx** desde el menú de aplicaciones. El servidor se iniciará automát
 
 ## Configuración en Red (LAN)
 
-Para usar Baryx con múltiples terminales (cajeros, meseros) conectadas al mismo servidor en la red local:
+Para usar Kipu con múltiples terminales (cajeros, meseros) conectadas al mismo servidor en la red local:
 
 ### Equipo servidor (Host)
 
-Es el PC principal donde corre PostgreSQL y el servidor Baryx.
+Es el PC principal donde corre PostgreSQL y el servidor Kipu.
 
 1. Realice la instalación completa (pasos 1 a 5 según su SO)
 2. Identifique la **IP local** del equipo:
@@ -270,8 +270,8 @@ Son los PCs/tablets de cajeros y meseros.
                     │  192.168.1.100   │
                     │                  │
                     │  PostgreSQL      │
-                    │  Servidor Baryx  │
-                    │  Cliente Baryx   │
+                    │  Servidor Kipu  │
+                    │  Cliente Kipu   │
                     └───────┬──────────┘
                             │ LAN (puerto 8080)
               ┌─────────────┼─────────────┐
@@ -283,7 +283,7 @@ Son los PCs/tablets de cajeros y meseros.
      └────────────┘  └────────────┘  └────────────┘
 ```
 
-> **Todos los equipos deben estar conectados a la misma red local (LAN).** Baryx no requiere ni utiliza internet.
+> **Todos los equipos deben estar conectados a la misma red local (LAN).** Kipu no requiere ni utiliza internet.
 
 ---
 
@@ -313,14 +313,14 @@ Normalmente el cliente inicia el servidor automáticamente (Host Mode). Si neces
 ### Windows
 
 ```
-cd C:\Baryx\servidor\
+cd C:\Kipu\servidor\
 setup-inicial.bat
 ```
 
 ### Linux
 
 ```bash
-cd /opt/baryx/servidor/
+cd /opt/kipu/servidor/
 ./setup-inicial.sh
 ```
 
@@ -336,7 +336,7 @@ Presione `Ctrl+C` para detenerlo.
 1. **Detenga el servidor** si está corriendo (cierre el cliente o `Ctrl+C` en la consola del servidor)
 2. **Reemplace la carpeta** `servidor/` con la nueva versión
 3. **Instale el nuevo cliente** (ejecute el instalador nuevo, desinstale el anterior si es necesario)
-4. **Inicie Baryx** normalmente
+4. **Inicie Kipu** normalmente
 
 > Las migraciones de base de datos se aplican automáticamente al arrancar el servidor. No necesita hacer nada manual con la BD al actualizar.
 
@@ -357,8 +357,8 @@ Presione `Ctrl+C` para detenerlo.
    - **Windows**: Abra "Servicios" y busque "postgresql" → Estado: "En ejecución"
    - **Linux**: `sudo systemctl status postgresql`
 2. Verifique que el archivo de configuración exista:
-   - **Windows**: `C:\Users\<su_usuario>\.baryx\.env`
-   - **Linux**: `~/.baryx/.env`
+   - **Windows**: `C:\Users\<su_usuario>\.kipu\.env`
+   - **Linux**: `~/.kipu/.env`
 3. Si no existe, ejecute nuevamente `setup-inicial.bat` (Windows) o `setup-inicial.sh` (Linux)
 4. Revise los logs en la consola del servidor para más detalles
 
@@ -381,8 +381,8 @@ Otro programa está usando el puerto 8080. Identifique y detenga el proceso:
 
 El cliente en Host Mode busca la carpeta del servidor en una ruta predeterminada. Asegúrese de copiar `servidor/` a:
 
-- **Windows**: `C:\Baryx\servidor\`
-- **Linux**: `/opt/baryx/servidor/`
+- **Windows**: `C:\Kipu\servidor\`
+- **Linux**: `/opt/kipu/servidor/`
 
 ### La base de datos no se crea correctamente
 
@@ -393,7 +393,7 @@ El cliente en Host Mode busca la carpeta del servidor en una ruta predeterminada
 2. Confirme que el usuario `postgres` tiene permisos de superusuario
 3. Si la base de datos ya existe pero quiere recrearla, elimínela primero:
    ```sql
-   DROP DATABASE baryx_db;
+   DROP DATABASE kipu_db;
    ```
 4. Ejecute el setup nuevamente
 
@@ -401,9 +401,9 @@ El cliente en Host Mode busca la carpeta del servidor en una ruta predeterminada
 
 ## Licencia
 
-Baryx es software source-available bajo la Licencia de Uso de Software Baryx (basada en Elastic License 2.0).  
+Kipu es software source-available bajo la Licencia de Uso de Software Kipu (basada en Elastic License 2.0).  
 El uso, copia o distribución sin autorización expresa del titular está prohibido.
 
 Consulte el archivo `LICENSE` incluido en este paquete para los términos completos.
 
-© 2026 Dilan Acuña / Baryx. Todos los derechos reservados.
+© 2026 Dilan Acuña / Kipu. Todos los derechos reservados.

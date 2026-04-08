@@ -1,5 +1,5 @@
 #!/bin/bash
-# Baryx - Script de compilacion centralizado
+# Kipu - Script de compilacion centralizado
 # Usa el POM padre para compilar los 3 modulos de una vez
 set -e
 
@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 print_banner() {
-    echo -e "${YELLOW}BARYX - Compilacion${NC}"
+    echo -e "${YELLOW}KIPU - Compilacion${NC}"
 }
 
 print_step()    { echo -e "${BLUE}[ACTION]${NC} $1"; }
@@ -48,8 +48,8 @@ case "$MODE" in
         print_success "Empacado completado"
         echo ""
         echo "  JARs generados:"
-        echo "    baryx-servidor/target/baryx-servidor-1.0.0.jar"
-        echo "    baryx-cliente/target/baryx-cliente-1.0.0.jar"
+        echo "    kipu-servidor/target/kipu-servidor-1.0.0.jar"
+        echo "    kipu-cliente/target/kipu-cliente-1.0.0.jar"
         ;;
     install)
         print_step "Instalando todos los modulos en repositorio local..."

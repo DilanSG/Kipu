@@ -1,12 +1,12 @@
 @echo off
 chcp 65001 >nul 2>&1
-title Baryx Cliente - Consola
+title Kipu Cliente - Consola
 echo.
 echo   ======================================
-echo     BARYX CLIENTE - Modo Consola
+echo     KIPU CLIENTE - Modo Consola
 echo   ======================================
 echo.
-:: Script de diagnostico que ejecuta el cliente Baryx en una ventana
+:: Script de diagnostico que ejecuta el cliente Kipu en una ventana
 :: de consola visible, mostrando stdout/stderr para depuracion.
 :: Se incluye automaticamente en la instalacion del cliente.
 ::
@@ -15,7 +15,7 @@ echo.
 
 set "APP_DIR=%~dp0"
 set "JAVA_EXE=%APP_DIR%runtime\bin\java.exe"
-set "JAR_FILE=%APP_DIR%app\baryx-cliente-{{APP_VERSION}}.jar"
+set "JAR_FILE=%APP_DIR%app\kipu-cliente-{{APP_VERSION}}.jar"
 
 if not exist "%JAVA_EXE%" (
     echo [ERROR] No se encontro java.exe en runtime\bin\
@@ -25,7 +25,7 @@ if not exist "%JAVA_EXE%" (
 )
 
 if not exist "%JAR_FILE%" (
-    echo [ERROR] No se encontro baryx-cliente-{{APP_VERSION}}.jar en app\
+    echo [ERROR] No se encontro kipu-cliente-{{APP_VERSION}}.jar en app\
     pause
     exit /b 1
 )
@@ -35,7 +35,7 @@ echo   Logs visibles en esta ventana.
 echo   Cierre esta ventana para detener el cliente.
 echo.
 
-"%JAVA_EXE%" -Xms512m -Xmx1024m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -Dfile.encoding=UTF-8 -Dglass.win.uiScale=1.0 -Dprism.allowHiDPIScaling=false -cp "%JAR_FILE%" com.baryx.cliente.BaryxClienteLauncher
+"%JAVA_EXE%" -Xms512m -Xmx1024m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -Dfile.encoding=UTF-8 -Dglass.win.uiScale=1.0 -Dprism.allowHiDPIScaling=false -cp "%JAR_FILE%" com.kipu.cliente.KipuClienteLauncher
 
 echo.
 echo   El cliente se ha cerrado.

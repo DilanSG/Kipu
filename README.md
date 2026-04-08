@@ -1,7 +1,7 @@
-﻿# Baryx — Software POS
+﻿# Kipu — Software POS
 Sistema POS (Point of Sale) moderno para gestión integral de bares, restaurantes y locales. Operación 100% en red local (LAN), sin dependencia de internet. Interfaz táctil con estética dorado + negro.
 > **Licencia**: Source-available (basada en Elastic License 2.0). Ver [LICENSE](LICENSE).  
-> **Titular**: Dilan Acuña / Baryx, 2026.
+> **Titular**: Dilan Acuña / Kipu, 2026.
 ---
 
 ## Tabla de Contenidos
@@ -20,7 +20,7 @@ Sistema POS (Point of Sale) moderno para gestión integral de bares, restaurante
 
 ## Descripción General
 
-Baryx es un sistema de punto de venta diseñado para la industria de alimentos y bebidas, con énfasis en bares y locales nocturnos. Implementa una arquitectura cliente-servidor que permite múltiples terminales conectadas a un servidor central en LAN.
+Kipu es un sistema de punto de venta diseñado para la industria de alimentos y bebidas, con énfasis en bares y locales nocturnos. Implementa una arquitectura cliente-servidor que permite múltiples terminales conectadas a un servidor central en LAN.
 
 ### Características Principales
 
@@ -72,12 +72,12 @@ Baryx es un sistema de punto de venta diseñado para la industria de alimentos y
 
 ```
 ┌─────────────────┐       HTTP/JSON        ┌──────────────────┐       JDBC       ┌────────────┐
-│  baryx-cliente  │ ◄────────────────────► │  baryx-servidor  │ ◄──────────────► │ PostgreSQL │
-│  (JavaFX 21)    │      REST API          │  (Spring Boot)   │                  │  baryx_db  │
+│  kipu-cliente  │ ◄────────────────────► │  kipu-servidor  │ ◄──────────────► │ PostgreSQL │
+│  (JavaFX 21)    │      REST API          │  (Spring Boot)   │                  │  kipu_db  │
 │  N instancias   │       + JWT            │  1 por bar       │     Flyway       │  1 por bar │
 └─────────────────┘                        └──────────────────┘                  └────────────┘
          │                                          │                                   |
-         └──────────── baryx-common (DTOs, excepciones, constantes, utilidades) ────────┘
+         └──────────── kipu-common (DTOs, excepciones, constantes, utilidades) ────────┘
 ```
 
 - **Protocolo**: HTTP (LAN), JSON
@@ -258,23 +258,23 @@ Vista de tarjetas mostrando código, nombre y género de cada mesero (`MeserosCo
 ## Estructura del Proyecto
 
 ```
-Baryx/
+Kipu/
 ├── LICENSE                              # Source-available (Elastic License 2.0, español, ley colombiana)
 ├── README.md
 ├── pom.xml                              # POM padre Maven multi-módulo
 │
-├── baryx-common/                        # Módulo compartido (25 Java)
-│   └── com/baryx/common/
+├── kipu-common/                        # Módulo compartido (25 Java)
+│   └── com/kipu/common/
 │       ├── constantes/Constantes.java   # Endpoints, HTTP, JWT, formatos, mensajes
 │       ├── dto/ (14 DTOs)               # RespuestaApi, Auth, Login, Usuario, Producto,
 │       │                                # Categoria, MetodoPago, Pedido, LineaPedido,
 │       │                                # MesaActiva, MesaConPedido, CreacionMesa
 │       ├── enums/                       # Rol, Genero
-│       ├── excepcion/                   # BaryxException, Autenticacion, Conexion,
+│       ├── excepcion/                   # KipuException, Autenticacion, Conexion,
 │       │                                # Validacion, RecursoNoEncontrado
 │       └── utilidad/                    # ValidacionUtil, MonetarioUtil, FechaUtil
 │
-├── baryx-servidor/                      # Backend Spring Boot (44 Java)
+├── kipu-servidor/                      # Backend Spring Boot (44 Java)
 │   ├── controlador/ (6)                 # Autenticacion, Usuario, Producto, Categoria,
 │   │                                    # MetodoPago, Mesa
 │   ├── servicio/ (6+6)                  # Interfaces + implementaciones
@@ -288,7 +288,7 @@ Baryx/
 │       ├── application.yml / -dev.yml
 │       └── db/migration/ (V1-V4)
 │
-├── baryx-cliente/                       # Frontend JavaFX (38 Java, 15 FXML)
+├── kipu-cliente/                       # Frontend JavaFX (38 Java, 15 FXML)
 │   ├── controlador/ (13)                # Login, Menu, Usuarios, Teclado,
 │   │   ├── productos/ (5)               # Listado, Crear, CategoriaListado, CategoriaCrea
 │   │   ├── meseros/ (1)                 # MeserosController
@@ -335,7 +335,7 @@ Baryx/
 |`TecladoNumerico`          |Teclado numérico para PINs (auto-open on focus)                |  
 |`NotificacionUtil`         |Toasts/snackbars animados (éxito, error, warning, info)        |
 |`MonitorConexion`          |Indicador de health check periódico al servidor                |
-|`ServidorEmbebido`         |Lanza baryx-servidor como subproceso si es necesario           |
+|`ServidorEmbebido`         |Lanza kipu-servidor como subproceso si es necesario           |
 ---
 ## Módulos Pendientes
 
@@ -358,7 +358,7 @@ Baryx/
 |Hard Delete     |Eliminación física del registro en BD            | 
 |Source-available|Código fuente visible, pero uso requiere licencia|
 ---
-**Baryx — Sistema POS para Establecimientos Nocturnos**  
+**Kipu — Sistema POS para Establecimientos Nocturnos**  
 Versión 1.0.0 | Marzo 2026  
-Copyright (c) 2026 Dilan Acuña / Baryx. Todos los derechos reservados.  
-Licenciado bajo la Licencia de Uso de Software Baryx (basada en Elastic License 2.0).
+Copyright (c) 2026 Dilan Acuña / Kipu. Todos los derechos reservados.  
+Licenciado bajo la Licencia de Uso de Software Kipu (basada en Elastic License 2.0).

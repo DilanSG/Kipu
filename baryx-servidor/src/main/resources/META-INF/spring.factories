@@ -1,4 +1,0 @@
-# Baryx - Cargador automático de archivo .env
-# Registra el EnvironmentPostProcessor que lee variables de $HOME/.baryx/.env
-org.springframework.boot.env.EnvironmentPostProcessor=\
-  com.baryx.servidor.configuracion.CargadorArchivoEnv

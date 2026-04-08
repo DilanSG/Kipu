@@ -5,12 +5,12 @@
          https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.baryx</groupId>
-    <artifactId>baryx</artifactId>
+    <groupId>com.kipu</groupId>
+    <artifactId>kipu</artifactId>
     <version>0.0.1</version>
     <packaging>pom</packaging>
 
-    <name>Baryx</name>
+    <name>Kipu</name>
     <description>
         Sistema de gestión multi-bares (POS + pedidos) para locales nocturnos.
         Arquitectura cliente-servidor en red local (LAN).
@@ -18,14 +18,14 @@
 
     <!-- ============================================================ -->
     <!-- MÓDULOS - Se compilan en este orden automáticamente           -->
-    <!-- 1. baryx-common  (DTOs y modelos compartidos)                -->
-    <!-- 2. baryx-servidor (API REST Spring Boot)                     -->
-    <!-- 3. baryx-cliente  (Interfaz JavaFX)                          -->
+    <!-- 1. kipu-common  (DTOs y modelos compartidos)                 -->
+    <!-- 2. kipu-servidor (API REST Spring Boot)                      -->
+    <!-- 3. kipu-cliente  (Interfaz JavaFX)                           -->
     <!-- ============================================================ -->
     <modules>
-        <module>baryx-common</module>
-        <module>baryx-servidor</module>
-        <module>baryx-cliente</module>
+        <module>kipu-common</module>
+        <module>kipu-servidor</module>
+        <module>kipu-cliente</module>
     </modules>
 
     <!-- ============================================================ -->
@@ -76,8 +76,8 @@
 
             <!-- Módulo común propio -->
             <dependency>
-                <groupId>com.baryx</groupId>
-                <artifactId>baryx-common</artifactId>
+                <groupId>com.kipu</groupId>
+                <artifactId>kipu-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

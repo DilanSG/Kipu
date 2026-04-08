@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import com.kipu.cliente.componente.LineaDivisoriaInteractiva?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.kipu.cliente.controlador.productos.CategoriaCrearController"
+           styleClass="contenedor-centro">
+    
+    <VBox alignment="TOP_CENTER" spacing="32" styleClass="content-container">
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+    
+    <HBox alignment="CENTER" spacing="16">
+        <Label text="%productos.categorias.crear.titulo" styleClass="productos-titulo"/>
+    </HBox>
+    
+    <HBox spacing="40" alignment="CENTER" maxWidth="1200" styleClass="formulario-container">
+        
+        <VBox spacing="24" alignment="TOP_CENTER" maxWidth="500" HBox.hgrow="ALWAYS">
+            
+            <VBox spacing="8" maxWidth="Infinity">
+                <Label text="%productos.categorias.crear.nombre" styleClass="label-formulario"/>
+                <TextField fx:id="txtNombre"
+                          styleClass="campo-texto-formulario"
+                          prefHeight="50"/>
+                <Label fx:id="errorNombre"
+                       styleClass="error-texto"
+                       visible="false"
+                       managed="false"/>
+            </VBox>
+            
+            <VBox spacing="8" maxWidth="Infinity">
+                <Label text="%productos.categorias.crear.descripcion" styleClass="label-formulario"/>
+                <TextArea fx:id="txtDescripcion"
+                          styleClass="campo-texto-formulario"
+                          prefHeight="80"
+                          wrapText="true"/>
+            </VBox>
+            
+            <VBox spacing="8" maxWidth="Infinity">
+                <Label text="%productos.categorias.crear.color" styleClass="label-formulario"/>
+                <FlowPane fx:id="contenedorColores" hgap="10" vgap="10" alignment="CENTER_LEFT"/>
+            </VBox>
+            
+            <VBox spacing="8" styleClass="info-box">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+                <Label text="%productos.categorias.crear.info.titulo" styleClass="info-titulo-dorado"/>
+                <Label text="%productos.categorias.crear.info.desc"
+                       wrapText="true"
+                       styleClass="info-descripcion"/>
+            </VBox>
+            
+        </VBox>
+        
+        <LineaDivisoriaInteractiva orientation="VERTICAL" maxWidth="800"/>
+
+        <VBox spacing="16" alignment="TOP_CENTER" maxWidth="700" HBox.hgrow="ALWAYS">
+            <Label text="%productos.categorias.crear.organizar" styleClass="productos-subtitulo"/>
+            
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" 
+                        maxWidth="380" VBox.vgrow="ALWAYS" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" styleClass="edge-to-edge">
+                <content>
+                    <FlowPane fx:id="contenedorCategorias" 
+                              hgap="12" vgap="12" 
+                              alignment="TOP_CENTER" 
+                              maxWidth="360"
+                              style="-fx-padding: 10;">
+                    </FlowPane>
+                </content>
+            </ScrollPane>
+        </VBox>
+        
+    </HBox>
+    
+    <HBox alignment="CENTER" spacing="20" style="-fx-padding: 20 0 0 0;">
+        <Button text="%btn.cancelar" 
+                onAction="#cancelar"
+                styleClass="boton-secundario-formulario"
+                prefWidth="180"
+                prefHeight="55"/>
+        
+        <Button text="%productos.categorias.crear.btn.guardar" 
+                onAction="#guardar"
+                styleClass="boton-principal-formulario"
+                prefWidth="250"
+                prefHeight="55"/>
+    </HBox>
+    
+    </VBox>
+</StackPane>

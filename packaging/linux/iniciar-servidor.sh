@@ -1,12 +1,12 @@
 #!/bin/bash
 # =========================================================
-# Baryx - Iniciar Servidor (consola)
+# Kipu - Iniciar Servidor (consola)
 # =========================================================
 # Lanza el servidor Spring Boot desde terminal mostrando logs.
-# Ubicacion esperada: /opt/baryx/iniciar-servidor.sh
+# Ubicacion esperada: /opt/kipu/iniciar-servidor.sh
 #
 # Para la configuracion inicial (PostgreSQL, .env):
-#   sudo /opt/baryx/servidor/setup-inicial.sh
+#   sudo /opt/kipu/servidor/setup-inicial.sh
 # =========================================================
 
 GREEN='\033[0;32m'
@@ -17,26 +17,26 @@ NC='\033[0m'
 
 echo ""
 echo -e "${YELLOW}╔══════════════════════════════════════╗${NC}"
-echo -e "${YELLOW}║    BARYX - Servidor (REST API)       ║${NC}"
+echo -e "${YELLOW}║    KIPU - Servidor (REST API)       ║${NC}"
 echo -e "${YELLOW}╚══════════════════════════════════════╝${NC}"
 echo ""
 
-INSTALL_DIR="/opt/baryx"
-SERVIDOR_BIN="$INSTALL_DIR/servidor/bin/BaryxServidor"
+INSTALL_DIR="/opt/kipu"
+SERVIDOR_BIN="$INSTALL_DIR/servidor/bin/KipuServidor"
 
 # Verificar que el ejecutable existe
 if [ ! -f "$SERVIDOR_BIN" ]; then
     echo -e "${RED}[ERROR]${NC} No se encontro el ejecutable del servidor en:"
     echo "  $SERVIDOR_BIN"
     echo ""
-    echo "Instale Baryx primero: sudo dpkg -i baryx_*.deb"
+    echo "Instale Kipu primero: sudo dpkg -i kipu_*.deb"
     exit 1
 fi
 
 # Verificar configuracion
-if [ ! -f "$HOME/.baryx/.env" ]; then
-    echo -e "${YELLOW}[AVISO]${NC} No se encontro archivo de configuracion (~/.baryx/.env)"
-    echo "  Ejecute primero: sudo /opt/baryx/servidor/setup-inicial.sh"
+if [ ! -f "$HOME/.kipu/.env" ]; then
+    echo -e "${YELLOW}[AVISO]${NC} No se encontro archivo de configuracion (~/.kipu/.env)"
+    echo "  Ejecute primero: sudo /opt/kipu/servidor/setup-inicial.sh"
     echo ""
     read -p "¿Desea continuar de todas formas? [s/N]: " resp
     [[ ! "$resp" =~ ^[sS]$ ]] && exit 0
@@ -44,10 +44,10 @@ if [ ! -f "$HOME/.baryx/.env" ]; then
 fi
 
 # Cargar .env
-if [ -f "$HOME/.baryx/.env" ]; then
-    echo -e "${BLUE}▶${NC} Cargando configuracion desde ~/.baryx/.env"
+if [ -f "$HOME/.kipu/.env" ]; then
+    echo -e "${BLUE}▶${NC} Cargando configuracion desde ~/.kipu/.env"
     set -a
-    source "$HOME/.baryx/.env"
+    source "$HOME/.kipu/.env"
     set +a
 fi
 

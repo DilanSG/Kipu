@@ -1,22 +1,22 @@
 @echo off
 chcp 65001 >nul
-title BaryxServidor - Setup Inicial
+title KipuServidor - Setup Inicial
 setlocal EnableDelayedExpansion
-:: Baryx - Setup Inicial y Arranque del Servidor
+:: Kipu - Setup Inicial y Arranque del Servidor
 :: Script unificado que:
 ::   1. Configura PostgreSQL y genera el archivo .env
 ::      (solo la primera vez o si se elige reconfigurar)
 ::   2. Arranca el servidor usando el JRE embebido
-:: El archivo .env se guarda en %USERPROFILE%\.baryx\.env
+:: El archivo .env se guarda en %USERPROFILE%\.kipu\.env
 :: y el servidor lo detecta automaticamente.
 :: Requisitos:
 ::   - PostgreSQL instalado y en ejecucion (para el setup)
 ::   - psql disponible en el PATH (para el setup)
 set "SCRIPT_DIR=%~dp0"
-set "CONFIG_DIR=%USERPROFILE%\.baryx"
+set "CONFIG_DIR=%USERPROFILE%\.kipu"
 set "ENV_FILE=%CONFIG_DIR%\.env"
 
-echo   BARYX - Setup Inicial Windows
+echo   KIPU - Setup Inicial Windows
 
 if exist "%ENV_FILE%" (
     echo [INFO] Configuracion existente detectada: %ENV_FILE%
@@ -60,14 +60,14 @@ set /p "PG_SUPER=  Usuario admin PostgreSQL [postgres]: "
 set /p "PG_SUPER_CLAVE=  Contrasena del admin PostgreSQL: "
 
 echo.
-echo [PASO] Datos de la base de datos de Baryx
+echo [PASO] Datos de la base de datos de Kipu
 echo.
 
-set "DB_NOMBRE=baryx_db"
-set /p "DB_NOMBRE=  Nombre base de datos [baryx_db]: "
+set "DB_NOMBRE=kipu_db"
+set /p "DB_NOMBRE=  Nombre base de datos [kipu_db]: "
 
-set "DB_USUARIO=baryx_admin"
-set /p "DB_USUARIO=  Usuario aplicacion [baryx_admin]: "
+set "DB_USUARIO=kipu_admin"
+set /p "DB_USUARIO=  Usuario aplicacion [kipu_admin]: "
 
 set /p "DB_CLAVE=  Contrasena del usuario aplicacion: "
 set /p "DB_CLAVE_CONFIRM=  Confirmar contrasena: "
@@ -147,7 +147,7 @@ for /f "delims=" %%i in ('powershell -NoProfile -Command "[Convert]::ToBase64Str
 if not exist "%CONFIG_DIR%" mkdir "%CONFIG_DIR%"
 
 (
-echo # Configuracion Baryx
+echo # Configuracion Kipu
 echo DB_HOST=!PG_HOST!
 echo DB_PORT=!PG_PUERTO!
 echo DB_NAME=!DB_NOMBRE!
@@ -186,14 +186,14 @@ if exist "%ENV_FILE%" (
 )
 
 :: Buscar ejecutable del servidor
-set "EXE=%SCRIPT_DIR%BaryxServidor.exe"
+set "EXE=%SCRIPT_DIR%KipuServidor.exe"
 if not exist "%EXE%" (
-    echo [ERROR] No se encontro BaryxServidor.exe en %SCRIPT_DIR%
+    echo [ERROR] No se encontro KipuServidor.exe en %SCRIPT_DIR%
     pause
     exit /b 1
 )
 
-echo   BARYX - Servidor API REST
+echo   KIPU - Servidor API REST
 echo   BD   : %DB_HOST%:%DB_PORT%/%DB_NAME%
 echo   User : %DB_USER%
 echo.
@@ -201,4 +201,4 @@ echo   Iniciando... (Ctrl+C para detener)
 echo.
 
 endlocal
-"%~dp0BaryxServidor.exe" %*
+"%~dp0KipuServidor.exe" %*

@@ -1,21 +1,21 @@
 #!/bin/bash
-# Post-remocion de Baryx
+# Post-remocion de Kipu
 # Se ejecuta despues de desinstalar el paquete .deb
 # Limpia archivos de datos y configuracion si el usuario lo desea
 
 set -e
 
-# Solo en purge (apt purge baryx)
+# Solo en purge (apt purge kipu)
 if [ "$1" = "purge" ]; then
     # Limpiar directorio de instalacion si queda algo
-    rm -rf /opt/baryx 2>/dev/null || true
+    rm -rf /opt/kipu 2>/dev/null || true
 
-    # Nota: No eliminamos ~/.baryx ni /etc/baryx automaticamente
+    # Nota: No eliminamos ~/.kipu ni /etc/kipu automaticamente
     # para preservar configuracion del usuario (contraseñas BD, .env)
     echo ""
     echo "  Para eliminar datos de configuracion manualmente:"
-    echo "    rm -rf ~/.baryx"
-    echo "    sudo rm -rf /etc/baryx"
+    echo "    rm -rf ~/.kipu"
+    echo "    sudo rm -rf /etc/kipu"
     echo ""
 fi
 

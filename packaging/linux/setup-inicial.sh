@@ -1,10 +1,10 @@
 #!/bin/bash
-# Baryx - Setup Inicial y Arranque del Servidor Linux
+# Kipu - Setup Inicial y Arranque del Servidor Linux
 # Script unificado que:
 #   1. Configura PostgreSQL y genera el archivo .env
 #      (solo la primera vez o si se elige reconfigurar)
 #   2. Arranca el servidor usando el JRE embebido
-# El archivo .env se guarda en ~/.baryx/.env y el servidor
+# El archivo .env se guarda en ~/.kipu/.env y el servidor
 # lo detecta automaticamente via CargadorArchivoEnv.
 # Requisitos:
 #   - PostgreSQL instalado y en ejecucion (para el setup)
@@ -20,7 +20,7 @@ info()  { echo -e "${YELLOW}[INFO]${NC} $1"; }
 err()   { echo -e "${RED}[ERROR]${NC} $1"; }
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-CONFIG_DIR="$HOME/.baryx"
+CONFIG_DIR="$HOME/.kipu"
 ENV_FILE="$CONFIG_DIR/.env"
 
 leer_no_vacio() {
@@ -77,9 +77,9 @@ ejecutar_setup() {
         read -sp "Contrasena de $PG_SUPER_USUARIO: " PG_SUPER_CLAVE; echo ""
     fi
 
-    paso "Datos de la base de datos de Baryx"
-    DB_NOMBRE=$(leer_no_vacio "Nombre de la base de datos" "baryx_db")
-    DB_USUARIO=$(leer_no_vacio "Usuario de aplicacion" "baryx_admin")
+    paso "Datos de la base de datos de Kipu"
+    DB_NOMBRE=$(leer_no_vacio "Nombre de la base de datos" "kipu_db")
+    DB_USUARIO=$(leer_no_vacio "Usuario de aplicacion" "kipu_admin")
     DB_CLAVE=$(leer_clave_confirmada "Contrasena del usuario de aplicacion" "Confirmar contrasena")
 
     paso "Validando conexion como administrador PostgreSQL"
@@ -123,15 +123,15 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO \"$U_ESC\";
     # Usar comillas simples en el heredoc (<<'EOF') para evitar expansion
     # de variables durante la escritura, y comillas simples en los valores
     # para evitar que source interprete caracteres especiales en claves.
-    cat > "$ENV_FILE" << BARYXEOF
-# Configuracion Baryx - Generado $(date '+%Y-%m-%d %H:%M:%S')
+    cat > "$ENV_FILE" << KIPUEOF
+# Configuracion Kipu - Generado $(date '+%Y-%m-%d %H:%M:%S')
 DB_HOST='${PG_HOST}'
 DB_PORT='${PG_PUERTO}'
 DB_NAME='${DB_NOMBRE}'
 DB_USER='${DB_USUARIO}'
 DB_PASSWORD='${DB_CLAVE}'
 JWT_SECRET='${JWT_SECRET}'
-BARYXEOF
+KIPUEOF
     chmod 600 "$ENV_FILE"
     ok "Archivo .env creado en: $ENV_FILE"
     echo -e "${GREEN}  Setup completado exitosamente         ${NC}"
@@ -148,22 +148,22 @@ iniciar_servidor() {
         echo "  Se requiere ejecutar el setup primero."
         exit 1
     fi
-    local EXE="$SCRIPT_DIR/bin/BaryxServidor"
+    local EXE="$SCRIPT_DIR/bin/KipuServidor"
     if [ ! -f "$EXE" ]; then
         err "No se encontro el ejecutable del servidor: $EXE"
         exit 1
     fi
 
-    echo -e "${YELLOW}BARYX - Servidor API REST${NC}"
-    echo -e "  BD   : ${DB_HOST:-localhost}:${DB_PORT:-5432}/${DB_NAME:-baryx_db}"
-    echo -e "  User : ${DB_USER:-baryx_admin}"
+    echo -e "${YELLOW}KIPU - Servidor API REST${NC}"
+    echo -e "  BD   : ${DB_HOST:-localhost}:${DB_PORT:-5432}/${DB_NAME:-kipu_db}"
+    echo -e "  User : ${DB_USER:-kipu_admin}"
     echo ""
     echo -e "  Iniciando... (Ctrl+C para detener)"
     echo ""
 
     exec "$EXE" "$@"
 }
-echo -e "${YELLOW}BARYX - Setup Inicial${NC}"
+echo -e "${YELLOW}KIPU - Setup Inicial${NC}"
 
 if [ -f "$ENV_FILE" ]; then
     info "Configuracion existente detectada: $ENV_FILE"

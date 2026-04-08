@@ -150,7 +150,7 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 - `MotorAnimaciones` — motor de animaciones reutilizable optimizado para hardware bajo
 
 #### Infraestructura
-- Arquitectura Maven multi-módulo: `baryx-common`, `baryx-servidor`, `baryx-cliente`
+- Arquitectura Maven multi-módulo: `kipu-common`, `kipu-servidor`, `kipu-cliente`
 - Servidor embebido Spring Boot iniciado desde el cliente (`ServidorEmbebido`)
 - 14 tablas PostgreSQL con 25 índices, migración Flyway única (`V1__esquema_completo.sql`)
 - Sincronización con nube via patrón Outbox + CDC (Change Data Capture) con triggers PostgreSQL
@@ -177,7 +177,7 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
-[0.0.5]: https://github.com/DilanSG/Baryx/compare/v0.0.3...v0.0.5
-[0.0.3]: https://github.com/DilanSG/Baryx/compare/v0.0.2...v0.0.3
-[0.0.2]: https://github.com/DilanSG/Baryx/compare/v0.0.1...v0.0.2
-[0.0.1]: https://github.com/DilanSG/Baryx/releases/tag/v0.0.1
+[0.0.5]: https://github.com/DilanSG/Kipu/compare/v0.0.3...v0.0.5
+[0.0.3]: https://github.com/DilanSG/Kipu/compare/v0.0.2...v0.0.3
+[0.0.2]: https://github.com/DilanSG/Kipu/compare/v0.0.1...v0.0.2
+[0.0.1]: https://github.com/DilanSG/Kipu/releases/tag/v0.0.1

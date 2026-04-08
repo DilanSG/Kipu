@@ -1,9 +1,9 @@
 #!/bin/bash
-# Baryx - Empaquetado macOS
+# Kipu - Empaquetado macOS
 # Genera distribuibles en packaging/distribuibles/macos/
 #
-#   - Baryx-VERSION.dmg   Instalador de disco para el cliente (JavaFX)
-#   - BaryxServidor/      Carpeta portable con JRE embebido (servidor)
+#   - Kipu-VERSION.dmg   Instalador de disco para el cliente (JavaFX)
+#   - KipuServidor/      Carpeta portable con JRE embebido (servidor)
 #   - LICENSE
 #   - README.md
 #
@@ -34,9 +34,9 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 DIST_DIR="$PROJECT_DIR/packaging/distribuibles/macos"
 TEMP_DIR="$PROJECT_DIR/packaging/distribuibles/temp-macos"
 
-# Version: use BARYX_VERSION env (set by CI) or read from pom.xml
-if [ -n "${BARYX_VERSION:-}" ]; then
-    APP_VERSION="$BARYX_VERSION"
+# Version: use KIPU_VERSION env (set by CI) or read from pom.xml
+if [ -n "${KIPU_VERSION:-}" ]; then
+    APP_VERSION="$KIPU_VERSION"
 else
     APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout \
         --file "$PROJECT_DIR/pom.xml" 2>/dev/null || echo "1.0.0")
@@ -50,21 +50,21 @@ if [[ "$APP_VERSION" =~ ^0\. ]]; then
     JPACKAGE_VERSION="1${APP_VERSION#0}"
 fi
 
-APP_VENDOR="Baryx"
-APP_COPYRIGHT="Copyright (c) 2026 Baryx"
-APP_DESCRIPTION_SERVIDOR="Servidor REST API para Software POS Baryx"
-APP_DESCRIPTION_CLIENTE="Software POS Baryx"
+APP_VENDOR="Kipu"
+APP_COPYRIGHT="Copyright (c) 2026 Kipu"
+APP_DESCRIPTION_SERVIDOR="Servidor REST API para Software POS Kipu"
+APP_DESCRIPTION_CLIENTE="Software POS Kipu"
 
-JAR_SERVIDOR="$PROJECT_DIR/baryx-servidor/target/baryx-servidor-${APP_VERSION}.jar"
-JAR_CLIENTE="$PROJECT_DIR/baryx-cliente/target/baryx-cliente-${APP_VERSION}.jar"
+JAR_SERVIDOR="$PROJECT_DIR/kipu-servidor/target/kipu-servidor-${APP_VERSION}.jar"
+JAR_CLIENTE="$PROJECT_DIR/kipu-cliente/target/kipu-cliente-${APP_VERSION}.jar"
 
-ICON_ICNS="$PROJECT_DIR/packaging/baryx.icns"
-ICON_PNG="$PROJECT_DIR/baryx-cliente/src/main/resources/imagenes/ICON.png"
+ICON_ICNS="$PROJECT_DIR/packaging/kipu.icns"
+ICON_PNG="$PROJECT_DIR/kipu-cliente/src/main/resources/imagenes/ICON.png"
 
-NOMBRE_EJECUTABLE_SERVIDOR="BaryxServidor"
+NOMBRE_EJECUTABLE_SERVIDOR="KipuServidor"
 
 print_banner() {
-    echo -e "${YELLOW}BARYX - Empaquetado de Distribución macOS${NC}"
+    echo -e "${YELLOW}KIPU - Empaquetado de Distribución macOS${NC}"
 }
 
 print_step()    { echo -e "${BLUE}[ACTION]${NC} $1"; }
@@ -144,7 +144,7 @@ empaquetar_servidor_portable() {
         --copyright "$APP_COPYRIGHT" \
         --description "$APP_DESCRIPTION_SERVIDOR" \
         --input "$TEMP_DIR/servidor" \
-        --main-jar "baryx-servidor-${APP_VERSION}.jar" \
+        --main-jar "kipu-servidor-${APP_VERSION}.jar" \
         --main-class "org.springframework.boot.loader.launch.JarLauncher" \
         --dest "$TEMP_DIR" \
         --java-options "-Xms256m" \
@@ -169,20 +169,20 @@ empaquetar_cliente_instalador() {
     print_step "Empaquetando cliente como instalador .${TIPO}..."
 
     MODULOS_CLIENTE="java.base,java.desktop,java.logging,java.naming,java.sql,java.xml,java.xml.crypto,java.management,java.net.http,java.prefs,java.scripting,java.security.jgss,java.security.sasl,jdk.unsupported,jdk.crypto.ec,jdk.accessibility"
-    local BARYX_API_URL_VAL="${BARYX_API_URL:-https://baryxweb.onrender.com}"
+    local KIPU_API_URL_VAL="${KIPU_API_URL:-https://kipuweb.onrender.com}"
     ICON=$(_icon_param)
 
     # shellcheck disable=SC2086
     jpackage \
         --type "${TIPO}" \
-        --name "Baryx" \
+        --name "Kipu" \
         --app-version "$JPACKAGE_VERSION" \
         --vendor "$APP_VENDOR" \
         --copyright "$APP_COPYRIGHT" \
         --description "$APP_DESCRIPTION_CLIENTE" \
         --input "$TEMP_DIR/cliente" \
-        --main-jar "baryx-cliente-${APP_VERSION}.jar" \
-        --main-class "com.baryx.cliente.BaryxClienteLauncher" \
+        --main-jar "kipu-cliente-${APP_VERSION}.jar" \
+        --main-class "com.kipu.cliente.KipuClienteLauncher" \
         --dest "$DIST_DIR" \
         --add-modules "$MODULOS_CLIENTE" \
         --java-options "-Xms512m" \
@@ -190,18 +190,18 @@ empaquetar_cliente_instalador() {
         --java-options "-XX:+UseG1GC" \
         --java-options "-XX:MaxGCPauseMillis=50" \
         --java-options "-Dfile.encoding=UTF-8" \
-        --java-options "-Dbaryx.api.url=${BARYX_API_URL_VAL}" \
+        --java-options "-Dkipu.api.url=${KIPU_API_URL_VAL}" \
         $ICON \
         2>&1 | while read -r line; do echo "    $line"; done
 
     local OUTPUT
-    OUTPUT=$(ls "$DIST_DIR/Baryx-${JPACKAGE_VERSION}"*.${TIPO} 2>/dev/null | head -1)
+    OUTPUT=$(ls "$DIST_DIR/Kipu-${JPACKAGE_VERSION}"*.${TIPO} 2>/dev/null | head -1)
     if [ -f "$OUTPUT" ]; then
         local TAMANO
         TAMANO=$(du -sh "$OUTPUT" | cut -f1)
         # Renombrar al versionado real si jpackage usó una versión inflada
         if [ "$JPACKAGE_VERSION" != "$APP_VERSION" ]; then
-            local REAL_NAME="$DIST_DIR/Baryx-${APP_VERSION}.${TIPO}"
+            local REAL_NAME="$DIST_DIR/Kipu-${APP_VERSION}.${TIPO}"
             mv "$OUTPUT" "$REAL_NAME"
             OUTPUT="$REAL_NAME"
             print_info "Renombrado a $(basename "$REAL_NAME") (jpackage requiere versión >= 1.0.0)"

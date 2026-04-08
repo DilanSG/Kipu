@@ -1,5 +1,5 @@
 #!/bin/bash
-# Baryx - Empaquetado Linux
+# Kipu - Empaquetado Linux
 # Genera distribuibles en packaging/distribuibles/linux/
 #
 #   - servidor/       Carpeta portable con JRE embebido
@@ -11,11 +11,11 @@
 # y se eliminan al finalizar, evitando conflictos con la carpeta de salida.
 #
 # El instalador .deb incluye tanto el cliente como el
-# servidor en /opt/baryx/{cliente,servidor}. Se construye
+# servidor en /opt/kipu/{cliente,servidor}. Se construye
 # manualmente con dpkg-deb para tener control total del contenido del paquete.
 #
 # El cliente arranca en Host Mode por defecto: al abrirse
-# lanza automaticamente el servidor desde /opt/baryx/servidor/
+# lanza automaticamente el servidor desde /opt/kipu/servidor/
 # usando el JRE que trae el servidor empaquetado. No se
 # necesita JDK instalado en la maquina del usuario final.
 #
@@ -32,9 +32,9 @@
 #   ./scripts/package.sh todo [deb|rpm]        # Servidor + host installer (alias de host)
 #
 # Variables de entorno opcionales:
-#   BARYX_ATLAS_URI  — URI del cluster MongoDB Atlas (se embebe en el JAR, NUNCA en disco)
-#   BARYX_API_URL    — URL del backend web (default: https://baryxweb.onrender.com)
-#   BARYX_VERSION    — Versión del paquete (default: lee de pom.xml)
+#   KIPU_ATLAS_URI  — URI del cluster MongoDB Atlas (se embebe en el JAR, NUNCA en disco)
+#   KIPU_API_URL    — URL del backend web (default: https://kipuweb.onrender.com)
+#   KIPU_VERSION    — Versión del paquete (default: lee de pom.xml)
 # =========================================================
 
 set -e
@@ -54,29 +54,29 @@ DIST_DIR="$PROJECT_DIR/packaging/distribuibles/linux"
 # Carpeta temporal separada para evitar bloqueos con la salida
 TEMP_DIR="$PROJECT_DIR/packaging/distribuibles/temp-linux"
 
-# Version: use BARYX_VERSION env (set by CI) or read from pom.xml
-if [ -n "${BARYX_VERSION:-}" ]; then
-    APP_VERSION="$BARYX_VERSION"
+# Version: use KIPU_VERSION env (set by CI) or read from pom.xml
+if [ -n "${KIPU_VERSION:-}" ]; then
+    APP_VERSION="$KIPU_VERSION"
 else
     APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout \
         --file "$PROJECT_DIR/pom.xml" 2>/dev/null || echo "1.0.0")
     APP_VERSION=$(echo "$APP_VERSION" | tail -1 | tr -d '[:space:]')
 fi
 
-APP_VENDOR="Baryx"
-APP_COPYRIGHT="Copyright (c) 2026 Baryx"
-APP_DESCRIPTION_SERVIDOR="Servidor REST API para Software POS Baryx"
-APP_DESCRIPTION_CLIENTE="Cliente del Software POS Baryx"
+APP_VENDOR="Kipu"
+APP_COPYRIGHT="Copyright (c) 2026 Kipu"
+APP_DESCRIPTION_SERVIDOR="Servidor REST API para Software POS Kipu"
+APP_DESCRIPTION_CLIENTE="Cliente del Software POS Kipu"
 
-JAR_SERVIDOR="$PROJECT_DIR/baryx-servidor/target/baryx-servidor-${APP_VERSION}.jar"
-JAR_CLIENTE="$PROJECT_DIR/baryx-cliente/target/baryx-cliente-${APP_VERSION}.jar"
+JAR_SERVIDOR="$PROJECT_DIR/kipu-servidor/target/kipu-servidor-${APP_VERSION}.jar"
+JAR_CLIENTE="$PROJECT_DIR/kipu-cliente/target/kipu-cliente-${APP_VERSION}.jar"
 
-ICON_PNG="$PROJECT_DIR/baryx-cliente/src/main/resources/imagenes/ICON.png"
+ICON_PNG="$PROJECT_DIR/kipu-cliente/src/main/resources/imagenes/ICON.png"
 
-NOMBRE_EJECUTABLE_SERVIDOR="BaryxServidor"
+NOMBRE_EJECUTABLE_SERVIDOR="KipuServidor"
 
 print_banner() {
-    echo -e "${YELLOW}BARYX - Empaquetado de Distribucion Linux${NC}"
+    echo -e "${YELLOW}KIPU - Empaquetado de Distribucion Linux${NC}"
 }
 
 print_step()    { echo -e "${BLUE}[ACTION]${NC} $1"; }
@@ -182,7 +182,7 @@ empaquetar_servidor_portable() {
         --copyright "$APP_COPYRIGHT" \
         --description "$APP_DESCRIPTION_SERVIDOR" \
         --input "$TEMP_DIR/servidor" \
-        --main-jar "baryx-servidor-${APP_VERSION}.jar" \
+        --main-jar "kipu-servidor-${APP_VERSION}.jar" \
         --main-class "org.springframework.boot.loader.launch.JarLauncher" \
         --dest "$TEMP_DIR" \
         --java-options "-Xms256m" \
@@ -283,7 +283,7 @@ _crear_wrapper_servidor() {
 
     cat > "$NATIVE_LAUNCHER" << 'WRAPPER_EOF'
 #!/bin/bash
-# Baryx Servidor,Wrapper de lanzamiento
+# Kipu Servidor,Wrapper de lanzamiento
 # Usa el JRE embebido para lanzar el servidor Spring Boot.
 # Reemplaza el native launcher de jpackage que falla cuando
 # multiples app-images comparten un mismo paquete .deb.
@@ -291,11 +291,11 @@ _crear_wrapper_servidor() {
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_DIR="$(dirname "$SCRIPT_DIR")"
 JAVA_BIN="$APP_DIR/lib/runtime/bin/java"
-APP_JAR="$APP_DIR/lib/app/baryx-servidor-PLACEHOLDER_VERSION.jar"
+APP_JAR="$APP_DIR/lib/app/kipu-servidor-PLACEHOLDER_VERSION.jar"
 
 if [ ! -x "$JAVA_BIN" ]; then
     echo "[ERROR] No se encontro el JRE embebido en: $JAVA_BIN"
-    echo "  Intente reinstalar Baryx."
+    echo "  Intente reinstalar Kipu."
     exit 1
 fi
 
@@ -324,7 +324,7 @@ empaquetar_instalador() {
     local HOST_MODE="${2:-true}"
     local VARIANTE="host"
     [ "$HOST_MODE" = "false" ] && VARIANTE="cliente-solo"
-    print_step "Empaquetando Baryx como instalador .$TIPO_INSTALADOR (variante: $VARIANTE)..."
+    print_step "Empaquetando Kipu como instalador .$TIPO_INSTALADOR (variante: $VARIANTE)..."
 
     case "$TIPO_INSTALADOR" in
         deb) _construir_deb "$HOST_MODE" ;;
@@ -338,7 +338,7 @@ empaquetar_instalador() {
 
 # Genera el app-image del cliente con jpackage (compartido por host y cliente-solo)
 _generar_app_image_cliente() {
-    if [ -d "$TEMP_DIR/Baryx" ]; then
+    if [ -d "$TEMP_DIR/Kipu" ]; then
         print_info "App-image del cliente ya generada, reutilizando..."
         return 0
     fi
@@ -347,20 +347,20 @@ _generar_app_image_cliente() {
 
     local MODULOS_CLIENTE="java.base,java.desktop,java.logging,java.naming,java.sql,java.xml,java.xml.crypto,java.management,java.net.http,java.prefs,java.scripting,java.security.jgss,java.security.sasl,jdk.unsupported,jdk.crypto.ec,jdk.accessibility"
 
-    local BARYX_API_URL_VAL="${BARYX_API_URL:-https://baryxweb.onrender.com}"
+    local KIPU_API_URL_VAL="${KIPU_API_URL:-https://kipuweb.onrender.com}"
     # Atlas URI cifrada dentro del JAR via cloud.dat (ver CifradoNube.java)
     # Ya no se pasa como --java-options porque Maven la cifra en process-resources
 
     jpackage \
         --type app-image \
-        --name "Baryx" \
+        --name "Kipu" \
         --app-version "$APP_VERSION" \
         --vendor "$APP_VENDOR" \
         --copyright "$APP_COPYRIGHT" \
         --description "$APP_DESCRIPTION_CLIENTE" \
         --input "$TEMP_DIR/cliente" \
-        --main-jar "baryx-cliente-${APP_VERSION}.jar" \
-        --main-class "com.baryx.cliente.BaryxClienteLauncher" \
+        --main-jar "kipu-cliente-${APP_VERSION}.jar" \
+        --main-class "com.kipu.cliente.KipuClienteLauncher" \
         --dest "$TEMP_DIR" \
         --add-modules "$MODULOS_CLIENTE" \
         --java-options "-Xms512m" \
@@ -370,11 +370,11 @@ _generar_app_image_cliente() {
         --java-options "-Dfile.encoding=UTF-8" \
         --java-options "-Dglass.win.uiScale=1.0" \
         --java-options "-Dprism.allowHiDPIScaling=false" \
-        --java-options "-Dbaryx.api.url=${BARYX_API_URL_VAL}" \
+        --java-options "-Dkipu.api.url=${KIPU_API_URL_VAL}" \
         ${ICON_PNG:+--icon "$ICON_PNG"} \
         2>&1 | while read line; do echo "    $line"; done
 
-    if [ ! -d "$TEMP_DIR/Baryx" ]; then
+    if [ ! -d "$TEMP_DIR/Kipu" ]; then
         print_error "jpackage no genero la app-image del cliente"
         return 1
     fi
@@ -395,10 +395,10 @@ _construir_deb() {
     _generar_app_image_cliente || return 1
 
     local VARIANTE="host"
-    local DEB_PKG_NAME="baryx_${APP_VERSION}_amd64"
+    local DEB_PKG_NAME="kipu_${APP_VERSION}_amd64"
     if [ "$HOST_MODE" = "false" ]; then
         VARIANTE="cliente"
-        DEB_PKG_NAME="baryx-cliente_${APP_VERSION}_amd64"
+        DEB_PKG_NAME="kipu-cliente_${APP_VERSION}_amd64"
     fi
 
     print_info "Construyendo paquete .deb (variante: $VARIANTE)..."
@@ -407,29 +407,29 @@ _construir_deb() {
     rm -rf "$DEB_ROOT"
 
     mkdir -p "$DEB_ROOT/DEBIAN"
-    mkdir -p "$DEB_ROOT/opt/baryx/cliente"
+    mkdir -p "$DEB_ROOT/opt/kipu/cliente"
     mkdir -p "$DEB_ROOT/usr/share/applications"
     mkdir -p "$DEB_ROOT/usr/share/pixmaps"
 
-    cp -r "$TEMP_DIR/Baryx/"* "$DEB_ROOT/opt/baryx/cliente/"
+    cp -r "$TEMP_DIR/Kipu/"* "$DEB_ROOT/opt/kipu/cliente/"
 
-    # Inyectar host.mode en baryx-cliente.properties dentro del app-image
-    local PROPS_DIR="$DEB_ROOT/opt/baryx/cliente/lib/app"
+    # Inyectar host.mode en kipu-cliente.properties dentro del app-image
+    local PROPS_DIR="$DEB_ROOT/opt/kipu/cliente/lib/app"
     mkdir -p "$PROPS_DIR"
-    cat > "$PROPS_DIR/baryx-cliente.properties" << EOF
-# Generado por el empaquetador Baryx
+    cat > "$PROPS_DIR/kipu-cliente.properties" << EOF
+# Generado por el empaquetador Kipu
 # host.mode=true  → Lanza el servidor embebido al iniciar
 # host.mode=false → Solo cliente, se conecta a un servidor en la LAN
 host.mode=${HOST_MODE}
 EOF
-    print_info "host.mode=${HOST_MODE} configurado en baryx-cliente.properties"
+    print_info "host.mode=${HOST_MODE} configurado en kipu-cliente.properties"
 
     if [ "$HOST_MODE" = "true" ]; then
         # Incluir servidor portable en el instalador host
         if [ -d "$DIST_DIR/servidor" ]; then
             print_info "Incluyendo servidor portable en el instalador..."
-            mkdir -p "$DEB_ROOT/opt/baryx/servidor"
-            cp -r "$DIST_DIR/servidor/"* "$DEB_ROOT/opt/baryx/servidor/"
+            mkdir -p "$DEB_ROOT/opt/kipu/servidor"
+            cp -r "$DIST_DIR/servidor/"* "$DEB_ROOT/opt/kipu/servidor/"
         else
             print_error "Servidor no encontrado en dist/servidor — se requiere para el instalador host"
             print_info "  Ejecute: ./package.sh host deb (esto empaqueta el servidor primero)"
@@ -437,20 +437,20 @@ EOF
         fi
     fi
 
-    if [ -f "$PACKAGING_LINUX/baryx.desktop" ]; then
-        cp "$PACKAGING_LINUX/baryx.desktop" "$DEB_ROOT/usr/share/applications/"
+    if [ -f "$PACKAGING_LINUX/kipu.desktop" ]; then
+        cp "$PACKAGING_LINUX/kipu.desktop" "$DEB_ROOT/usr/share/applications/"
     else
         print_info "Archivo .desktop no encontrado en $PACKAGING_LINUX/"
     fi
 
     if [ -f "$ICON_PNG" ]; then
-        cp "$ICON_PNG" "$DEB_ROOT/usr/share/pixmaps/baryx.png"
+        cp "$ICON_PNG" "$DEB_ROOT/usr/share/pixmaps/kipu.png"
     fi
 
     for script_consola in iniciar-cliente.sh iniciar-servidor.sh; do
         if [ -f "$PACKAGING_LINUX/$script_consola" ]; then
-            cp "$PACKAGING_LINUX/$script_consola" "$DEB_ROOT/opt/baryx/$script_consola"
-            chmod +x "$DEB_ROOT/opt/baryx/$script_consola"
+            cp "$PACKAGING_LINUX/$script_consola" "$DEB_ROOT/opt/kipu/$script_consola"
+            chmod +x "$DEB_ROOT/opt/kipu/$script_consola"
         fi
     done
 
@@ -465,7 +465,7 @@ EOF
             "$PACKAGING_LINUX/debian/control.template" > "$DEB_ROOT/DEBIAN/control"
         # Cambiar nombre del paquete para cliente-solo
         if [ "$HOST_MODE" = "false" ]; then
-            sed -i "s/^Package: baryx$/Package: baryx-cliente/" "$DEB_ROOT/DEBIAN/control"
+            sed -i "s/^Package: kipu$/Package: kipu-cliente/" "$DEB_ROOT/DEBIAN/control"
             sed -i "s/Servidor REST API y //" "$DEB_ROOT/DEBIAN/control"
         fi
     else
@@ -497,8 +497,8 @@ EOF
 
 _construir_rpm() {
     local HOST_MODE="${1:-true}"
-    local DEB_PKG_NAME="baryx_${APP_VERSION}_amd64"
-    [ "$HOST_MODE" = "false" ] && DEB_PKG_NAME="baryx-cliente_${APP_VERSION}_amd64"
+    local DEB_PKG_NAME="kipu_${APP_VERSION}_amd64"
+    [ "$HOST_MODE" = "false" ] && DEB_PKG_NAME="kipu-cliente_${APP_VERSION}_amd64"
     local DEB_FILE="$DIST_DIR/${DEB_PKG_NAME}.deb"
 
     if [ ! -f "$DEB_FILE" ]; then
@@ -547,8 +547,8 @@ mostrar_resumen() {
     echo ""
     echo -e "  ${CYAN}Ubicacion: $DIST_DIR/${NC}"
     echo ""
-    echo -e "  ${CYAN}Instalacion: sudo dpkg -i dist/baryx_${APP_VERSION}_amd64.deb${NC}"
-    echo -e "  ${CYAN}Desinstalar: sudo apt remove baryx${NC}"
+    echo -e "  ${CYAN}Instalacion: sudo dpkg -i dist/kipu_${APP_VERSION}_amd64.deb${NC}"
+    echo -e "  ${CYAN}Desinstalar: sudo apt remove kipu${NC}"
     echo ""
 }
 
@@ -609,9 +609,9 @@ case "$MODO" in
         echo "  Tipo de instalador: deb (defecto) o rpm"
         echo ""
         echo "Variables de entorno:"
-        echo "  BARYX_ATLAS_URI  - URI MongoDB Atlas (embebida en JVM, nunca en disco)"
-        echo "  BARYX_API_URL    - URL backend web (default: https://baryxweb.onrender.com)"
-        echo "  BARYX_VERSION    - Version del paquete"
+        echo "  KIPU_ATLAS_URI  - URI MongoDB Atlas (embebida en JVM, nunca en disco)"
+        echo "  KIPU_API_URL    - URL backend web (default: https://kipuweb.onrender.com)"
+        echo "  KIPU_VERSION    - Version del paquete"
         exit 1
         ;;
 esac

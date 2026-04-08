@@ -1,0 +1,122 @@
+/*Copyright (c) 2026 Kipu. Todos los derechos reservados.
+ * Licenciado bajo la Licencia de Uso de Software Kipu (basada en Elastic License 2.0).
+ * Consulte el archivo LICENSE en la raiz del proyecto para mas informacion.
+ * Queda prohibido el uso, copia o distribucion sin autorizacion expresa del titular.*/
+package com.kipu.cliente.controlador.configuracion.herramientas;
+
+import com.kipu.cliente.controlador.configuracion.GestorModales;
+import com.kipu.cliente.controlador.configuracion.ModalHerramienta;
+import com.kipu.cliente.utilidad.IdiomaUtil;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/* Handler para la herramienta "Acerca de Kipu" en el menú de configuración.
+ *Muestra un modal con información sobre el sistema, versión, tecnologías usadas y créditos.
+ *Utiliza el GestorModales para construir y mostrar la interfaz visual. */
+public class AcercaDeHandler implements ModalHerramienta {
+
+    private static final Logger logger = LoggerFactory.getLogger(AcercaDeHandler.class);
+    private final GestorModales gestor;
+
+    public AcercaDeHandler(GestorModales gestor) {
+        this.gestor = gestor;
+    }
+
+    @Override
+    public void abrir() {
+        logger.info("Mostrando Acerca de Kipu");
+
+        VBox modal = new VBox(10);
+        modal.setMaxWidth(480);
+        modal.setMaxHeight(560);
+        modal.setPadding(new Insets(32, 32, 24, 32));
+        modal.setAlignment(Pos.TOP_CENTER);
+        modal.setStyle(GestorModales.ESTILO_MODAL_LUXURY);
+
+        ImageView logo = new ImageView();
+        try {
+            logo.setImage(new Image(
+                getClass().getResourceAsStream("/imagenes/LOGO.png")));
+            logo.setFitWidth(180);
+            logo.setPreserveRatio(true);
+            logo.setSmooth(true);
+        } catch (Exception e) {
+            logger.warn("No se pudo cargar el logo: {}", e.getMessage());
+        }
+
+        String vLocal = new com.kipu.cliente.servicio.VerificacionActualizacionServicio().obtenerVersionLocal();
+        if (vLocal == null || vLocal.contains("${")) vLocal = "0.0.0";
+        Label version = new Label("v" + vLocal);
+        version.getStyleClass().add("panel-seccion-titulo-sm");
+        version.setStyle("-fx-alignment: center;");
+        version.setTextAlignment(TextAlignment.CENTER);
+        version.setMaxWidth(Double.MAX_VALUE);
+
+        Label subtitulo = new Label(
+            IdiomaUtil.obtener("ctrl.acerca.descripcion"));
+        subtitulo.getStyleClass().add("texto-secundario-sm");
+        subtitulo.setStyle("-fx-text-fill: #999; -fx-alignment: center;");
+        subtitulo.setWrapText(true);
+        subtitulo.setTextAlignment(TextAlignment.CENTER);
+        subtitulo.setMaxWidth(Double.MAX_VALUE);
+
+        Label operacion = new Label(IdiomaUtil.obtener("ctrl.acerca.operacion"));
+        operacion.getStyleClass().add("texto-hint-sm");
+        operacion.setStyle("-fx-text-fill: #777; -fx-alignment: center;");
+        operacion.setTextAlignment(TextAlignment.CENTER);
+        operacion.setMaxWidth(Double.MAX_VALUE);
+
+        Label arquitectura = new Label(IdiomaUtil.obtener("ctrl.acerca.arquitectura"));
+        arquitectura.getStyleClass().add("texto-hint-sm");
+        arquitectura.setStyle("-fx-text-fill: #777; -fx-alignment: center;");
+        arquitectura.setTextAlignment(TextAlignment.CENTER);
+        arquitectura.setMaxWidth(Double.MAX_VALUE);
+
+        Label tTec = new Label(IdiomaUtil.obtener("ctrl.acerca.tecnologias"));
+        tTec.getStyleClass().add("texto-hint-sm");
+        tTec.setStyle("-fx-font-weight: 700; -fx-text-fill: #888; " +
+            "-fx-alignment: center;");
+        tTec.setTextAlignment(TextAlignment.CENTER);
+        tTec.setMaxWidth(Double.MAX_VALUE);
+
+        Label tecnologias = new Label(
+            "Java 21  ·  JavaFX 21  ·  Spring Boot 3.2\n" +
+            "PostgreSQL 15+  ·  Flyway  ·  MapStruct  ·  Lombok");
+        tecnologias.getStyleClass().add("texto-hint-sm");
+        tecnologias.setStyle("-fx-text-fill: #666; -fx-alignment: center;");
+        tecnologias.setTextAlignment(TextAlignment.CENTER);
+        tecnologias.setWrapText(true);
+        tecnologias.setMaxWidth(Double.MAX_VALUE);
+
+        Label tCred = new Label(IdiomaUtil.obtener("ctrl.acerca.desarrollado_por"));
+        tCred.getStyleClass().add("texto-hint-sm");
+        tCred.setStyle("-fx-font-weight: 700; -fx-text-fill: #888; " +
+            "-fx-alignment: center;");
+        tCred.setTextAlignment(TextAlignment.CENTER);
+        tCred.setMaxWidth(Double.MAX_VALUE);
+
+        Label autor = new Label("Dilan Acuña");
+        autor.getStyleClass().add("panel-seccion-titulo-sm");
+        autor.setStyle("-fx-text-fill: #e8e8e8; -fx-alignment: center;");
+        autor.setTextAlignment(TextAlignment.CENTER);
+        autor.setMaxWidth(Double.MAX_VALUE);
+
+        Label legal = new Label(
+            IdiomaUtil.obtener("ctrl.acerca.derechos"));
+        legal.getStyleClass().add("texto-hint");
+        legal.setStyle("-fx-alignment: center;");
+        legal.setTextAlignment(TextAlignment.CENTER);
+        legal.setWrapText(true);
+        legal.setMaxWidth(Double.MAX_VALUE);
+
+        modal.getChildren().addAll(logo, version, subtitulo, gestor.crearSeparador(), operacion, arquitectura, gestor.crearSeparador(), tTec, tecnologias, gestor.crearSeparador(), tCred, autor, gestor.crearSeparador(), legal);
+        gestor.mostrarModal(modal);
+    }
+}

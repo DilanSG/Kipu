@@ -1,9 +1,9 @@
 #!/bin/bash
 # =========================================================
-# Baryx - Iniciar Cliente (consola)
+# Kipu - Iniciar Cliente (consola)
 # =========================================================
 # Lanza el cliente JavaFX desde terminal mostrando logs.
-# Ubicacion esperada: /opt/baryx/iniciar-cliente.sh
+# Ubicacion esperada: /opt/kipu/iniciar-cliente.sh
 # =========================================================
 
 GREEN='\033[0;32m'
@@ -14,27 +14,27 @@ NC='\033[0m'
 
 echo ""
 echo -e "${YELLOW}╔══════════════════════════════════════╗${NC}"
-echo -e "${YELLOW}║    BARYX - Cliente (POS / Comandera) ║${NC}"
+echo -e "${YELLOW}║    KIPU - Cliente (POS / Comandera) ║${NC}"
 echo -e "${YELLOW}╚══════════════════════════════════════╝${NC}"
 echo ""
 
-INSTALL_DIR="/opt/baryx"
-CLIENTE_BIN="$INSTALL_DIR/cliente/bin/Baryx"
+INSTALL_DIR="/opt/kipu"
+CLIENTE_BIN="$INSTALL_DIR/cliente/bin/Kipu"
 
 # Verificar que el ejecutable existe
 if [ ! -f "$CLIENTE_BIN" ]; then
     echo -e "${RED}[ERROR]${NC} No se encontro el ejecutable del cliente en:"
     echo "  $CLIENTE_BIN"
     echo ""
-    echo "Instale Baryx primero: sudo dpkg -i baryx_*.deb"
+    echo "Instale Kipu primero: sudo dpkg -i kipu_*.deb"
     exit 1
 fi
 
 # Cargar .env si existe (para obtener SERVER_URL)
-if [ -f "$HOME/.baryx/.env" ]; then
-    echo -e "${BLUE}▶${NC} Cargando configuracion desde ~/.baryx/.env"
+if [ -f "$HOME/.kipu/.env" ]; then
+    echo -e "${BLUE}▶${NC} Cargando configuracion desde ~/.kipu/.env"
     set -a
-    source "$HOME/.baryx/.env"
+    source "$HOME/.kipu/.env"
     set +a
 fi
 

@@ -1,13 +1,13 @@
 #!/bin/bash
 # =========================================================
-# Convierte ICON.png a baryx.ico para empaquetado Windows
+# Convierte ICON.png a kipu.ico para empaquetado Windows
 # Requiere ImageMagick: sudo apt install imagemagick
 # =========================================================
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-PNG_SOURCE="$PROJECT_DIR/baryx-cliente/src/main/resources/imagenes/ICON.png"
-ICO_OUTPUT="$PROJECT_DIR/packaging/baryx.ico"
+PNG_SOURCE="$PROJECT_DIR/kipu-cliente/src/main/resources/imagenes/ICON.png"
+ICO_OUTPUT="$PROJECT_DIR/packaging/kipu.ico"
 
 if ! command -v convert &> /dev/null; then
     echo "ImageMagick no encontrado. Instalando..."
@@ -15,7 +15,7 @@ if ! command -v convert &> /dev/null; then
     echo ""
     echo "Alternativa manual:"
     echo "  Usa un conversor online (ej: https://convertio.co/png-ico/)"
-    echo "  y guarda el resultado en: packaging/baryx.ico"
+    echo "  y guarda el resultado en: packaging/kipu.ico"
     exit 1
 fi
 
