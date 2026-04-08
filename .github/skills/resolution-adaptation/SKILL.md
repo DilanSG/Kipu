@@ -1,9 +1,9 @@
 ---
 name: resolution-adaptation
-description: "Adaptación de resoluciones y aspect ratios CSS en Baryx. Use when: crear overrides de resolución, agregar breakpoints CSS, adaptar vista a res-small/tablet/hd/qhd/4k, verificar overrides de ratio, ratio-classic/ultrawide/superwide, agregar estilos responsive, escalar componentes por resolución, verificar escalado de fuentes, adaptar grid por pantalla."
+description: "Adaptación de resoluciones y aspect ratios CSS en Kipu. Use when: crear overrides de resolución, agregar breakpoints CSS, adaptar vista a res-small/tablet/hd/qhd/4k, verificar overrides de ratio, ratio-classic/ultrawide/superwide, agregar estilos responsive, escalar componentes por resolución, verificar escalado de fuentes, adaptar grid por pantalla."
 ---
 
-# Adaptación de Resoluciones — Baryx
+# Adaptación de Resoluciones — Kipu
 
 Procedimiento para crear, verificar y mantener los overrides CSS de resolución y aspect ratio en `estilos.css`, garantizando que toda vista se vea correcta en todas las pantallas soportadas.
 
@@ -19,9 +19,9 @@ Procedimiento para crear, verificar y mantener los overrides CSS de resolución 
 
 | Archivo | Propósito |
 |---------|-----------|
-| `baryx-cliente/src/main/resources/css/estilos.css` | Overrides líneas ~4420-5740 |
-| `baryx-cliente/src/main/java/com/baryx/cliente/utilidad/DetectorPantalla.java` | Detección y aplicación de clases |
-| `baryx-cliente/src/main/java/com/baryx/cliente/utilidad/ResolucionPerfil.java` | Perfiles de resolución (enum) |
+| `kipu-cliente/src/main/resources/css/estilos.css` | Overrides líneas ~4420-5740 |
+| `kipu-cliente/src/main/java/com/kipu/cliente/utilidad/DetectorPantalla.java` | Detección y aplicación de clases |
+| `kipu-cliente/src/main/java/com/kipu/cliente/utilidad/ResolucionPerfil.java` | Perfiles de resolución (enum) |
 
 ## Sistema de Resoluciones
 
@@ -58,13 +58,13 @@ Para una vista nueva o existente, identificar qué clases CSS necesitan override
 
 ```bash
 # Extraer todas las clases CSS de una vista
-grep -oP 'styleClass="\K[^"]*' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | tr ',' '\n' | tr ' ' '\n' | sort -u
+grep -oP 'styleClass="\K[^"]*' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | tr ',' '\n' | tr ' ' '\n' | sort -u
 
 # Para cada clase, verificar si ya tiene overrides
 for cls in CLASE1 CLASE2 CLASE3; do
   echo "=== $cls ==="
   for res in res-small res-tablet res-hd res-qhd res-4k; do
-    if grep -q "\.$res.*\.$cls\|\.$res .*\.$cls" baryx-cliente/src/main/resources/css/estilos.css; then
+    if grep -q "\.$res.*\.$cls\|\.$res .*\.$cls" kipu-cliente/src/main/resources/css/estilos.css; then
       echo "  ✅ $res"
     else
       echo "  ❌ $res — FALTANTE"
@@ -241,13 +241,13 @@ Los overrides de ratio son **independientes** de los de resolución y se aplican
 CLASE="mi-componente"
 echo "Resoluciones:"
 for res in res-small res-tablet res-hd res-qhd res-4k; do
-  COUNT=$(grep -c "\.$res.*\.$CLASE\|\.$res .*\.$CLASE" baryx-cliente/src/main/resources/css/estilos.css)
+  COUNT=$(grep -c "\.$res.*\.$CLASE\|\.$res .*\.$CLASE" kipu-cliente/src/main/resources/css/estilos.css)
   echo "  $res: $COUNT reglas"
 done
 
 echo "Ratios:"
 for ratio in ratio-tall ratio-classic ratio-standard ratio-ultrawide ratio-superwide; do
-  COUNT=$(grep -c "\.$ratio.*\.$CLASE\|\.$ratio .*\.$CLASE" baryx-cliente/src/main/resources/css/estilos.css)
+  COUNT=$(grep -c "\.$ratio.*\.$CLASE\|\.$ratio .*\.$CLASE" kipu-cliente/src/main/resources/css/estilos.css)
   echo "  $ratio: $COUNT reglas"
 done
 ```

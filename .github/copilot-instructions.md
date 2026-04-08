@@ -1,8 +1,8 @@
-# Copilot Instructions - Baryx
+# Copilot Instructions - Kipu
 
 ## Proyecto
 
-**Baryx** — Sistema POS + gestión de pedidos para bares/pubs nocturnos.
+**Kipu** — Sistema POS + gestión de pedidos para bares/pubs nocturnos.
 
 | Aspecto | Detalle |
 |---------|---------|
@@ -11,7 +11,7 @@
 | Clientes | POS (cajeros), comanderas (meseros), panel admin |
 | Comunicación | Solo REST API (sin peer-to-peer) |
 | Hardware | Optimizado para equipos gama baja/antiguos || Licencia | Source-available (basada en Elastic License 2.0, ley colombiana) |
-| Titular | Dilan Acuña / Baryx |
+| Titular | Dilan Acuña / Kipu |
 ---
 
 ## Stack Tecnológico
@@ -34,7 +34,7 @@
 
 ## Diseño Visual (OBLIGATORIO: Luxury/Premium)
 
-Interfaz elegante para locales nocturnos. Alineada con logo BARYX en `imagenes/LOGOPNG.png`.
+Interfaz elegante para locales nocturnos. Alineada con logo KIPU en `imagenes/LOGOPNG.png`.
 
 ### Paleta de Colores
 
@@ -107,7 +107,7 @@ Todos definidos en `estilos.css`: `.tabla`, `.campo-texto`, `.card`, `.badge`, `
 - Animaciones: 200-300ms máx, solo transform/opacity, easing `ease`. PROHIBIDO: parallax, partículas, 3D, blur animado
 - Targets: <16ms/frame (60FPS), inicio <3s, transiciones <500ms
 
-### Logo BARYX
+### Logo KIPU
 
 - Archivo: `imagenes/LOGOPNG.png`
 - Login: centro superior 200-300px ancho. Header: esquina izq 120x50px
@@ -149,7 +149,7 @@ Todos definidos en `estilos.css`: `.tabla`, `.campo-texto`, `.card`, `.badge`, `
         <Label fx:id="labelHoraFooter" styleClass="menu-footer-text" style="-fx-font-size: 15px;"/>
     </HBox>
     <Region HBox.hgrow="ALWAYS"/>
-    <Label text="Sistema Baryx v1.0.0 © 2026" styleClass="menu-footer-text" style="-fx-font-size: 15px;"/>
+    <Label text="Sistema Kipu v1.0.0 © 2026" styleClass="menu-footer-text" style="-fx-font-size: 15px;"/>
 </HBox>
 ```
 
@@ -210,11 +210,11 @@ TODO en español: variables, clases, métodos, campos BD, comentarios, logs.
 
 ### Sistema de Internacionalización (i18n) — OBLIGATORIO en cliente
 
-Todo texto visible al usuario en `baryx-cliente` DEBE usar el sistema i18n. **Nunca hardcodear strings en español** en la UI.
+Todo texto visible al usuario en `kipu-cliente` DEBE usar el sistema i18n. **Nunca hardcodear strings en español** en la UI.
 
 **Uso básico:**
 ```java
-import com.baryx.cliente.utilidad.IdiomaUtil;
+import com.kipu.cliente.utilidad.IdiomaUtil;
 
 // Texto simple
 IdiomaUtil.obtener("ctrl.logs.titulo")              // → "Logs del Sistema"
@@ -223,7 +223,7 @@ IdiomaUtil.obtener("ctrl.logs.titulo")              // → "Logs del Sistema"
 MessageFormat.format(IdiomaUtil.obtener("ctrl.logs.error_cargar"), ex.getMessage())
 ```
 
-**Archivos de idioma** en `baryx-cliente/src/main/resources/i18n/`:
+**Archivos de idioma** en `kipu-cliente/src/main/resources/i18n/`:
 - `mensajes.properties` — Español (por defecto)
 - `mensajes_en.properties` — English
 - `mensajes_pt.properties` — Português
@@ -237,7 +237,7 @@ MessageFormat.format(IdiomaUtil.obtener("ctrl.logs.error_cargar"), ex.getMessage
 ```
 Capas: `ctrl` (controladores), `log` (mensajes servidor), `srv` (servicios), `val` (validaciones), `nav` (navegación).
 
-**Al crear/modificar archivos cliente:** Agregar las claves nuevas en los **3 archivos** de idioma simultáneamente. El servidor (`baryx-servidor`) NO usa i18n — sus mensajes van directo en español.
+**Al crear/modificar archivos cliente:** Agregar las claves nuevas en los **3 archivos** de idioma simultáneamente. El servidor (`kipu-servidor`) NO usa i18n — sus mensajes van directo en español.
 
 **Idiomas soportados:** es_ES, en_US, pt_BR. Configurable por ADMIN desde el panel de configuración del sistema.
 
@@ -258,7 +258,7 @@ El código es para devs con bases sólidas en Spring Boot, JavaFX y patrones ent
 | Clases Java | PascalCase español | `GestorPedidos`, `ServicioVentas` |
 | Métodos/variables | camelCase español | `pedidosPendientes`, `calcularTotal()` |
 | Constantes | UPPER_SNAKE_CASE | `TIMEOUT_CONEXION`, `FORMATO_FECHA` |
-| Packages | lowercase | `com.baryx.servidor.controlador` |
+| Packages | lowercase | `com.kipu.servidor.controlador` |
 | Tablas BD | snake_case plural | `usuarios`, `lineas_pedido` |
 | Columnas BD | snake_case | `id_usuario`, `fecha_creacion` |
 | Endpoints REST | kebab-case español, plural | `GET /api/pedidos`, `POST /api/usuarios/login` |
@@ -266,14 +266,14 @@ El código es para devs con bases sólidas en Spring Boot, JavaFX y patrones ent
 ### Estructura del Proyecto
 
 ```
-com.baryx.common/ (25 archivos)         com.baryx.cliente/ (38 archivos)
+com.kipu.common/ (25 archivos)         com.kipu.cliente/ (38 archivos)
 ├── constantes/    # Constantes global  ├── controlador/  # 13 FXML Controllers
 ├── dto/ (14)      # DTOs compartidos   │   ├── productos/ (5)  # Catálogo
 ├── enums/         # Rol, Genero        │   ├── facturacion/ (4) # POS
-├── excepcion/     # BaryxException+    │   └── meseros/ (1)
+├── excepcion/     # KipuException+    │   └── meseros/ (1)
 └── utilidad/      # Validación, Fecha  ├── servicio/ (7)  # API clients async
                                         ├── modelo/        # Mesa, LineaPedido
-com.baryx.servidor/ (44 archivos)       ├── componente/    # FondoAnimado, ToggleSwitch,
+com.kipu.servidor/ (44 archivos)       ├── componente/    # FondoAnimado, ToggleSwitch,
 ├── controlador/ (6) # REST             │                  # BordeInteractivo, LineaDivisoria
 ├── servicio/ (6+6)  # Interface+Impl   ├── utilidad/ (7)  # Navegación, Alertas, Teclados,
 ├── repositorio/ (6) # JPA Repos        │                  # Monitor, ServidorEmbebido
@@ -291,8 +291,8 @@ TODO archivo `.java` nuevo debe incluir este encabezado:
 
 ```java
 /*
- * Copyright (c) 2026 Baryx. Todos los derechos reservados.
- * Licenciado bajo la Licencia de Uso de Software Baryx (basada en Elastic License 2.0).
+ * Copyright (c) 2026 Kipu. Todos los derechos reservados.
+ * Licenciado bajo la Licencia de Uso de Software Kipu (basada en Elastic License 2.0).
  * Consulte el archivo LICENSE en la raíz del proyecto para más información.
  * Queda prohibido el uso, copia o distribución sin autorización expresa del titular.
  */
@@ -343,8 +343,8 @@ TODO archivo `.java` nuevo debe incluir este encabezado:
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:baryx_db}
-    username: ${DB_USER:baryx_admin}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:kipu_db}
+    username: ${DB_USER:kipu_admin}
     password: ${DB_PASSWORD}
   jpa:
     hibernate.ddl-auto: validate
@@ -357,7 +357,7 @@ jwt:
   expiracion: 86400000      # 24h
   refresh-expiracion: 604800000  # 7d
 
-baryx:
+kipu:
   caja:
     diferencia-maxima-permitida: 50.00
   pedidos:
@@ -380,14 +380,14 @@ baryx:
 
 ## Build y Despliegue
 
-**Script de preparación** (`scripts/preparar.sh`): Limpia, instala common, compila, empaca servidor y despliega JAR. Después solo ejecutar `mvn javafx:run -pl baryx-cliente`.
+**Script de preparación** (`scripts/preparar.sh`): Limpia, instala common, compila, empaca servidor y despliega JAR. Después solo ejecutar `mvn javafx:run -pl kipu-cliente`.
 
 **Flujo manual:**
 ```bash
-mvn clean install -pl baryx-common -DskipTests -q   # Instalar DTO compartido
-mvn clean package -pl baryx-servidor -am -DskipTests # Empacar servidor
-sudo cp baryx-servidor/target/baryx-servidor-1.0.0.jar /opt/baryx/servidor/lib/app/
-mvn javafx:run -pl baryx-cliente                     # Ejecutar cliente
+mvn clean install -pl kipu-common -DskipTests -q   # Instalar DTO compartido
+mvn clean package -pl kipu-servidor -am -DskipTests # Empacar servidor
+sudo cp kipu-servidor/target/kipu-servidor-1.0.0.jar /opt/kipu/servidor/lib/app/
+mvn javafx:run -pl kipu-cliente                     # Ejecutar cliente
 ```
 
 ---

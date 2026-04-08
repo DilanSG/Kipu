@@ -7,7 +7,7 @@ agents: [jack, polok, lamar, facundo]
 <skills>
 <skill>
 <name>i18n-validation</name>
-<description>Validación de i18n en Baryx cliente. Use when: auditar que no hay textos hardcodeados, verificar sincronización de idiomas, detectar claves faltantes.</description>
+<description>Validación de i18n en Kipu cliente. Use when: auditar que no hay textos hardcodeados, verificar sincronización de idiomas, detectar claves faltantes.</description>
 <file>.github/skills/i18n-validation/SKILL.md</file>
 </skill>
 <skill>
@@ -67,34 +67,34 @@ Si detectas un patrón repetido de mala práctica en múltiples archivos, repór
 
 ---
 
-## Rebrand Baryx → Kipu (Coordinación de Equipo)
+## Rebrand Kipu → Kipu (Coordinación de Equipo)
 
-**Referencia maestra**: `PLAN_REBRAND_KIPU.md` en BaryxWeb.
+**Referencia maestra**: `PLAN_REBRAND_KIPU.md` en KipuWeb.
 
 ### Tu Rol en el Rebrand: Auditor de Cada Fase
 
 Eres el **control de calidad** entre cada fase del rebrand. Tu trabajo:
 
-1. **Post-F1 (Hegel)**: Auditar que TODOS los `com.baryx` → `com.kipu` se propagaron. Buscar:
-   - Imports rotos o residuales con `com.baryx`
+1. **Post-F1 (Hegel)**: Auditar que TODOS los `com.kipu` → `com.kipu` se propagaron. Buscar:
+   - Imports rotos o residuales con `com.kipu`
    - `fx:controller` en FXML que no se actualizaron
    - `pom.xml` con groupId/artifactId viejo
-   - Config Spring con `com.baryx` en logging/scanning
-   - Copyright headers con "Baryx" residual
+   - Config Spring con `com.kipu` en logging/scanning
+   - Copyright headers con "Kipu" residual
 
 2. **Post-F2 (Polok)**: Auditar i18n con skill `i18n-validation`:
-   - ¿Quedó algún "Baryx" en los 3 archivos de idioma?
+   - ¿Quedó algún "Kipu" en los 3 archivos de idioma?
    - ¿Están los 3 archivos sincronizados?
-   - ¿Hay strings hardcodeados con "Baryx" en FXML o controllers?
+   - ¿Hay strings hardcodeados con "Kipu" en FXML o controllers?
 
 3. **Post-F3 (Atlas)**: Auditar SQL:
-   - ¿Todos los `baryx_db`, `baryx_admin` cambiaron?
+   - ¿Todos los `kipu_db`, `kipu_admin` cambiaron?
    - ¿Seed data actualizado?
    - ¿SQL scripts son consistentes entre sí?
 
 4. **Post-F4 (Atlas)**: Auditar scripts/packaging:
-   - ¿Todos los paths `/opt/baryx/` cambiaron?
-   - ¿Variables de entorno `BARYX_*` → `KIPU_*`?
+   - ¿Todos los paths `/opt/kipu/` cambiaron?
+   - ¿Variables de entorno `KIPU_*` → `KIPU_*`?
    - ¿Nombres de archivos renombrados (`.desktop`, `.iss`, `.ico`)?
 
 ### Formato de Auditoría de Rebrand
@@ -107,7 +107,7 @@ AUDITORÍA REBRAND — FASE [X]
   - [X archivos actualizados sin residuales]
 
 ⚠️ RESIDUALES ENCONTRADOS
-  - [archivo:línea] — "baryx" encontrado en: [contexto]
+  - [archivo:línea] — "kipu" encontrado en: [contexto]
 
 ❌ ERRORES CRÍTICOS
   - [archivo] — [descripción del problema que rompe compilación/ejecución]

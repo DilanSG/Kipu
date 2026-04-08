@@ -1,9 +1,9 @@
 ---
 name: query-analysis
-description: "Análisis de queries SQL y JPA en Baryx. Use when: endpoint lento, N+1 queries, full table scan, índices faltantes, analizar EXPLAIN plan, optimizar queries Hibernate, detectar lazy loading fuera de sesión, evaluar rendimiento de consultas PostgreSQL, analizar lock contention."
+description: "Análisis de queries SQL y JPA en Kipu. Use when: endpoint lento, N+1 queries, full table scan, índices faltantes, analizar EXPLAIN plan, optimizar queries Hibernate, detectar lazy loading fuera de sesión, evaluar rendimiento de consultas PostgreSQL, analizar lock contention."
 ---
 
-# Análisis de Queries — Baryx
+# Análisis de Queries — Kipu
 
 Skill para diagnosticar problemas de rendimiento en la capa de datos: JPA/Hibernate queries, PostgreSQL execution plans, índices, y transacciones.
 
@@ -15,7 +15,7 @@ Skill para diagnosticar problemas de rendimiento en la capa de datos: JPA/Hibern
 - Lock contention durante picos de operación (20:00-03:00)
 - Después de agregar datos seed o migrar esquemas
 
-## Contexto de BD en Baryx
+## Contexto de BD en Kipu
 
 **Esquema**: `V1__esquema_completo.sql` (migración única Flyway)
 **Config JPA**: `hibernate.ddl-auto: validate`, `open-in-view: false`, `enable_lazy_load_no_trans: false`
@@ -30,14 +30,14 @@ Skill para diagnosticar problemas de rendimiento en la capa de datos: JPA/Hibern
 
 ```bash
 # Todas las queries custom
-grep -rn "@Query" baryx-servidor/src/main/java/com/baryx/servidor/repositorio/
+grep -rn "@Query" kipu-servidor/src/main/java/com/kipu/servidor/repositorio/
 
 # findAll() sin paginación (potencial full scan)
-grep -rn "findAll()\|findBy.*(" baryx-servidor/src/main/java/com/baryx/servidor/repositorio/
+grep -rn "findAll()\|findBy.*(" kipu-servidor/src/main/java/com/kipu/servidor/repositorio/
 
 # Repositorios que NO extienden PagingAndSortingRepository
 grep -rn "extends JpaRepository\|extends CrudRepository" \
-  baryx-servidor/src/main/java/com/baryx/servidor/repositorio/
+  kipu-servidor/src/main/java/com/kipu/servidor/repositorio/
 ```
 
 #### 1.2 Detectar N+1 Queries
@@ -47,11 +47,11 @@ Buscar patrones que generan N+1:
 ```bash
 # Entidades con relaciones LAZY que se acceden en loops
 grep -rn "FetchType.LAZY\|FetchType.EAGER" \
-  baryx-servidor/src/main/java/com/baryx/servidor/modelo/entidad/
+  kipu-servidor/src/main/java/com/kipu/servidor/modelo/entidad/
 
 # Servicios que iteran sobre colecciones y acceden relaciones
 grep -rn "\.get.*Dto\|\.stream()\|\.forEach\|\.map(" \
-  baryx-servidor/src/main/java/com/baryx/servidor/servicio/impl/
+  kipu-servidor/src/main/java/com/kipu/servidor/servicio/impl/
 ```
 
 **Patrón N+1 típico:**
@@ -67,7 +67,7 @@ for (Mesa m : mesas) {
 List<Mesa> findAllConPedidosYLineas();
 ```
 
-**JOIN FETCH conocidos en Baryx:**
+**JOIN FETCH conocidos en Kipu:**
 - `MesaRepositorio.java` — ya usa `LEFT JOIN FETCH` para pedidoActual + lineas ✅
 
 #### 1.3 Verificar Índices en Esquema
@@ -75,10 +75,10 @@ List<Mesa> findAllConPedidosYLineas();
 ```bash
 # Índices definidos en V1
 grep -n "CREATE INDEX\|CREATE UNIQUE INDEX" \
-  baryx-servidor/src/main/resources/db/migration/V1__esquema_completo.sql
+  kipu-servidor/src/main/resources/db/migration/V1__esquema_completo.sql
 
 # Columnas usadas en WHERE/JOIN/ORDER BY en queries custom
-grep -n "@Query" baryx-servidor/src/main/java/com/baryx/servidor/repositorio/ -A 5 | \
+grep -n "@Query" kipu-servidor/src/main/java/com/kipu/servidor/repositorio/ -A 5 | \
   grep -i "WHERE\|JOIN\|ORDER BY"
 ```
 
@@ -125,12 +125,12 @@ WHERE codigo = 'MES001' AND activo = true;
 
 ```bash
 # Transacciones de escritura (potencial lock contention)
-grep -rn "@Transactional" baryx-servidor/src/main/java/com/baryx/servidor/servicio/impl/ | grep -v "readOnly"
+grep -rn "@Transactional" kipu-servidor/src/main/java/com/kipu/servidor/servicio/impl/ | grep -v "readOnly"
 
 # Métodos que hacen múltiples writes en una transacción
 # Buscar servicios con múltiples .save() .delete() en un método
 grep -rn "\.save(\|\.delete(\|\.saveAll(" \
-  baryx-servidor/src/main/java/com/baryx/servidor/servicio/impl/ -B 2
+  kipu-servidor/src/main/java/com/kipu/servidor/servicio/impl/ -B 2
 ```
 
 **Checklist de transacciones:**
@@ -145,7 +145,7 @@ grep -rn "\.save(\|\.delete(\|\.saveAll(" \
 -- Transacciones abiertas más de 5s
 SELECT pid, now() - xact_start AS duration, state, query
 FROM pg_stat_activity
-WHERE datname = 'baryx_db'
+WHERE datname = 'kipu_db'
   AND xact_start IS NOT NULL
   AND now() - xact_start > interval '5 seconds'
 ORDER BY duration DESC;
@@ -195,7 +195,7 @@ WHERE n_dead_tup > 1000
 ORDER BY n_dead_tup DESC;
 ```
 
-## Anti-Patrones de Queries en Baryx
+## Anti-Patrones de Queries en Kipu
 
 | Anti-Patrón | Detección | Fix |
 |-------------|-----------|-----|

@@ -59,7 +59,7 @@ Piensas en capas de abstracción:
 - **Flujo de errores**: Excepciones tragadas, errores silenciosos que corrompen estado, reintentos sin idempotencia
 - **Lifecycle**: Recursos que sobreviven a su contexto, timers que no se cancelan, subscriptions huérfanas
 
-### 3. Específico de Baryx (JavaFX + Spring Boot)
+### 3. Específico de Kipu (JavaFX + Spring Boot)
 - **UI thread**: Operaciones pesadas en Platform.runLater, binding chains costosas, nodos excesivos en scene graph (>1000)
 - **FXML**: Controllers que retienen referencias a stages cerrados, VirtualFlow no usado para listas largas
 - **Spring**: Transacciones demasiado amplias, lazy loading fuera de sesión, inyección circular
@@ -159,9 +159,9 @@ Cuando necesites evidencia más concreta:
 
 ---
 
-## Rebrand Baryx → Kipu (Coordinación de Equipo)
+## Rebrand Kipu → Kipu (Coordinación de Equipo)
 
-**Referencia maestra**: `PLAN_REBRAND_KIPU.md` en BaryxWeb.
+**Referencia maestra**: `PLAN_REBRAND_KIPU.md` en KipuWeb.
 
 ### Tu Rol en el Rebrand: Validación Post-Rebrand
 
@@ -177,17 +177,17 @@ Después de que todas las fases se completen, tú verificas que el rebrand no in
 ### Checklist Post-Rebrand
 
 ```bash
-# Verificar que no hay referencia residual a baryx en config de Spring
-grep -rn "com\.baryx\|baryx\." baryx-servidor/src/main/resources/
+# Verificar que no hay referencia residual a kipu en config de Spring
+grep -rn "com\.kipu\|kipu\." kipu-servidor/src/main/resources/
 
-# Verificar que application.yml usa kipu: en vez de baryx:
-grep -n "baryx:" baryx-servidor/src/main/resources/application*.yml
+# Verificar que application.yml usa kipu: en vez de kipu:
+grep -n "kipu:" kipu-servidor/src/main/resources/application*.yml
 
 # Verificar scanning de Spring Boot
-grep -rn "scanBasePackages\|ComponentScan\|EntityScan" baryx-servidor/src/
+grep -rn "scanBasePackages\|ComponentScan\|EntityScan" kipu-servidor/src/
 
 # Verificar mainClass en pom.xml
-grep -n "mainClass" baryx-*/pom.xml
+grep -n "mainClass" kipu-*/pom.xml
 ```
 
 ### Coordinación

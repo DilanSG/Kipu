@@ -1,9 +1,9 @@
 ---
 name: i18n-validation
-description: "Validación de internacionalización (i18n) en Baryx cliente. Use when: verificar textos hardcodeados, comprobar claves i18n faltantes, sincronizar archivos de idioma ES/EN/PT, agregar claves nuevas, detectar strings sin IdiomaUtil, auditar traducciones, verificar consistencia entre mensajes.properties."
+description: "Validación de internacionalización (i18n) en Kipu cliente. Use when: verificar textos hardcodeados, comprobar claves i18n faltantes, sincronizar archivos de idioma ES/EN/PT, agregar claves nuevas, detectar strings sin IdiomaUtil, auditar traducciones, verificar consistencia entre mensajes.properties."
 ---
 
-# Validación i18n — Baryx
+# Validación i18n — Kipu
 
 Procedimiento para verificar que todo texto visible al usuario usa el sistema de internacionalización y que los 3 archivos de idioma están sincronizados.
 
@@ -19,10 +19,10 @@ Procedimiento para verificar que todo texto visible al usuario usa el sistema de
 
 | Archivo | Propósito |
 |---------|-----------|
-| `baryx-cliente/src/main/resources/i18n/mensajes.properties` | Español (default, ~1320 líneas) |
-| `baryx-cliente/src/main/resources/i18n/mensajes_en.properties` | English (~1317 líneas) |
-| `baryx-cliente/src/main/resources/i18n/mensajes_pt.properties` | Português (~1317 líneas) |
-| `baryx-cliente/src/main/java/com/baryx/cliente/utilidad/IdiomaUtil.java` | Clase utilitaria de i18n |
+| `kipu-cliente/src/main/resources/i18n/mensajes.properties` | Español (default, ~1320 líneas) |
+| `kipu-cliente/src/main/resources/i18n/mensajes_en.properties` | English (~1317 líneas) |
+| `kipu-cliente/src/main/resources/i18n/mensajes_pt.properties` | Português (~1317 líneas) |
+| `kipu-cliente/src/main/java/com/kipu/cliente/utilidad/IdiomaUtil.java` | Clase utilitaria de i18n |
 
 ## Convención de Claves
 
@@ -57,22 +57,22 @@ Procedimiento para verificar que todo texto visible al usuario usa el sistema de
 ```bash
 # Buscar setText() con strings literales (anti-patrón principal)
 grep -rn '\.setText("[^"]*[a-záéíóúñA-ZÁÉÍÓÚÑ]' \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/ \
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/ \
   --include="*.java" | grep -v 'IdiomaUtil\|obtener\|//\|/\*\|System.out\|logger\|log\.'
 
 # Buscar new Label("texto") con texto en español
 grep -rn 'new Label("[^"]*[a-záéíóúñA-ZÁÉÍÓÚÑ]' \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/ \
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/ \
   --include="*.java" | grep -v 'IdiomaUtil\|obtener'
 
 # Buscar setPromptText() con strings literales
 grep -rn '\.setPromptText("[^"]*[a-záéíóúñA-ZÁÉÍÓÚÑ]' \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/ \
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/ \
   --include="*.java" | grep -v 'IdiomaUtil\|obtener'
 
 # Buscar Alert/Dialog con texto literal
 grep -rn 'setHeaderText\|setContentText\|setTitle' \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/ \
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/ \
   --include="*.java" | grep '"[^"]*[a-záéíóúñA-ZÁÉÍÓÚÑ]' | grep -v 'IdiomaUtil\|obtener'
 ```
 
@@ -82,14 +82,14 @@ grep -rn 'setHeaderText\|setContentText\|setTitle' \
 # Buscar text="..." con texto visible en español en FXML
 # Excepciones válidas: "|" (separador), "" (vacío), "X" (cerrar)
 grep -rn 'text="[^"]*[a-záéíóúñA-ZÁÉÍÓÚÑ]' \
-  baryx-cliente/src/main/resources/vista/ \
-  --include="*.fxml" | grep -v 'fx:id\|styleClass\|style=\|url=\|Sistema Baryx v'
+  kipu-cliente/src/main/resources/vista/ \
+  --include="*.fxml" | grep -v 'fx:id\|styleClass\|style=\|url=\|Sistema Kipu v'
 ```
 
 **Strings que SÍ son aceptables hardcodeados en FXML:**
 - `text="|"` — Separadores visuales
 - `text="X"` — Botón cerrar (universal)
-- `text="Sistema Baryx v1.0.0 © 2026"` — Copyright en footer (es constante)
+- `text="Sistema Kipu v1.0.0 © 2026"` — Copyright en footer (es constante)
 - Strings que son `fx:id` o `styleClass` (no son texto visible)
 
 **Strings que NO deben estar hardcodeados:**
@@ -104,12 +104,12 @@ grep -rn 'text="[^"]*[a-záéíóúñA-ZÁÉÍÓÚÑ]' \
 ```bash
 # Todas las llamadas a IdiomaUtil.obtener() — extraer claves usadas
 grep -rnoP 'IdiomaUtil\.obtener\("\K[^"]+' \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/ \
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/ \
   --include="*.java" | sort -u > /tmp/claves_usadas.txt
 
 # Verificar que cada clave usada existe en mensajes.properties
 while IFS=: read -r file clave; do
-  if ! grep -q "^$clave=" baryx-cliente/src/main/resources/i18n/mensajes.properties; then
+  if ! grep -q "^$clave=" kipu-cliente/src/main/resources/i18n/mensajes.properties; then
     echo "❌ CLAVE INEXISTENTE: $clave (usado en $file)"
   fi
 done < /tmp/claves_usadas.txt
@@ -119,9 +119,9 @@ done < /tmp/claves_usadas.txt
 
 ```bash
 # Extraer claves de cada archivo (sin valores, solo keys)
-grep -oP '^[a-zA-Z0-9_.]+(?==)' baryx-cliente/src/main/resources/i18n/mensajes.properties | sort > /tmp/keys_es.txt
-grep -oP '^[a-zA-Z0-9_.]+(?==)' baryx-cliente/src/main/resources/i18n/mensajes_en.properties | sort > /tmp/keys_en.txt
-grep -oP '^[a-zA-Z0-9_.]+(?==)' baryx-cliente/src/main/resources/i18n/mensajes_pt.properties | sort > /tmp/keys_pt.txt
+grep -oP '^[a-zA-Z0-9_.]+(?==)' kipu-cliente/src/main/resources/i18n/mensajes.properties | sort > /tmp/keys_es.txt
+grep -oP '^[a-zA-Z0-9_.]+(?==)' kipu-cliente/src/main/resources/i18n/mensajes_en.properties | sort > /tmp/keys_en.txt
+grep -oP '^[a-zA-Z0-9_.]+(?==)' kipu-cliente/src/main/resources/i18n/mensajes_pt.properties | sort > /tmp/keys_pt.txt
 
 # Claves en ES pero NO en EN
 echo "=== Faltantes en English ==="
@@ -149,9 +149,9 @@ echo "ES: $(wc -l < /tmp/keys_es.txt) | EN: $(wc -l < /tmp/keys_en.txt) | PT: $(
 
 ```bash
 # Todas las claves definidas en mensajes.properties
-grep -oP '^[a-zA-Z0-9_.]+(?==)' baryx-cliente/src/main/resources/i18n/mensajes.properties | while read clave; do
+grep -oP '^[a-zA-Z0-9_.]+(?==)' kipu-cliente/src/main/resources/i18n/mensajes.properties | while read clave; do
   # Buscar uso en Java y FXML
-  if ! grep -rq "$clave" baryx-cliente/src/main/java/ baryx-cliente/src/main/resources/vista/ 2>/dev/null; then
+  if ! grep -rq "$clave" kipu-cliente/src/main/java/ kipu-cliente/src/main/resources/vista/ 2>/dev/null; then
     echo "⚠️  HUÉRFANA: $clave"
   fi
 done
@@ -193,7 +193,7 @@ ctrl.reportes.filtro.periodo=Período
 
 **Paso 3**: Usar en el controlador:
 ```java
-import com.baryx.cliente.utilidad.IdiomaUtil;
+import com.kipu.cliente.utilidad.IdiomaUtil;
 import java.text.MessageFormat;
 
 // Texto simple
@@ -211,19 +211,19 @@ String msg = MessageFormat.format(
 ```bash
 # Buscar traducciones que son copias del español (probablemente sin traducir)
 paste -d'|' \
-  <(grep -oP '(?<==).+' baryx-cliente/src/main/resources/i18n/mensajes.properties) \
-  <(grep -oP '(?<==).+' baryx-cliente/src/main/resources/i18n/mensajes_en.properties) | \
+  <(grep -oP '(?<==).+' kipu-cliente/src/main/resources/i18n/mensajes.properties) \
+  <(grep -oP '(?<==).+' kipu-cliente/src/main/resources/i18n/mensajes_en.properties) | \
   awk -F'|' '$1 == $2 {print NR": "$1}' | head -20
 
 # Lo mismo para PT
 paste -d'|' \
-  <(grep -oP '(?<==).+' baryx-cliente/src/main/resources/i18n/mensajes.properties) \
-  <(grep -oP '(?<==).+' baryx-cliente/src/main/resources/i18n/mensajes_pt.properties) | \
+  <(grep -oP '(?<==).+' kipu-cliente/src/main/resources/i18n/mensajes.properties) \
+  <(grep -oP '(?<==).+' kipu-cliente/src/main/resources/i18n/mensajes_pt.properties) | \
   awk -F'|' '$1 == $2 {print NR": "$1}' | head -20
 ```
 
 **Excepciones válidas** donde ES = EN = PT:
-- Nombres propios: "Baryx", "BARYX"
+- Nombres propios: "Kipu", "KIPU"
 - Códigos: "v1.0.0", "PIN"
 - Formatos: `{0}`, `{1}`
 
@@ -234,9 +234,9 @@ paste -d'|' \
 for param in '{0}' '{1}' '{2}'; do
   echo "=== Claves con $param ==="
   
-  ES=$(grep -c "$param" baryx-cliente/src/main/resources/i18n/mensajes.properties)
-  EN=$(grep -c "$param" baryx-cliente/src/main/resources/i18n/mensajes_en.properties)
-  PT=$(grep -c "$param" baryx-cliente/src/main/resources/i18n/mensajes_pt.properties)
+  ES=$(grep -c "$param" kipu-cliente/src/main/resources/i18n/mensajes.properties)
+  EN=$(grep -c "$param" kipu-cliente/src/main/resources/i18n/mensajes_en.properties)
+  PT=$(grep -c "$param" kipu-cliente/src/main/resources/i18n/mensajes_pt.properties)
   
   echo "  ES: $ES | EN: $EN | PT: $PT"
   if [ "$ES" != "$EN" ] || [ "$ES" != "$PT" ]; then

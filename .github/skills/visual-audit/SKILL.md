@@ -1,11 +1,11 @@
 ---
 name: visual-audit
-description: "Auditoría visual completa de vistas JavaFX en Baryx. Use when: revisar consistencia visual, auditar vista FXML, verificar paleta de colores, validar tipografía, comprobar touch targets, revisar header/footer estándar, detectar inconsistencias visuales, revisar estados de botones, verificar contraste WCAG, revisar layout grid 8px, auditar tema luxury/premium, verificar logo BARYX."
+description: "Auditoría visual completa de vistas JavaFX en Kipu. Use when: revisar consistencia visual, auditar vista FXML, verificar paleta de colores, validar tipografía, comprobar touch targets, revisar header/footer estándar, detectar inconsistencias visuales, revisar estados de botones, verificar contraste WCAG, revisar layout grid 8px, auditar tema luxury/premium, verificar logo KIPU."
 ---
 
-# Auditoría Visual — Baryx
+# Auditoría Visual — Kipu
 
-Procedimiento paso a paso para auditar la calidad visual de cualquier vista FXML del proyecto Baryx, verificando cumplimiento con el tema luxury/premium y las convenciones del proyecto.
+Procedimiento paso a paso para auditar la calidad visual de cualquier vista FXML del proyecto Kipu, verificando cumplimiento con el tema luxury/premium y las convenciones del proyecto.
 
 ## Cuándo Usar
 
@@ -19,9 +19,9 @@ Procedimiento paso a paso para auditar la calidad visual de cualquier vista FXML
 
 | Archivo | Propósito |
 |---------|-----------|
-| `baryx-cliente/src/main/resources/css/estilos.css` | Estilos globales (~5800 líneas) |
-| `baryx-cliente/src/main/resources/vista/*.fxml` | Vistas FXML |
-| `baryx-cliente/src/main/resources/imagenes/LOGOPNG.png` | Logo oficial |
+| `kipu-cliente/src/main/resources/css/estilos.css` | Estilos globales (~5800 líneas) |
+| `kipu-cliente/src/main/resources/vista/*.fxml` | Vistas FXML |
+| `kipu-cliente/src/main/resources/imagenes/LOGOPNG.png` | Logo oficial |
 
 ## Procedimiento
 
@@ -31,13 +31,13 @@ Verificar que SOLO se usan colores de la paleta oficial.
 
 ```bash
 # Extraer todos los colores hex del FXML (no deberían existir — deben estar en CSS)
-grep -oP '#[0-9a-fA-F]{3,8}' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -u
+grep -oP '#[0-9a-fA-F]{3,8}' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -u
 
 # Extraer colores inline en style="" del FXML (anti-patrón)
-grep -n 'style="[^"]*-fx-' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml
+grep -n 'style="[^"]*-fx-' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml
 
 # Buscar colores fuera de paleta en estilos.css para clases de esta vista
-grep -n 'fx-background-color\|fx-text-fill\|fx-border-color' baryx-cliente/src/main/resources/css/estilos.css | grep -v '#0a0a0a\|#121212\|#1a1a1a\|#2a2a2a\|#333333\|#404040\|#d4af37\|#c9a961\|#b8984e\|#f5f5f5\|#e8e8e8\|#b0b0b0\|#999999\|#a8b991\|#daa520\|#8b0000\|transparent\|derive\|linear-gradient\|#1e1e1e\|#0d0d0d\|#4a4a4a\|#666666'
+grep -n 'fx-background-color\|fx-text-fill\|fx-border-color' kipu-cliente/src/main/resources/css/estilos.css | grep -v '#0a0a0a\|#121212\|#1a1a1a\|#2a2a2a\|#333333\|#404040\|#d4af37\|#c9a961\|#b8984e\|#f5f5f5\|#e8e8e8\|#b0b0b0\|#999999\|#a8b991\|#daa520\|#8b0000\|transparent\|derive\|linear-gradient\|#1e1e1e\|#0d0d0d\|#4a4a4a\|#666666'
 ```
 
 **Paleta aceptada:**
@@ -59,10 +59,10 @@ grep -n 'fx-background-color\|fx-text-fill\|fx-border-color' baryx-cliente/src/m
 
 ```bash
 # Tamaños de fuente usados en el FXML
-grep -oP 'font-size:\s*\K[0-9]+' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -n | uniq -c
+grep -oP 'font-size:\s*\K[0-9]+' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -n | uniq -c
 
 # Fuentes explícitas
-grep -n 'font-family\|Font name=' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml
+grep -n 'font-family\|Font name=' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml
 ```
 
 **Rangos válidos:**
@@ -84,10 +84,10 @@ grep -n 'font-family\|Font name=' baryx-cliente/src/main/resources/vista/ARCHIVO
 
 ```bash
 # Botones con tamaños definidos — verificar ≥44px
-grep -n 'prefWidth\|prefHeight\|minWidth\|minHeight' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | grep -i 'button\|toggle'
+grep -n 'prefWidth\|prefHeight\|minWidth\|minHeight' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | grep -i 'button\|toggle'
 
 # Buscar botones sin tamaño explícito (dependen de CSS — verificar en estilos.css)
-grep -n '<Button\|<ToggleButton' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | grep -v 'prefWidth\|prefHeight\|minWidth\|minHeight'
+grep -n '<Button\|<ToggleButton' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | grep -v 'prefWidth\|prefHeight\|minWidth\|minHeight'
 ```
 
 **Reglas:**
@@ -103,7 +103,7 @@ grep -n '<Button\|<ToggleButton' baryx-cliente/src/main/resources/vista/ARCHIVO.
 
 ```bash
 # ¿Tiene BorderPane como root con <top> y <bottom>?
-grep -A2 'BorderPane\|<top>\|<bottom>' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml
+grep -A2 'BorderPane\|<top>\|<bottom>' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml
 ```
 
 **Header requerido** (en `<top>`):
@@ -115,18 +115,18 @@ grep -A2 'BorderPane\|<top>\|<bottom>' baryx-cliente/src/main/resources/vista/AR
 
 **Footer requerido** (en `<bottom>`):
 - [ ] Labels: `labelFechaFooter` + `labelHoraFooter` con separador `|`
-- [ ] Label de versión: `Sistema Baryx v1.0.0 © 2026`
+- [ ] Label de versión: `Sistema Kipu v1.0.0 © 2026`
 - [ ] StyleClass: `menu-footer`
 
 ### 5. Verificación de CSS y Clases
 
 ```bash
 # Listar todas las styleClass usadas en el FXML
-grep -oP 'styleClass="[^"]*"' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -u
+grep -oP 'styleClass="[^"]*"' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -u
 
 # Verificar que cada clase existe en estilos.css
-for cls in $(grep -oP 'styleClass="\K[^"]*' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | tr ',' '\n' | tr ' ' '\n' | sort -u); do
-  if ! grep -q "\.$cls" baryx-cliente/src/main/resources/css/estilos.css; then
+for cls in $(grep -oP 'styleClass="\K[^"]*' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | tr ',' '\n' | tr ' ' '\n' | sort -u); do
+  if ! grep -q "\.$cls" kipu-cliente/src/main/resources/css/estilos.css; then
     echo "❌ FALTANTE: .$cls"
   fi
 done
@@ -146,7 +146,7 @@ Para cada clase de botón usada en la vista, verificar que `estilos.css` tiene l
 ```bash
 # Para una clase de botón, verificar estados
 CLASE="boton-principal"
-grep -n "\.$CLASE" baryx-cliente/src/main/resources/css/estilos.css | head -20
+grep -n "\.$CLASE" kipu-cliente/src/main/resources/css/estilos.css | head -20
 # Debe tener: base, :hover, :pressed, :focused, :disabled
 ```
 
@@ -164,7 +164,7 @@ grep -n "\.$CLASE" baryx-cliente/src/main/resources/css/estilos.css | head -20
 
 ```bash
 # Verificar grid de 8px (padding/spacing deben ser múltiplos de 8)
-grep -oP '(top|right|bottom|left|spacing|hgap|vgap)="(\K[0-9]+)' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -n | uniq -c
+grep -oP '(top|right|bottom|left|spacing|hgap|vgap)="(\K[0-9]+)' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | sort -n | uniq -c
 ```
 
 **Reglas:**
@@ -177,7 +177,7 @@ grep -oP '(top|right|bottom|left|spacing|hgap|vgap)="(\K[0-9]+)' baryx-cliente/s
 
 ```bash
 # Usos del logo en la vista
-grep -n 'LOGOPNG' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml
+grep -n 'LOGOPNG' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml
 ```
 
 **Ubicaciones válidas:**
@@ -189,12 +189,12 @@ grep -n 'LOGOPNG' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml
 
 ```bash
 # Contar nodos estáticos en el FXML
-grep -c '<' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml
+grep -c '<' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml
 
 # Buscar efectos costosos en CSS para clases de esta vista
-CLASES=$(grep -oP 'styleClass="\K[^"]*' baryx-cliente/src/main/resources/vista/ARCHIVO.fxml | tr ',' '\n' | tr ' ' '\n' | sort -u)
+CLASES=$(grep -oP 'styleClass="\K[^"]*' kipu-cliente/src/main/resources/vista/ARCHIVO.fxml | tr ',' '\n' | tr ' ' '\n' | sort -u)
 for cls in $CLASES; do
-  grep -A5 "\.$cls" baryx-cliente/src/main/resources/css/estilos.css | grep -i 'blur\|saturate\|blend\|drop-shadow'
+  grep -A5 "\.$cls" kipu-cliente/src/main/resources/css/estilos.css | grep -i 'blur\|saturate\|blend\|drop-shadow'
 done
 ```
 

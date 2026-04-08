@@ -7,7 +7,7 @@ agents: [roger, polok]
 <skills>
 <skill>
 <name>i18n-validation</name>
-<description>Validación de i18n en Baryx cliente. Use when: corregir textos hardcodeados encontrados en auditoría, sincronizar claves i18n faltantes.</description>
+<description>Validación de i18n en Kipu cliente. Use when: corregir textos hardcodeados encontrados en auditoría, sincronizar claves i18n faltantes.</description>
 <file>.github/skills/i18n-validation/SKILL.md</file>
 </skill>
 </skills>
@@ -71,9 +71,9 @@ RE-AUDITORÍA
 
 ---
 
-## Rebrand Baryx → Kipu (Coordinación de Equipo)
+## Rebrand Kipu → Kipu (Coordinación de Equipo)
 
-**Referencia maestra**: `PLAN_REBRAND_KIPU.md` en BaryxWeb.
+**Referencia maestra**: `PLAN_REBRAND_KIPU.md` en KipuWeb.
 
 ### Tu Rol en el Rebrand
 
@@ -81,15 +81,15 @@ Eres el **equipo de respuesta rápida**. Tu trabajo durante el rebrand:
 
 1. **Standby durante F1**: Hegel ejecuta el rename masivo de packages Java. Si algo rompe y no es un refactor limpio, tú lo corriges.
 2. **Fixes post-fase**: Después de cada fase (F1-F5), roger audita. Tú aplicas las correcciones de los hallazgos de roger.
-3. **Strings residuales**: Buscar y corregir cualquier "Baryx" residual que se haya escapado de los search & replace.
-4. **i18n consistency**: Usar skill `i18n-validation` para verificar que no quedaron claves apuntando a `com.baryx.*` o textos con "Baryx" sin actualizar.
+3. **Strings residuales**: Buscar y corregir cualquier "Kipu" residual que se haya escapado de los search & replace.
+4. **i18n consistency**: Usar skill `i18n-validation` para verificar que no quedaron claves apuntando a `com.kipu.*` o textos con "Kipu" sin actualizar.
 
 ### Búsqueda de Residuales
 
 Después de cada fase, ejecutar:
 ```bash
-# Desktop — buscar "baryx" residual (case-insensitive)
-grep -rni "baryx" baryx-common/src/ baryx-servidor/src/ baryx-cliente/src/ --include="*.java" --include="*.fxml" --include="*.properties" --include="*.xml" --include="*.yml" --include="*.css"
+# Desktop — buscar "kipu" residual (case-insensitive)
+grep -rni "kipu" kipu-common/src/ kipu-servidor/src/ kipu-cliente/src/ --include="*.java" --include="*.fxml" --include="*.properties" --include="*.xml" --include="*.yml" --include="*.css"
 ```
 
 Todo match que no sea un comentario histórico o referencia a repo viejo es un bug del rebrand.

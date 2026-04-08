@@ -1,11 +1,11 @@
 ---
 name: javafx-ui-profiling
-description: "Perfilado de rendimiento de UI JavaFX en Baryx. Use when: interfaz lenta, frame drops, UI se congela, scene graph pesado, CSS lento, FXML tarda en cargar, scroll laggy, animaciones entrecortadas, nodos excesivos, Platform.runLater bloqueante, productos grid lento, vista de mesas lenta."
+description: "Perfilado de rendimiento de UI JavaFX en Kipu. Use when: interfaz lenta, frame drops, UI se congela, scene graph pesado, CSS lento, FXML tarda en cargar, scroll laggy, animaciones entrecortadas, nodos excesivos, Platform.runLater bloqueante, productos grid lento, vista de mesas lenta."
 ---
 
-# Perfilado de UI JavaFX — Baryx
+# Perfilado de UI JavaFX — Kipu
 
-Skill para diagnosticar problemas de rendimiento en la interfaz JavaFX de Baryx, optimizada para hardware gama baja.
+Skill para diagnosticar problemas de rendimiento en la interfaz JavaFX de Kipu, optimizada para hardware gama baja.
 
 ## Cuándo Usar
 
@@ -16,7 +16,7 @@ Skill para diagnosticar problemas de rendimiento en la interfaz JavaFX de Baryx,
 - La vista se congela momentáneamente al cargar datos
 - Después de horas de uso la UI se degrada
 
-## Targets de Rendimiento (Baryx)
+## Targets de Rendimiento (Kipu)
 
 | Métrica | Target | Crítico |
 |---------|--------|---------|
@@ -38,16 +38,16 @@ Estimar nodos en las vistas más pesadas:
 
 ```bash
 # Nodos estáticos en FXML
-grep -c "<" baryx-cliente/src/main/resources/vista/*.fxml
-grep -c "<" baryx-cliente/src/main/resources/vista/subvistas/**/*.fxml
+grep -c "<" kipu-cliente/src/main/resources/vista/*.fxml
+grep -c "<" kipu-cliente/src/main/resources/vista/subvistas/**/*.fxml
 
 # Nodos creados dinámicamente (los más peligrosos)
 grep -rn "new Button\|new Label\|new VBox\|new HBox\|new StackPane\|new GridPane\|new ImageView" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # Puntos de inyección dinámica
 grep -rn "getChildren().add\|getChildren().addAll\|getChildren().setAll" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 ```
 
 **Cálculo rápido para grids de productos:**
@@ -59,7 +59,7 @@ grep -rn "getChildren().add\|getChildren().addAll\|getChildren().setAll" \
 
 ```bash
 # Archivos FXML más profundos (anidamiento XML)
-for f in $(find baryx-cliente/src/main/resources/vista -name "*.fxml"); do
+for f in $(find kipu-cliente/src/main/resources/vista -name "*.fxml"); do
   depth=$(awk 'BEGIN{max=0; d=0} /<[^\/!?]/{d++; if(d>max)max=d} /<\//{d--} END{print max}' "$f")
   echo "$depth $f"
 done | sort -rn | head -10
@@ -74,21 +74,21 @@ done | sort -rn | head -10
 
 #### 2.1 Selectores Complejos
 
-Regla Baryx: máximo 3 niveles de selectores CSS.
+Regla Kipu: máximo 3 niveles de selectores CSS.
 
 ```bash
 # Selectores con más de 3 niveles (costosos de resolver)
-grep -n "^\." baryx-cliente/src/main/resources/css/estilos.css | \
+grep -n "^\." kipu-cliente/src/main/resources/css/estilos.css | \
   awk -F'[ {]' '{print NF-1, $0}' | sort -rn | head -20
 
 # Selectores con * (wildcard — evitar)
-grep -n "\*" baryx-cliente/src/main/resources/css/estilos.css
+grep -n "\*" kipu-cliente/src/main/resources/css/estilos.css
 
 # Box-shadows (máx 2 por elemento)
-grep -n "box-shadow\|-fx-effect" baryx-cliente/src/main/resources/css/estilos.css
+grep -n "box-shadow\|-fx-effect" kipu-cliente/src/main/resources/css/estilos.css
 
-# Filters prohibidos en Baryx
-grep -n "blur\|saturate\|-fx-blend-mode" baryx-cliente/src/main/resources/css/estilos.css
+# Filters prohibidos en Kipu
+grep -n "blur\|saturate\|-fx-blend-mode" kipu-cliente/src/main/resources/css/estilos.css
 ```
 
 #### 2.2 Pseudoclases y Estados Dinámicos
@@ -96,7 +96,7 @@ grep -n "blur\|saturate\|-fx-blend-mode" baryx-cliente/src/main/resources/css/es
 ```bash
 # Cantidad de pseudoclases (cada una requiere recálculo de estilos)
 grep -c ":hover\|:pressed\|:focused\|:selected\|:disabled" \
-  baryx-cliente/src/main/resources/css/estilos.css
+  kipu-cliente/src/main/resources/css/estilos.css
 ```
 
 **Regla**: Las pseudoclases son OK, pero si un nodo tiene >3 estados CSS, JavaFX recalcula estilos frecuentemente.
@@ -107,7 +107,7 @@ grep -c ":hover\|:pressed\|:focused\|:selected\|:disabled" \
 
 ```bash
 # Todos los Platform.runLater con contexto
-grep -rn "Platform.runLater" baryx-cliente/src/main/java/com/baryx/cliente/controlador/ -A 8
+grep -rn "Platform.runLater" kipu-cliente/src/main/java/com/kipu/cliente/controlador/ -A 8
 
 # Buscar operaciones costosas dentro de runLater:
 # - Creación masiva de nodos
@@ -147,13 +147,13 @@ CompletableFuture.supplyAsync(() -> {
 
 ```bash
 # .get() bloqueante en CompletableFuture (NUNCA en controladores JavaFX)
-grep -rn "\.get()" baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+grep -rn "\.get()" kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # Thread.sleep en controladores (NUNCA)
-grep -rn "Thread.sleep" baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+grep -rn "Thread.sleep" kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # Operaciones de archivo síncronas
-grep -rn "Files.read\|Files.write\|new File" baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+grep -rn "Files.read\|Files.write\|new File" kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 ```
 
 ### 4. Análisis de Imágenes y Recursos
@@ -161,14 +161,14 @@ grep -rn "Files.read\|Files.write\|new File" baryx-cliente/src/main/java/com/bar
 ```bash
 # Imágenes cargadas (cada Image ocupa memoria de GPU)
 grep -rn "new Image\|ImageView\|@../imagenes/" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/ \
-  baryx-cliente/src/main/resources/vista/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/ \
+  kipu-cliente/src/main/resources/vista/
 
 # Tamaño de imágenes en disco
-find baryx-cliente/src/main/resources/imagenes -type f -exec ls -lh {} \; | sort -k5 -rh
+find kipu-cliente/src/main/resources/imagenes -type f -exec ls -lh {} \; | sort -k5 -rh
 
 # ¿Se usa backgroundLoading?
-grep -rn "backgroundLoading\|new Image(" baryx-cliente/src/main/java/
+grep -rn "backgroundLoading\|new Image(" kipu-cliente/src/main/java/
 ```
 
 **Reglas para imágenes en hardware bajo:**
@@ -181,10 +181,10 @@ grep -rn "backgroundLoading\|new Image(" baryx-cliente/src/main/java/
 ```bash
 # Bindings (cadenas de binding pueden causar cascadas de recálculo)
 grep -rn "\.bind(\|\.bindBidirectional(\|Bindings\.\|\.addListener(" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # Properties que se actualizan frecuentemente
-grep -rn "\.set(\|\.setValue(" baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+grep -rn "\.set(\|\.setValue(" kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 ```
 
 **Problema**: Una cadena de bindings A→B→C→D donde A cambia frecuentemente causa cascada de invalidación.
@@ -193,19 +193,19 @@ grep -rn "\.set(\|\.setValue(" baryx-cliente/src/main/java/com/baryx/cliente/con
 
 ```bash
 # Habilitar Pulse Logger (mide frame times de JavaFX)
-java -Djavafx.pulseLogger=true -jar baryx-cliente.jar 2>&1 | grep "PULSE"
+java -Djavafx.pulseLogger=true -jar kipu-cliente.jar 2>&1 | grep "PULSE"
 
 # Habilitar CSS performance logging
-java -Djavafx.css.debug=true -jar baryx-cliente.jar
+java -Djavafx.css.debug=true -jar kipu-cliente.jar
 
 # Flight Recorder enfocado en JavaFX
-jcmd $(pgrep -f baryx-cliente) JFR.start \
+jcmd $(pgrep -f kipu-cliente) JFR.start \
   duration=30s \
   filename=javafx-profile.jfr \
   settings=profile
 ```
 
-## Anti-Patrones UI Conocidos en Baryx
+## Anti-Patrones UI Conocidos en Kipu
 
 | Anti-Patrón | Dónde | Fix |
 |-------------|-------|-----|

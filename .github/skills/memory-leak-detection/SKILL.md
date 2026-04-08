@@ -3,9 +3,9 @@ name: memory-leak-detection
 description: "Detección de fugas de memoria en JavaFX y Spring Boot. Use when: memoria crece con el tiempo, OutOfMemoryError, uso de memoria alto después de navegar entre vistas, listeners no limpiados, objetos retenidos, caché sin evicción, conexiones no cerradas, scene graph que crece."
 ---
 
-# Detección de Memory Leaks — Baryx
+# Detección de Memory Leaks — Kipu
 
-Skill para detectar fugas de memoria en el cliente JavaFX y servidor Spring Boot de Baryx. Enfocado en los patrones reales del proyecto.
+Skill para detectar fugas de memoria en el cliente JavaFX y servidor Spring Boot de Kipu. Enfocado en los patrones reales del proyecto.
 
 ## Cuándo Usar
 
@@ -14,22 +14,22 @@ Skill para detectar fugas de memoria en el cliente JavaFX y servidor Spring Boot
 - OutOfMemoryError en cliente o servidor
 - El servidor se degrada después de horas de operación continua (picos 20:00-03:00)
 
-## Fuentes de Leaks en Baryx
+## Fuentes de Leaks en Kipu
 
 ### Categoría 1: Listeners y Callbacks JavaFX (ALTA probabilidad)
 
-Los controladores de Baryx añaden listeners con `.addListener()` pero no siempre los remueven al cambiar de vista.
+Los controladores de Kipu añaden listeners con `.addListener()` pero no siempre los remueven al cambiar de vista.
 
 **Búsqueda:**
 
 ```bash
 # Listeners añadidos sin cleanup
 grep -rn "\.addListener\|\.setOnAction\|\.setOnMouseClicked\|\.setOnKeyPressed" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # Verificar si hay cleanup explícito
 grep -rn "\.removeListener\|\.removeEventHandler\|\.setOnAction(null)" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 ```
 
 **Patrón de leak:**
@@ -60,18 +60,18 @@ void limpiar() {
 
 ### Categoría 2: Timelines y Animaciones No Detenidas
 
-Baryx usa `Timeline` para el reloj en header/footer. Si no se detiene al cambiar vista, la referencia persiste.
+Kipu usa `Timeline` para el reloj en header/footer. Si no se detiene al cambiar vista, la referencia persiste.
 
 **Búsqueda:**
 
 ```bash
 # Timeline creados
 grep -rn "new Timeline\|new PauseTransition\|new TranslateTransition" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # Stops correspondientes
 grep -rn "\.stop()\|\.pause()" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 ```
 
 **Checklist por controlador:**
@@ -88,11 +88,11 @@ El cliente usa `CompletableFuture` extensivamente via `ServicioHttpBase`. Los fu
 ```bash
 # Futures sin timeout explícito
 grep -rn "CompletableFuture\|sendAsync\|thenAccept\|thenApply" \
-  baryx-cliente/src/main/java/com/baryx/cliente/servicio/ -A 3
+  kipu-cliente/src/main/java/com/kipu/cliente/servicio/ -A 3
 
 # Verificar si hay orTimeout/completeOnTimeout
 grep -rn "orTimeout\|completeOnTimeout" \
-  baryx-cliente/src/main/java/com/baryx/cliente/servicio/
+  kipu-cliente/src/main/java/com/kipu/cliente/servicio/
 ```
 
 **Patrón de leak:**
@@ -110,7 +110,7 @@ httpClient.sendAsync(request, BodyHandlers.ofString())
 
 ### Categoría 4: Caché Sin Evicción
 
-**Cachés conocidas en Baryx:**
+**Cachés conocidas en Kipu:**
 
 | Caché | Archivo | Evicción |
 |-------|---------|----------|
@@ -123,12 +123,12 @@ httpClient.sendAsync(request, BodyHandlers.ofString())
 ```bash
 # Maps estáticos que podrían crecer sin límite
 grep -rn "static.*Map\|static.*List\|static.*Set" \
-  baryx-cliente/src/main/java/com/baryx/cliente/ \
-  baryx-servidor/src/main/java/com/baryx/servidor/
+  kipu-cliente/src/main/java/com/kipu/cliente/ \
+  kipu-servidor/src/main/java/com/kipu/servidor/
 
 # ConcurrentHashMap sin evicción
 grep -rn "ConcurrentHashMap" \
-  baryx-servidor/src/main/java/com/baryx/servidor/servicio/
+  kipu-servidor/src/main/java/com/kipu/servidor/servicio/
 ```
 
 **Patrón de leak server-side:**
@@ -142,14 +142,14 @@ private final Map<String, ClienteInfo> clientesConectados = new ConcurrentHashMa
 
 ### Categoría 5: Scene Graph que Crece
 
-Baryx crea nodos dinámicamente para grids de productos y mesas.
+Kipu crea nodos dinámicamente para grids de productos y mesas.
 
 **Búsqueda:**
 
 ```bash
 # Nodos añadidos dinámicamente sin limpiar los anteriores
 grep -rn "getChildren().add\|getChildren().setAll\|getChildren().clear" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # ¿Se llama clear() antes de repoblar?
 ```
@@ -171,10 +171,10 @@ for (Producto p : productos) {
 ```bash
 # InputStreams, Connections, etc. sin try-with-resources
 grep -rn "new FileInputStream\|new BufferedReader\|getConnection()\|openStream()" \
-  baryx-servidor/src/main/java/com/baryx/servidor/
+  kipu-servidor/src/main/java/com/kipu/servidor/
 
 # Respuestas HTTP no consumidas en cliente
-grep -rn "HttpResponse" baryx-cliente/src/main/java/ | grep -v "BodyHandlers"
+grep -rn "HttpResponse" kipu-cliente/src/main/java/ | grep -v "BodyHandlers"
 ```
 
 ## Procedimiento de Diagnóstico
@@ -212,16 +212,16 @@ GC Root → [qué referencia al objeto] → [qué referencia eso] → Objeto lea
 
 ```bash
 # Heap dump del proceso Java
-jmap -dump:live,format=b,file=heap.hprof $(pgrep -f baryx)
+jmap -dump:live,format=b,file=heap.hprof $(pgrep -f kipu)
 
 # Resumen de memoria
-jmap -histo:live $(pgrep -f baryx) | head -30
+jmap -histo:live $(pgrep -f kipu) | head -30
 
 # Monitoreo en vivo
-jstat -gc $(pgrep -f baryx) 5000
+jstat -gc $(pgrep -f kipu) 5000
 
 # Flight Recorder (JDK 21)
-jcmd $(pgrep -f baryx) JFR.start duration=60s filename=baryx.jfr
+jcmd $(pgrep -f kipu) JFR.start duration=60s filename=kipu.jfr
 ```
 
 ## Output Esperado

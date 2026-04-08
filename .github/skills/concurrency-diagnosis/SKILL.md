@@ -1,11 +1,11 @@
 ---
 name: concurrency-diagnosis
-description: "Diagnóstico de problemas de concurrencia en Baryx. Use when: race condition, deadlock, estado corrupto, operaciones no atómicas, datos inconsistentes entre requests, shared mutable state, problemas con CompletableFuture, transacciones concurrentes que fallan, ConcurrentModificationException, problemas de threading JavaFX."
+description: "Diagnóstico de problemas de concurrencia en Kipu. Use when: race condition, deadlock, estado corrupto, operaciones no atómicas, datos inconsistentes entre requests, shared mutable state, problemas con CompletableFuture, transacciones concurrentes que fallan, ConcurrentModificationException, problemas de threading JavaFX."
 ---
 
-# Diagnóstico de Concurrencia — Baryx
+# Diagnóstico de Concurrencia — Kipu
 
-Skill para detectar race conditions, deadlocks, estado compartido inseguro y problemas de threading en el stack de Baryx: JavaFX client (multi-thread), Spring Boot server (concurrent requests), y PostgreSQL (transacciones concurrentes).
+Skill para detectar race conditions, deadlocks, estado compartido inseguro y problemas de threading en el stack de Kipu: JavaFX client (multi-thread), Spring Boot server (concurrent requests), y PostgreSQL (transacciones concurrentes).
 
 ## Cuándo Usar
 
@@ -16,7 +16,7 @@ Skill para detectar race conditions, deadlocks, estado compartido inseguro y pro
 - Deadlocks o timeouts en transacciones de BD
 - La UI muestra datos stale o desincronizados
 
-## Modelo de Concurrencia de Baryx
+## Modelo de Concurrencia de Kipu
 
 ### Servidor (Spring Boot)
 ```
@@ -52,14 +52,14 @@ Background Threads ─── CompletableFuture + HttpClient async
 
 ```bash
 # Campos mutables en servicios (PELIGRO si no son thread-safe)
-grep -rn "private.*=" baryx-servidor/src/main/java/com/baryx/servidor/servicio/ | \
+grep -rn "private.*=" kipu-servidor/src/main/java/com/kipu/servidor/servicio/ | \
   grep -v "final\|static final\|Repositorio\|Mapeador\|Servicio\|Logger"
 
 # Campos volatile (uso correcto para flags)
-grep -rn "volatile" baryx-servidor/src/main/java/com/baryx/servidor/servicio/
+grep -rn "volatile" kipu-servidor/src/main/java/com/kipu/servidor/servicio/
 
 # ¿Hay servicios con estado que cambia?
-grep -rn "this\.\w* =" baryx-servidor/src/main/java/com/baryx/servidor/servicio/impl/
+grep -rn "this\.\w* =" kipu-servidor/src/main/java/com/kipu/servidor/servicio/impl/
 ```
 
 **Patrón peligroso:**
@@ -78,7 +78,7 @@ public class MiServicioImpl {
 private final AtomicInteger contadorPedidos = new AtomicInteger(0);
 ```
 
-**Servicios conocidos con estado en Baryx:**
+**Servicios conocidos con estado en Kipu:**
 - `RegistroClientesServicio.java` — `ConcurrentHashMap` ✅ (thread-safe)
 - `SincronizacionNubeServicio.java` — `AtomicInteger ciclosFallidos`, `volatile` flags ✅
 
@@ -87,7 +87,7 @@ private final AtomicInteger contadorPedidos = new AtomicInteger(0);
 ```bash
 # Patrón exists + save (race window entre check y write)
 grep -rn "exists\|isPresent\|isEmpty" \
-  baryx-servidor/src/main/java/com/baryx/servidor/servicio/impl/ -A 5 | \
+  kipu-servidor/src/main/java/com/kipu/servidor/servicio/impl/ -A 5 | \
   grep -B 5 "save\|delete\|update"
 ```
 
@@ -110,7 +110,7 @@ if (!productoRepositorio.existsByCodigo(dto.getCodigo())) {
 # Modificaciones de UI fuera de Platform.runLater (BUG)
 # Buscar setters de nodos en callbacks de CompletableFuture sin runLater
 grep -rn "thenAccept\|thenApply\|whenComplete" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/ -A 8 | \
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/ -A 8 | \
   grep -v "Platform.runLater"
 ```
 
@@ -132,10 +132,10 @@ servicioProducto.listar().thenAccept(productos -> {
 ```bash
 # AtomicBoolean para prevenir operaciones concurrentes
 grep -rn "AtomicBoolean\|AtomicInteger\|AtomicLong\|AtomicReference" \
-  baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+  kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 
 # Verificar que el flag se resetea SIEMPRE (incluso en .exceptionally)
-grep -rn "compareAndSet\|\.set(" baryx-cliente/src/main/java/com/baryx/cliente/controlador/ -B 3 -A 3
+grep -rn "compareAndSet\|\.set(" kipu-cliente/src/main/java/com/kipu/cliente/controlador/ -B 3 -A 3
 ```
 
 **Patrón peligroso:**
@@ -158,11 +158,11 @@ servicio.guardar(datos)
 ```bash
 # Cadenas sin .exceptionally() (errores no manejados)
 grep -rn "thenAccept\|thenApply" \
-  baryx-cliente/src/main/java/com/baryx/cliente/ -A 10 | \
+  kipu-cliente/src/main/java/com/kipu/cliente/ -A 10 | \
   grep -v "exceptionally\|whenComplete\|handle"
 
 # Múltiples futures sobre el mismo recurso (race condition)
-grep -rn "sendAsync" baryx-cliente/src/main/java/com/baryx/cliente/servicio/ | wc -l
+grep -rn "sendAsync" kipu-cliente/src/main/java/com/kipu/cliente/servicio/ | wc -l
 ```
 
 ### 3. Concurrencia en Base de Datos
@@ -171,13 +171,13 @@ grep -rn "sendAsync" baryx-cliente/src/main/java/com/baryx/cliente/servicio/ | w
 
 ```bash
 # Entidades que usan @Version (locking optimista)
-grep -rn "@Version" baryx-servidor/src/main/java/com/baryx/servidor/modelo/entidad/
+grep -rn "@Version" kipu-servidor/src/main/java/com/kipu/servidor/modelo/entidad/
 
 # Entidades que DEBERÍAN usar @Version (escritura concurrente probable)
 # Candidatas: Mesa, Pedido, LineaPedido (múltiples meseros/cajeros)
 ```
 
-**Entidades con escritura concurrente en Baryx:**
+**Entidades con escritura concurrente en Kipu:**
 - `Mesa` — Múltiples meseros pueden modificar
 - `Pedido` — Mesero agrega líneas + cajero factura
 - `LineaPedido` — Mesero modifica cantidades
@@ -200,7 +200,7 @@ private Long version;
 ```bash
 # Servicios que hacen múltiples saves en una transacción
 grep -rn "@Transactional" \
-  baryx-servidor/src/main/java/com/baryx/servidor/servicio/impl/ -A 30 | \
+  kipu-servidor/src/main/java/com/kipu/servidor/servicio/impl/ -A 30 | \
   grep "save\|delete" | sort
 ```
 
@@ -214,22 +214,22 @@ TX2: UPDATE pedidos → UPDATE mesas  (❌ DEADLOCK potencial con TX1)
 
 ```sql
 -- Deadlocks recientes
-SELECT * FROM pg_stat_database WHERE datname = 'baryx_db';
+SELECT * FROM pg_stat_database WHERE datname = 'kipu_db';
 -- Ver deadlocks en: SELECT deadlocks FROM pg_stat_database
 
 -- Locks en espera ahora
 SELECT pid, mode, relation::regclass, granted
 FROM pg_locks
-WHERE NOT granted AND database = (SELECT oid FROM pg_database WHERE datname = 'baryx_db');
+WHERE NOT granted AND database = (SELECT oid FROM pg_database WHERE datname = 'kipu_db');
 
 -- Transacciones idle que retienen locks
 SELECT pid, state, query, now() - state_change AS idle_duration
 FROM pg_stat_activity
-WHERE datname = 'baryx_db' AND state = 'idle in transaction'
+WHERE datname = 'kipu_db' AND state = 'idle in transaction'
 ORDER BY idle_duration DESC;
 ```
 
-### 4. Escenarios Concurrentes Críticos en Baryx
+### 4. Escenarios Concurrentes Críticos en Kipu
 
 | Escenario | Actores | Riesgo |
 |-----------|---------|--------|
@@ -249,16 +249,16 @@ Para cada escenario, trazar:
 
 ```bash
 # Thread dump del servidor
-jcmd $(pgrep -f baryx-servidor) Thread.print > thread-dump-server.txt
+jcmd $(pgrep -f kipu-servidor) Thread.print > thread-dump-server.txt
 
 # Thread dump del cliente
-jcmd $(pgrep -f baryx-cliente) Thread.print > thread-dump-client.txt
+jcmd $(pgrep -f kipu-cliente) Thread.print > thread-dump-client.txt
 
 # Buscar deadlocks automáticamente
-jcmd $(pgrep -f baryx-servidor) Thread.print | grep -A 20 "deadlock"
+jcmd $(pgrep -f kipu-servidor) Thread.print | grep -A 20 "deadlock"
 
 # Threads en estado BLOCKED
-jcmd $(pgrep -f baryx-servidor) Thread.print | grep "BLOCKED" -B 5
+jcmd $(pgrep -f kipu-servidor) Thread.print | grep "BLOCKED" -B 5
 ```
 
 ## Output Esperado
@@ -275,7 +275,7 @@ RACE CONDITIONS
      Actores: [quién puede colisionar]
      Ubicación: [archivo:línea]
      Ventana: [descripción del timing window]
-     Probabilidad: Baja / Media / Alta (basada en carga Baryx)
+     Probabilidad: Baja / Media / Alta (basada en carga Kipu)
      Fix: [propuesta]
 
 DEADLOCK POTENCIALES

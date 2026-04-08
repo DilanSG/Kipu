@@ -1,11 +1,11 @@
 ---
 name: performance-profiling
-description: "Perfilado de rendimiento general del sistema Baryx. Use when: medir tiempos de respuesta, detectar cuellos de botella, analizar startup lento, perfilar endpoints REST, medir latencia HTTP cliente-servidor, evaluar throughput bajo carga, diagnosticar degradación progresiva de rendimiento."
+description: "Perfilado de rendimiento general del sistema Kipu. Use when: medir tiempos de respuesta, detectar cuellos de botella, analizar startup lento, perfilar endpoints REST, medir latencia HTTP cliente-servidor, evaluar throughput bajo carga, diagnosticar degradación progresiva de rendimiento."
 ---
 
-# Perfilado de Rendimiento — Baryx
+# Perfilado de Rendimiento — Kipu
 
-Skill para diagnosticar problemas de rendimiento en el stack completo de Baryx: JavaFX cliente → HTTP → Spring Boot servidor → PostgreSQL.
+Skill para diagnosticar problemas de rendimiento en el stack completo de Kipu: JavaFX cliente → HTTP → Spring Boot servidor → PostgreSQL.
 
 ## Cuándo Usar
 
@@ -34,10 +34,10 @@ Cliente (JavaFX) → Red (HTTP) → Servidor (Spring) → BD (PostgreSQL)
 
 #### 2.1 Revisar Configuración de Pool
 
-Archivo: `baryx-servidor/src/main/resources/application.yml`
+Archivo: `kipu-servidor/src/main/resources/application.yml`
 
 ```yaml
-# Configuración actual de Baryx
+# Configuración actual de Kipu
 hikari:
   maximum-pool-size: 10       # ¿Suficiente para picos 20:00-03:00?
   minimum-idle: 2             # ¿Muy bajo para arranque rápido?
@@ -57,13 +57,13 @@ Buscar patrones problemáticos en controladores:
 
 ```bash
 # Endpoints que devuelven List<T> sin paginación (potencial N+1 o carga masiva)
-grep -rn "List<.*Dto>" baryx-servidor/src/main/java/com/baryx/servidor/controlador/
+grep -rn "List<.*Dto>" kipu-servidor/src/main/java/com/kipu/servidor/controlador/
 
 # Transacciones sin readOnly (posible lock contention)
-grep -rn "@Transactional" baryx-servidor/src/main/java/com/baryx/servidor/servicio/ | grep -v "readOnly"
+grep -rn "@Transactional" kipu-servidor/src/main/java/com/kipu/servidor/servicio/ | grep -v "readOnly"
 
 # findAll() sin paginación
-grep -rn "findAll()" baryx-servidor/src/main/java/com/baryx/servidor/servicio/
+grep -rn "findAll()" kipu-servidor/src/main/java/com/kipu/servidor/servicio/
 ```
 
 #### 2.3 Habilitar Logging de Queries (Temporal)
@@ -104,22 +104,22 @@ System.out.println("Vista X cargada en " + duracion + "ms");
 
 ```bash
 # Platform.runLater con operaciones potencialmente pesadas
-grep -rn "Platform.runLater" baryx-cliente/src/main/java/ -A 5
+grep -rn "Platform.runLater" kipu-cliente/src/main/java/ -A 5
 
 # Llamadas HTTP síncronas (bloqueantes) — NO deberían existir
-grep -rn "\.send(" baryx-cliente/src/main/java/ | grep -v "sendAsync"
+grep -rn "\.send(" kipu-cliente/src/main/java/ | grep -v "sendAsync"
 
 # .get() bloqueante en CompletableFuture desde UI thread
-grep -rn "\.get()" baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+grep -rn "\.get()" kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 ```
 
 #### 3.3 Conteo de Nodos del Scene Graph
 
-Baryx está optimizado para hardware bajo. Verificar:
+Kipu está optimizado para hardware bajo. Verificar:
 
 ```bash
 # Nodos creados dinámicamente en loops (productos, mesas, etc.)
-grep -rn "new Button\|new Label\|new VBox\|new HBox\|getChildren().add" baryx-cliente/src/main/java/com/baryx/cliente/controlador/
+grep -rn "new Button\|new Label\|new VBox\|new HBox\|getChildren().add" kipu-cliente/src/main/java/com/kipu/cliente/controlador/
 ```
 
 **Regla**: <1000 nodos visibles simultáneamente.
@@ -128,14 +128,14 @@ grep -rn "new Button\|new Label\|new VBox\|new HBox\|getChildren().add" baryx-cl
 
 #### 4.1 Latencia Cliente-Servidor
 
-Archivo clave: `baryx-cliente/src/main/java/com/baryx/cliente/servicio/ServicioHttpBase.java`
+Archivo clave: `kipu-cliente/src/main/java/com/kipu/cliente/servicio/ServicioHttpBase.java`
 
 ```bash
 # Timeouts configurados
-grep -rn "TIMEOUT" baryx-common/src/main/java/com/baryx/common/constantes/
+grep -rn "TIMEOUT" kipu-common/src/main/java/com/kipu/common/constantes/
 
 # Reintentos configurados
-grep -rn "retry\|reintento\|REINTENTO" baryx-cliente/src/main/java/
+grep -rn "retry\|reintento\|REINTENTO" kipu-cliente/src/main/java/
 ```
 
 #### 4.2 Serialización/Deserialización
@@ -144,7 +144,7 @@ Jackson puede ser cuello de botella con objetos grandes:
 
 ```bash
 # DTOs con listas anidadas (serialización costosa)
-grep -rn "List<.*Dto>" baryx-common/src/main/java/com/baryx/common/dto/
+grep -rn "List<.*Dto>" kipu-common/src/main/java/com/kipu/common/dto/
 ```
 
 ### 5. Perfilar Base de Datos
@@ -157,7 +157,7 @@ Comandos rápidos:
 -- Queries activas más lentas
 SELECT pid, now() - pg_stat_activity.query_start AS duration, query
 FROM pg_stat_activity
-WHERE state = 'active' AND datname = 'baryx_db'
+WHERE state = 'active' AND datname = 'kipu_db'
 ORDER BY duration DESC;
 
 -- Tablas más grandes (indicador de carga)
@@ -171,7 +171,7 @@ FROM pg_stat_user_indexes
 WHERE idx_scan = 0 AND schemaname = 'public';
 ```
 
-## Anti-Patrones Conocidos en Baryx
+## Anti-Patrones Conocidos en Kipu
 
 | Anti-Patrón | Dónde Buscar | Impacto |
 |-------------|--------------|---------|
