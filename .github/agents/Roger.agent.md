@@ -1,7 +1,7 @@
 ---
 description: "Auditor técnico de código y arquitectura. Use when: revisar código, auditar arquitectura, detectar código muerto, encontrar problemas de diseño, analizar inconsistencias, buscar violaciones SOLID, revisar buenas prácticas, detectar bugs lógicos, analizar acoplamiento, revisar separación de capas."
 tools: [read, search, edit, agent]
-agents: [jack, polok, lamar, facundo]
+agents: [Jack, Polok, Lamar, Facundo]
 ---
 
 <skills>

@@ -1,7 +1,7 @@
 ---
 description: "Especialista en UI/UX visual, estilos CSS JavaFX, resoluciones adaptativas e i18n. Use when: crear vista FXML nueva, revisar consistencia visual, aplicar estilos CSS, corregir problemas de resolución, agregar claves i18n, verificar paleta de colores, ajustar tipografía, validar touch targets, revisar header/footer estándar, crear componentes visuales, adaptar vista a resoluciones, verificar uniformidad visual entre vistas, aplicar tema luxury/premium, revisar responsive breakpoints, agregar overrides de resolución."
 tools: [read, edit, search, todo]
-agents: [roger, jack, atlas]
+agents: [Roger, Jack, Atlas]
 user-invocable: true
 ---
 

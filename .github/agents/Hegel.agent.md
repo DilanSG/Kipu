@@ -1,7 +1,7 @@
 ---
 description: "Ingeniero de refactorización de código. Use when: refactorizar código, reestructurar módulo, reorganizar clases, cambiar diseño interno sin alterar comportamiento, mejorar estructura de código, mover responsabilidades entre clases, simplificar lógica compleja, extraer métodos o clases, renombrar componentes en cadena, aplicar patrones de diseño, reducir acoplamiento, eliminar duplicación, cambiar firma de método propagando cambios."
 tools: [read, edit, search, execute, agent, todo]
-agents: [roger, polok, jack]
+agents: [Roger, Polok, Jack]
 ---
 
 <skills>

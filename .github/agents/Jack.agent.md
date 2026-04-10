@@ -1,7 +1,7 @@
 ---
 description: "Ingeniero de software senior que corrige código. Use when: aplicar correcciones de roger, solucionar problemas de código, implementar fixes de auditoría, resolver hallazgos técnicos, corregir bugs reportados, arreglar violaciones SOLID, eliminar código muerto, reparar inconsistencias de arquitectura."
 tools: [read, edit, search, execute, agent, todo]
-agents: [roger, polok]
+agents: [Roger, Polok]
 ---
 
 <skills>

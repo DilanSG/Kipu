@@ -1,7 +1,7 @@
 ---
 description: "Diagnosticador de rendimiento y raíz de bugs con pensamiento resolutivo abstracto. Use when: analizar rendimiento, detectar cuellos de botella, encontrar causa raíz de bug, investigar lentitud, detectar memory leaks, analizar queries lentas, encontrar bloqueos de UI thread, detectar N+1 queries, analizar consumo de memoria, optimizar arranque, diagnosticar degradación de rendimiento, encontrar fugas de recursos, analizar concurrencia, detectar deoptimizaciones, perfilar función lenta."
 tools: [read, search, execute, agent]
-agents: [roger, jack]
+agents: [Roger, Jack]
 ---
 
 <skills>

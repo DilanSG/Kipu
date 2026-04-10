@@ -392,6 +392,77 @@ mvn javafx:run -pl kipu-cliente                     # Ejecutar cliente
 
 ---
 
+## Relación con KipuWeb
+
+Kipu Desktop es el **sistema POS de escritorio**. KipuWeb es su complemento web para landing, licencias, pagos y actualizaciones.
+
+| Aspecto | Kipu (Desktop) | KipuWeb |
+|---------|---------------|---------|
+| Stack | Java 21 / JavaFX / Spring Boot | Node.js / Astro / React / Express |
+| Propósito | POS operativo en el local | Landing, licencias, pagos, updates |
+| BD | PostgreSQL local (Flyway, migración única V1) | PostgreSQL remota (Prisma, migraciones incrementales) |
+| Despliegue | Instalación local LAN | Cloud (Render + Vercel) |
+| Idioma código | **Español** (variables, clases, métodos, BD) | **Inglés** (variables, clases, métodos, BD) |
+| Comunicación | REST API local (español: `/api/pedidos`) | REST API remota (inglés: `/v1/licenses`) |
+| Licenciamiento | Consume token Ed25519 | Emite y firma tokens Ed25519 |
+
+### Flujo de licenciamiento Desktop ↔ Web
+
+1. Cliente compra en KipuWeb (MercadoPago) → se crea `License` + `token` firmado.
+2. Cliente descarga Kipu Desktop → activa con `licenseKey` vía `/v1/licenses/activate`.
+3. Desktop verifica localmente el token Ed25519 (offline).
+4. Renovación: Desktop o Web llama a `/v1/licenses/:id/renew`.
+
+---
+
+## Agentes Especializados
+
+Este proyecto tiene agentes configurados en `.github/agents/`:
+
+| Agente | Rol | Alcance |
+|--------|-----|---------|
+| **Atlas** | Arquitecto de features | Nuevas funcionalidades Java/JavaFX end-to-end |
+| **Polok** | UI/UX + CSS JavaFX + i18n | Vistas FXML, estilos, resoluciones, claves i18n |
+| **Roger** | Auditor técnico | Revisión de código, arquitectura, violaciones SOLID |
+| **Jack** | Corrector de código | Aplicar fixes de auditorías de Roger |
+| **Hegel** | Refactorización | Reestructurar sin cambiar comportamiento |
+| **Dosto** | Diagnosticador | Rendimiento, bugs, causas raíz, memory leaks |
+| **Kastro** | Release engineer | Git, tags, changelogs, releases |
+| **Zeus** | Orquestador maestro | **Ambos proyectos** — Coordina multi-workspace |
+
+### Agentes de KipuWeb (disponibles en workspace)
+
+| Agente | Rol | Alcance |
+|--------|-----|---------|
+| **Lamar** | Frontend developer senior + motion designer | `KipuWeb/frontend/` — Astro, React, GSAP, Tailwind |
+| **Borges** | Ingeniero backend | `KipuWeb/backend/` — Express, Prisma, auth, pagos |
+| **Sagan** | Orquestador técnico web | Coordina Lamar + Borges |
+| **Facundo** | Estratega marketing + copywriter | Copy, traducciones, tono de marca |
+
+### Regla de alcance
+
+- Agentes de **Kipu Desktop** (Atlas, Polok, Roger, Jack, Hegel, Dosto, Kastro) trabajan **solo** en `Kipu/`.
+- Agentes de **KipuWeb** (Lamar, Borges, Sagan, Facundo) trabajan **solo** en `KipuWeb/`.
+- **Zeus** puede coordinar trabajo en **ambos** proyectos.
+- Si una tarea cruza ambos proyectos, usar **Zeus** como orquestador.
+
+### Diferencias clave entre entornos
+
+| Aspecto | Kipu (Desktop) | KipuWeb |
+|---------|---------------|---------|
+| Idioma de código | Español: `GestorPedidos`, `calcularTotal()` | Inglés: `createLicense()`, `signToken()` |
+| Idioma de BD | Español: `usuarios`, `fecha_creacion` | Inglés: `customers`, `created_at` |
+| Idioma de endpoints | Español: `/api/pedidos` | Inglés: `/v1/licenses` |
+| Idioma de comentarios | Español | Español |
+| Idioma de commits | Español | Español |
+| ORM | JPA/Hibernate (validate) | Prisma (migraciones incrementales) |
+| Migraciones | Flyway — migración única V1 | Prisma — incrementales (NO editar aplicadas) |
+| Estilos | JavaFX CSS (`estilos.css`) | Tailwind 4 + CSS custom properties (`global.css`) |
+| i18n keys | Español: `ctrl.logs.titulo` | Inglés: `hero.title_1` |
+| Errores API | `{"exito": bool, "datos": {}, "mensaje": ""}` | `{"ok": bool, "data": {}, "message": ""}` |
+
+---
+
 ## Prioridades de Decisión
 
 1. **Simplicidad** sobre complejidad
