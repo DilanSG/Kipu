@@ -91,9 +91,12 @@ public class LicenciaServicio {
 
     /**
      * Carga y valida la licencia. Nunca lanza excepción — siempre retorna un resultado.
-     * Flujo: key presente → validar online → trial local → bloqueado.
+     * Flujo: bootstrap token → key presente → validar online → trial local → bloqueado.
      */
     public ResultadoValidacion cargarYValidar() {
+        // Intentar canjear bootstrap token si hay uno embebido
+        canjearBootstrapToken();
+
         String licenseKey = leerLicenseKey();
 
         // Si hay key configurada, validar contra el servidor
@@ -453,6 +456,77 @@ public class LicenciaServicio {
             return new ResultadoValidacion(EstadoLicencia.OFFLINE, licenseKey, null, null,
                     razon, -1, false);
         }
+    }
+
+    // ------------------------------------------------------------------
+    // Bootstrap token
+    // ------------------------------------------------------------------
+
+    /**
+     * Intenta canjear un bootstrap token embebido en el instalador por una key real.
+     * El token es de un solo uso y corta vida. Si el canje es exitoso, guarda la key
+     * localmente y retorna true. Si falla, retorna false (el flujo continúa normal).
+     */
+    private boolean canjearBootstrapToken() {
+        // 1. Leer bootstrap.token del classpath (license.properties)
+        try (InputStream is = getClass().getResourceAsStream("/license.properties")) {
+            if (is == null) return false;
+            Properties props = new Properties();
+            props.load(is);
+            String bootstrapToken = props.getProperty("bootstrap.token", "").trim();
+            if (bootstrapToken.isBlank() || !bootstrapToken.startsWith("BST-")) return false;
+
+            // 2. Verificar que no haya una key local ya guardada
+            Path localProps = Paths.get(System.getProperty("user.home"), ".kipu", "license.properties");
+            if (Files.exists(localProps)) {
+                Properties local = new Properties();
+                try (Reader r = Files.newBufferedReader(localProps, StandardCharsets.UTF_8)) {
+                    local.load(r);
+                }
+                String claveExistente = local.getProperty("license.key", "").trim();
+                if (!claveExistente.isBlank()) {
+                    logger.debug("[License] Key local ya existe — omitiendo canje de bootstrap");
+                    return false;
+                }
+            }
+
+            // 3. Canjear contra el servidor
+            logger.info("[License] Canjeando bootstrap token...");
+            String deviceHash = calcularDeviceHash();
+            String body = MAPPER.writeValueAsString(java.util.Map.of(
+                    "token", bootstrapToken,
+                    "deviceHash", deviceHash,
+                    "deviceLabel", obtenerDeviceLabel()
+            ));
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(API_URL + "/v1/licenses/bootstrap/exchange"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .timeout(Duration.ofSeconds(15))
+                    .build();
+
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                JsonNode root = MAPPER.readTree(response.body());
+                String licenseKey = root.path("licenseKey").asText("");
+                if (!licenseKey.isBlank()) {
+                    guardarLicenseKeyLocal(licenseKey);
+                    logger.info("[License] Bootstrap canjeado exitosamente — key guardada");
+                    return true;
+                }
+            } else {
+                logger.warn("[License] Canje de bootstrap fallido (HTTP {}): {}",
+                        response.statusCode(), response.body());
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.warn("[License] Canje de bootstrap interrumpido");
+        } catch (Exception e) {
+            logger.debug("[License] No se pudo canjear bootstrap token: {}", obtenerMensajeError(e));
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------
